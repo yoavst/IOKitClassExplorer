@@ -2,6 +2,7 @@ import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ArrowUpRight, GitBranchPlus, ArrowRight } from 'lucide-react'
+import { getDirectChildren, getChildren, getParents } from '../../utils/hierarchy'
 
 // Custom JSON renderer component
 const JsonView = ({ data, level = 0 }) => {
@@ -52,54 +53,12 @@ export default function ClassDetails({ selectedClass, setSelectedClass, allClass
         )
     }
 
-    const getInheritanceChain = () => {
-        const chain = []
-        let current = selectedClass
-        const visited = new Set()
-
-        while (current && !visited.has(current.name)) {
-            chain.push(current)
-            visited.add(current.name)
-            if (current.parent_classes?.[0]) {
-                current = allClasses.find((c) => c.name === current.parent_classes[0])
-            } else {
-                break
-            }
-        }
-        return chain
-    }
-
-    const getDirectChildClasses = () => {
-        return allClasses.filter((c) => c.parent_classes?.includes(selectedClass.name))
-    }
-
-    const getIndirectChildClasses = () => {
-        const directChildrenNames = new Set(getDirectChildClasses().map((c) => c.name))
-
-        // Find all descendants
-        const getAllDescendants = (className, visited = new Set()) => {
-            if (visited.has(className)) return []
-            visited.add(className)
-
-            const children = allClasses.filter((c) => c.parent_classes?.includes(className))
-
-            let descendants = [...children]
-
-            for (const child of children) {
-                descendants = [...descendants, ...getAllDescendants(child.name, visited)]
-            }
-
-            return descendants
-        }
-
-        const allDescendants = getAllDescendants(selectedClass.name)
-
-        // Filter out direct children
-        return allDescendants.filter((c) => !directChildrenNames.has(c.name))
-    }
-
-    const directChildren = getDirectChildClasses()
-    const indirectChildren = getIndirectChildClasses()
+    // FIXME: use memo
+    const directChildren = getDirectChildren(allClasses, selectedClass.name)
+    const indirectChildren = getChildren(allClasses, selectedClass.name).filter(
+        (child) => !directChildren.includes(child)
+    )
+    const parents = getParents(allClasses, selectedClass.name)
 
     const hasMoreDirectChildren = directChildren.length > 10
     const hasMoreIndirectChildren = indirectChildren.length > 10
@@ -144,7 +103,7 @@ export default function ClassDetails({ selectedClass, setSelectedClass, allClass
                         Inheritance Chain
                     </h3>
                     <div className="space-y-1 ml-1">
-                        {getInheritanceChain().map((cls, index) => (
+                        {parents.map((cls, index) => (
                             <div key={cls.name} className="flex items-center">
                                 {index > 0 && (
                                     <div className="w-5 h-5 flex items-center justify-center dark:text-gray-400">
@@ -228,7 +187,7 @@ export default function ClassDetails({ selectedClass, setSelectedClass, allClass
                                             <Badge
                                                 key={child.name}
                                                 variant="secondary"
-                                                className="cursor-pointer hover:bg-gray-200 dark:bg-gray-700 dark:bg-opacity-70 dark:hover:bg-gray-600 text-xs"
+                                                className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-xs"
                                                 onClick={() => setSelectedClass(child)}
                                             >
                                                 {child.name}

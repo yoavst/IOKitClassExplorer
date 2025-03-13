@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { List, BookOpenText, Share2 } from 'lucide-react'
 
 import ClassList from '../components/Explorer/ClassList.jsx'
 import ClassDetails from '../components/Explorer/ClassDetails.jsx'
 import ClassGraph from '../components/Explorer/ClassGraph.jsx'
+
+import { createHierarchy } from '../utils/hierarchy.ts'
 
 export default function Explorer() {
     const [classes, setClasses] = useState([])
@@ -11,6 +13,8 @@ export default function Explorer() {
     const [searchQuery, setSearchQuery] = useState('')
     const [isMobileView, setIsMobileView] = useState(false)
     const [activePane, setActivePane] = useState('list')
+
+    const classesHierarchy = useMemo(() => createHierarchy(classes), [classes])
 
     useEffect(() => {
         loadClasses()
@@ -28,7 +32,18 @@ export default function Explorer() {
         const data = [
             {
                 name: 'Man',
-                parent_classes: ['Human'],
+                parent: 'Human',
+                properties: [
+                    {
+                        name: 'name',
+                        type: 'string',
+                        description: 'The name',
+                    },
+                ],
+            },
+            {
+                name: 'Yoav',
+                parent: 'Man',
                 properties: [
                     {
                         name: 'name',
@@ -39,7 +54,7 @@ export default function Explorer() {
             },
             {
                 name: 'Woman',
-                parent_classes: ['Human'],
+                parent: 'Human',
                 properties: [
                     {
                         name: 'name',
@@ -50,7 +65,7 @@ export default function Explorer() {
             },
             {
                 name: 'Human',
-                parent_classes: [],
+                parent: null,
                 properties: [
                     {
                         name: 'name',
@@ -163,7 +178,7 @@ export default function Explorer() {
                     <ClassDetails
                         selectedClass={selectedClass}
                         setSelectedClass={handleSelectClass}
-                        allClasses={classes}
+                        allClasses={classesHierarchy}
                     />
                 </div>
             </div>
@@ -182,8 +197,8 @@ export default function Explorer() {
                 </div>
                 <div className="flex-1">
                     <ClassGraph
-                        classes={classes}
-                        onNodeClick={handleSelectClass}
+                        classes={classesHierarchy}
+                        setSelectedClass={handleSelectClass}
                         selectedClass={selectedClass}
                     />
                 </div>

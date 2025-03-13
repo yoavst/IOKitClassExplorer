@@ -41,18 +41,20 @@ export default function ClassList({
 
     const getFilteredClasses = () => {
         if (searchType === 'parents') {
-            const targetClass = classes.find(
-                (c) => c.name.toLowerCase() === relationClassName.toLowerCase()
-            )
-            if (!targetClass || !targetClass.parent_classes) return []
-            return classes.filter((c) => targetClass.parent_classes.includes(c.name))
+            let current = classes.find((c) => c.name === relationClassName)
+            const parents = []
+            while (current.parent !== null) {
+                current = classes.find((c) => c.name === current.parent)
+                parents.push(current)
+            }
+
+            return parents
         }
 
         if (searchType === 'children') {
-            // Get all descendants recursively
             const getAllDescendants = (className, result = new Set()) => {
                 const directChildren = classes.filter(
-                    (c) => c.parent_classes && c.parent_classes.includes(className)
+                    (c) => c.parent && c.parent.includes(className)
                 )
 
                 directChildren.forEach((child) => {

@@ -1,12 +1,12 @@
 import { useState } from 'react'
-import ClassList from './Components/explorer/ClassList'
-import ClassDetails from './Components/Explorer/ClassDetails'
+import ClassList from './Components/explorer/ClassList.jsx'
+import ClassDetails from './Components/Explorer/ClassDetails.jsx'
 
 export default function App() {
     const [classes, _setClasses] = useState([
         {
             name: 'Man',
-            parent_classes: ['Human'],
+            parent: 'Human',
             properties: [
                 {
                     name: 'name',
@@ -17,7 +17,7 @@ export default function App() {
         },
         {
             name: 'Woman',
-            parent_classes: ['Human'],
+            parent: 'Human',
             properties: [
                 {
                     name: 'name',
@@ -28,7 +28,7 @@ export default function App() {
         },
         {
             name: 'Human',
-            parent_classes: [],
+            parent: null,
             properties: [
                 {
                     name: 'name',
