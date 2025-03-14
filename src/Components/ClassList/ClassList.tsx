@@ -1,9 +1,12 @@
 import { useMemo, FC } from 'react'
-import { ScrollArea } from '@/components/ui/scroll-area.tsx'
+import { FixedSizeList as List } from 'react-window'
+import AutoSizer from 'react-virtualized-auto-sizer'
 import ClassListItem from './ClassListItem.tsx'
 import SearchBar from './SearchBar.tsx'
 import { Class } from '../../utils/types.tsx'
 import { getNodes, getChildren, getParents, Hierarchy, getNode } from '../../utils/hierarchy.ts'
+
+const ITEM_SIZE = 32
 
 interface ClassListProps {
     classesHierarchy: Hierarchy<Class>
@@ -103,20 +106,31 @@ const ClassList: FC<ClassListProps> = ({
                     {searchTerm}
                 </div>
             )}
-
-            <ScrollArea className="flex-1">
-                <div className="space-y-0.5 p-1">
-                    {filteredClasses.map((clazz) => (
-                        <ClassListItem
-                            key={clazz.name}
-                            clazz={clazz}
-                            isSelected={clazz.name === selectedClass?.name}
-                            setSelectedClass={setSelectedClass}
-                            setSearchQuery={setSearchQuery}
-                        />
-                    ))}
-                </div>
-            </ScrollArea>
+            <div className="w-full h-full">
+                <AutoSizer>
+                    {({ height, width }) => (
+                        <List
+                            height={height}
+                            itemCount={filteredClasses.length}
+                            itemSize={ITEM_SIZE}
+                            width={width}
+                        >
+                            {({ index, style }) => (
+                                <div style={style}>
+                                    <ClassListItem
+                                        clazz={filteredClasses[index]}
+                                        isSelected={
+                                            filteredClasses[index].name === selectedClass?.name
+                                        }
+                                        setSelectedClass={setSelectedClass}
+                                        setSearchQuery={setSearchQuery}
+                                    />
+                                </div>
+                            )}
+                        </List>
+                    )}
+                </AutoSizer>
+            </div>
         </div>
     )
 }
