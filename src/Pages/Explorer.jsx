@@ -3,7 +3,7 @@ import { List, BookOpenText, Share2 } from 'lucide-react'
 
 import ClassList from '../Components/ClassList/ClassList.tsx'
 import ClassDetails from '../components/ClassDetails/ClassDetails.tsx'
-import ClassGraph from '../components/Explorer/ClassGraph.jsx'
+import ClassGraph from '../components/ClassGraph/ClassGraph.tsx'
 
 import { createHierarchy } from '../utils/hierarchy.ts'
 
@@ -99,7 +99,7 @@ export default function Explorer() {
 
     // Mobile navigation
     const renderMobileNav = () => (
-        <div className="flex border-b dark:border-gray-700">
+        <div className="flex border-b border-gray-700">
             <button
                 className={`flex-1 py-3 px-2 flex justify-center items-center gap-2 ${
                     activePane === 'list'
@@ -143,12 +143,12 @@ export default function Explorer() {
             {/* Left Pane - Class List */}
             <div
                 className={`
-        md:w-64 lg:w-72 border-r bg-gray-800 dark:border-gray-700 flex flex-col
+        md:w-64 lg:w-72 border-r bg-gray-800 border-gray-700 flex flex-col
         ${isMobileView && activePane !== 'list' ? 'hidden' : 'flex'}
         ${isMobileView ? 'h-[calc(100vh-48px)]' : ''}
       `}
             >
-                <div className="p-3 border-b bg-gray-800 dark:border-gray-700 flex items-center gap-2">
+                <div className="p-3 border-b border-gray-700 flex items-center gap-2">
                     <List className="w-4 h-4 text-blue-400" />
                     <h2 className="font-medium text-white">Classes</h2>
                 </div>
@@ -166,12 +166,12 @@ export default function Explorer() {
             {/* Middle Pane - Details */}
             <div
                 className={`
-        md:w-1/3 lg:w-2/5 border-r bg-gray-800 dark:border-gray-700 flex flex-col
+        md:w-1/3 lg:w-2/5 border-r bg-gray-800 border-gray-700 flex flex-col
         ${isMobileView && activePane !== 'details' ? 'hidden' : 'flex'}
         ${isMobileView ? 'h-[calc(100vh-48px)]' : ''}
       `}
             >
-                <div className="p-3 border-b bg-gray-800 dark:border-gray-700 flex items-center gap-2">
+                <div className="p-3 border-b bg-gray-800 border-gray-700 flex items-center gap-2">
                     <BookOpenText className="w-4 h-4 text-green-400" />
                     <h2 className="font-medium text-white">Class Details</h2>
                 </div>
@@ -193,7 +193,7 @@ export default function Explorer() {
         ${isMobileView ? 'h-[calc(100vh-48px)]' : ''}
       `}
             >
-                <div className="p-3 border-b bg-gray-800 dark:border-gray-700 flex items-center gap-2">
+                <div className="p-3 border-b bg-gray-800 border-gray-700 flex items-center gap-2">
                     <Share2 className="w-4 h-4 text-purple-400" />
                     <h2 className="font-medium text-white">Inheritance Graph</h2>
                 </div>

@@ -12,20 +12,20 @@ type SearchBarProps = {
 
 const SearchBar: FC<SearchBarProps> = ({ searchQuery, setSearchQuery, suggestions }) => {
     return (
-        <div className="p-2 border-b dark:border-gray-700">
+        <div className="p-2 border-b border-gray-700">
             <div className="relative">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400 dark:text-gray-500 pointer-events-none" />
+                <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500 pointer-events-none" />
 
                 <Input
                     placeholder="Search classes"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-8 pr-10 text-sm h-9 dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                    className="pl-8 pr-10 text-sm h-9 bg-gray-700 text-white border-gray-600"
                 />
 
                 {searchQuery && (
                     <button
-                        className="absolute right-2 top-2.5 p-0.5 rounded hover:bg-gray-200 dark:hover:bg-gray-600"
+                        className="absolute right-2 top-2.5 p-0.5 rounded hover:bg-gray-600"
                         onClick={() => setSearchQuery('')}
                     >
                         <X className="h-3.5 w-3.5 text-gray-400" />
@@ -57,7 +57,7 @@ const SuggestionChip: FC<SuggestionChipProps> = ({ text, color, setSearchQuery }
     return (
         <Badge
             onClick={() => setSearchQuery(text)}
-            className={`text-xs py-0 px-1.5 cursor-pointer bg-${color}-100 hover:bg-${color}-200 text-${color}-800 dark:bg-${color}-900 dark:text-${color}-200`}
+            className={`text-xs py-0 px-1.5 cursor-pointer bg-${color}-800 text-white`}
         >
             {text}
         </Badge>

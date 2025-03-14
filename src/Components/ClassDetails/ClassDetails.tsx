@@ -20,7 +20,7 @@ const ClassDetails: FC<ClassDetailsProps> = ({
 }) => {
     if (!selectedClass) {
         return (
-            <div className="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">
+            <div className="flex items-center justify-center h-full text-gray-400">
                 Select a class to view details
             </div>
         )
@@ -60,7 +60,7 @@ const ClassDetailsInternal: FC<ClassDetailsProps & { selectedClass: Class }> = (
 
     return (
         <div className="p-4">
-            <h2 className="text-xl font-bold mb-4 dark:text-white">{selectedClass.name}</h2>
+            <h2 className="text-xl font-bold mb-4 text-white">{selectedClass.name}</h2>
             <div className="space-y-5">
                 <InhertianceChain
                     setSelectedClass={setSelectedClass}
@@ -77,10 +77,8 @@ const ClassDetailsInternal: FC<ClassDetailsProps & { selectedClass: Class }> = (
                 />
 
                 <div>
-                    <h3 className="text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
-                        Properties
-                    </h3>
-                    <div className="bg-gray-50 dark:bg-gray-900 rounded-md p-3 overflow-auto text-xs max-h-96 dark:text-gray-200 border dark:border-gray-700">
+                    <h3 className="text-sm font-semibold mb-2 text-gray-300">Properties</h3>
+                    <div className="bg-gray-900 rounded-md p-3 overflow-auto text-xs max-h-96 text-gray-200 border border-gray-700">
                         <JSONView data={selectedClass.properties || {}} />
                     </div>
                 </div>

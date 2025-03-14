@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useLayoutEffect } from 'react'
+import { useState, useCallback, useMemo, useLayoutEffect, FC } from 'react'
 import {
     ReactFlow,
     Background,
@@ -7,10 +7,15 @@ import {
     Handle,
     ReactFlowProvider,
     useReactFlow,
+    BackgroundVariant,
+    type Node,
+    type NodeTypes,
+    type NodeProps,
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
-import { Download, Eye, EyeOff, ZoomOut, ZoomIn, Minimize } from 'lucide-react'
+import { Download, Eye, EyeOff, ZoomOut, ZoomIn, Minimize, LucideProps } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Class } from '@/types.tsx'
 import {
     getParents,
     getChildren,
@@ -18,15 +23,23 @@ import {
     getNodes,
     getEdges,
     getNode,
+    Hierarchy,
 } from '../../utils/hierarchy.ts'
 import { layout } from '../../utils/graphLayout.ts'
 
-// Custom node component for class nodes
-const ClassNode = ({ data }) => {
+type ClassNodeType = Node<
+    {
+        isSelected: boolean
+        label: string
+    },
+    'classNode'
+>
+
+const ClassNode: FC<NodeProps<ClassNodeType>> = ({ data: { isSelected, label } }) => {
     return (
         <div
             className={`px-4 py-2 rounded-md font-medium shadow-md border transition-colors ${
-                data.isSelected
+                isSelected
                     ? 'bg-blue-600 text-white border-blue-400'
                     : 'bg-gray-800 text-gray-100 border-gray-700 hover:bg-gray-700'
             }`}
@@ -43,14 +56,20 @@ const ClassNode = ({ data }) => {
                 isConnectable={false}
                 style={{ visibility: 'hidden' }}
             />
-            {data.label}
+            {label}
         </div>
     )
 }
 
-const GraphButton = ({
+type GraphButtonProps = {
+    onClick: () => void
+    Icon: FC<LucideProps>
+    color?: string
+    variant?: 'secondary' | 'outline'
+}
+
+const GraphButton: FC<GraphButtonProps> = ({
     onClick,
-    // eslint-disable-next-line no-unused-vars
     Icon,
     color = 'bg-blue-600 hover:bg-blue-700',
     variant = 'secondary',
@@ -67,11 +86,17 @@ const GraphButton = ({
     )
 }
 
-// Register node types
-const nodeTypes = {
+const nodeTypes: NodeTypes = {
     classNode: ClassNode,
 }
-export default function ClassGraphWrapper({ classes, setSelectedClass, selectedClass }) {
+
+type ClassGraphProps = {
+    classes: Hierarchy<Class>
+    setSelectedClass: (cls: Class) => void
+    selectedClass: Class | null
+}
+
+const ClassGraphWrapper: FC<ClassGraphProps> = ({ classes, setSelectedClass, selectedClass }) => {
     return (
         <ReactFlowProvider>
             <ClassGraph
@@ -83,7 +108,7 @@ export default function ClassGraphWrapper({ classes, setSelectedClass, selectedC
     )
 }
 
-function ClassGraph({ classes, setSelectedClass, selectedClass }) {
+const ClassGraph: FC<ClassGraphProps> = ({ classes, setSelectedClass, selectedClass }) => {
     const { zoomIn, zoomOut, fitView } = useReactFlow()
     const [shouldFilter, setShouldFilter] = useState(true)
 
@@ -95,7 +120,7 @@ function ClassGraph({ classes, setSelectedClass, selectedClass }) {
         return getSubgraph(classes, visibleClasses)
     }, [classes, selectedClass, shouldFilter])
 
-    const nodes = useMemo(() => {
+    const nodes: Omit<ClassNodeType, 'measured' | 'position'>[] = useMemo(() => {
         return getNodes(visibleClassesGraph).map((cls) => ({
             id: cls.name,
             type: 'classNode',
@@ -132,7 +157,7 @@ function ClassGraph({ classes, setSelectedClass, selectedClass }) {
 
     // Handle node click
     const handleNodeClick = useCallback(
-        (_, node) => {
+        (_: any, node: ClassNodeType) => {
             const clickedClass = getNode(visibleClassesGraph, node.id)
             if (clickedClass) {
                 setSelectedClass(clickedClass)
@@ -204,7 +229,7 @@ function ClassGraph({ classes, setSelectedClass, selectedClass }) {
                 minZoom={0.1}
                 fitView
             >
-                <Background variant="dots" gap={16} size={1} color="#334155" />
+                <Background variant={BackgroundVariant.Dots} gap={16} size={1} color="#334155" />
                 <Panel position="top-right" className="flex flex-col gap-2">
                     <GraphButton
                         onClick={() => setShouldFilter((shouldFilter) => !shouldFilter)}
@@ -221,3 +246,5 @@ function ClassGraph({ classes, setSelectedClass, selectedClass }) {
         </div>
     )
 }
+
+export default ClassGraphWrapper

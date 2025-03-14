@@ -7,11 +7,14 @@ type LayoutOptions = {
 const nodeWidth = 172
 const nodeHeight = 36
 
-export const layout = (
-    nodes: { id: string; measured?: { width: number; height: number } }[],
-    edges: { source: string; target: string }[],
+export function layout<
+    Node extends { id: string; measured?: { width: number; height: number } },
+    Edge extends { source: string; target: string },
+>(
+    nodes: Node[],
+    edges: Edge[],
     options: LayoutOptions = { direction: 'BT' }
-) => {
+): { nodes: (Node & { position: { x: number; y: number } })[]; edges: Edge[] } {
     const g = new Dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}))
     g.setGraph({ rankdir: options.direction })
 

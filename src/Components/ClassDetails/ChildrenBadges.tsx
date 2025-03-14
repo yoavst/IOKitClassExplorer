@@ -36,14 +36,14 @@ const ChildrenBadges: FC<ChildrenBadgesProps> = ({
     return (
         <div>
             <div className="flex items-center justify-between mb-2">
-                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                <h3 className="text-sm font-semibold text-gray-300">
                     {'Children '}
                     {hasChildren && `(${directChildren.length + indirectChildren.length})`}
                 </h3>
             </div>
 
             {!hasChildren ? (
-                <div className="text-sm text-gray-500 dark:text-gray-400">No children</div>
+                <div className="text-sm text-gray-400">No children</div>
             ) : (
                 <>
                     <div className="mb-3">
@@ -64,9 +64,7 @@ const ChildrenBadges: FC<ChildrenBadgesProps> = ({
                                 />
                             )}
                             {displayedDirectChildren.length === 0 && (
-                                <span className="text-xs text-gray-500 dark:text-gray-400">
-                                    No direct children
-                                </span>
+                                <span className="text-xs text-gray-400">No direct children</span>
                             )}
                         </div>
                     </div>
@@ -111,7 +109,7 @@ const ChildBadge: FC<ChildBadgeProps> = ({ child, setSelectedClass }) => {
         <Badge
             key={child.name}
             variant="secondary"
-            className="cursor-pointer dark:bg-gray-700 dark:hover:bg-gray-600 text-xs"
+            className="cursor-pointer bg-gray-700 hover:bg-gray-600 text-xs"
             onClick={() => setSelectedClass(child)}
         >
             {child.name}
@@ -134,7 +132,7 @@ const ShowMoreChildrenBadge: FC<ShowMoreChildrenBadgeProps> = ({
     return (
         <Badge
             variant="outline"
-            className="cursor-pointer dark:bg-gray-700 dark:hover:bg-gray-600 text-xs"
+            className="cursor-pointer bg-gray-700 hover:bg-gray-600 text-xs"
             onClick={() => setSearchQuery(`children: ${parent.name}`)}
         >
             ...and {count} more
@@ -149,7 +147,7 @@ type ChildrenTitleProps = {
 
 const ChildrenTitle: FC<ChildrenTitleProps> = ({ text, count }) => {
     return (
-        <h4 className="text-xs text-gray-500 dark:text-gray-400 mb-1 flex items-center">
+        <h4 className="text-xs text-gray-400 mb-1 flex items-center">
             <ArrowRight className="h-3 w-3 mr-1" />
             {text} {count > 0 && `(${count})`}
         </h4>

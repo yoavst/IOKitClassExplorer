@@ -95,18 +95,13 @@ const ClassList: FC<ClassListProps> = ({
                 }
             />
             {searchType != SearchType.normal && (
-                <div className="p-2 bg-blue-50 dark:bg-blue-900/20 border-b dark:border-gray-700">
-                    <Badge
-                        variant="outline"
-                        className="border-blue-200 dark:border-blue-700 bg-white dark:bg-gray-800"
-                    >
-                        <span className="font-semibold ml-1">
-                            {searchType === SearchType.parents
-                                ? 'Showing parents of: '
-                                : 'Showing all children of: '}
-                            {searchTerm}
-                        </span>
-                    </Badge>
+                <div
+                    className={`p-1 pl-3 text-xs text-white font-semibold ${searchType === SearchType.parents ? 'bg-blue-800' : 'bg-purple-800'}`}
+                >
+                    {searchType === SearchType.parents
+                        ? 'Showing parents of: '
+                        : 'Showing all children of: '}
+                    {searchTerm}
                 </div>
             )}
 
