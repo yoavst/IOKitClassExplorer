@@ -1,8 +1,8 @@
 import { useMemo, FC } from 'react'
 import { getDirectChildren, getChildren, getParents, Hierarchy } from '../../utils/hierarchy.ts'
-import JSONView from '../ClassDetails/JSONView.tsx'
-import InhertianceChain from '../ClassDetails/InhertianceChain.tsx'
-import ChildrenBadges from '../ClassDetails/ChildrenBadges.tsx'
+import JSONView from './JSONView.tsx'
+import InhertianceChain from './InhertianceChain.tsx'
+import ChildrenBadges from './ChildrenBadges.tsx'
 import { Class } from '@/types.tsx'
 
 type ClassDetailsProps = {

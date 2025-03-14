@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { List, BookOpenText, Share2 } from 'lucide-react'
 
-import ClassList from '../components/Explorer/ClassList.jsx'
-import ClassDetails from '../components/Explorer/ClassDetails.tsx'
+import ClassList from '../Components/ClassList/ClassList.tsx'
+import ClassDetails from '../components/ClassDetails/ClassDetails.tsx'
 import ClassGraph from '../components/Explorer/ClassGraph.jsx'
 
 import { createHierarchy } from '../utils/hierarchy.ts'
@@ -154,7 +154,7 @@ export default function Explorer() {
                 </div>
                 <div className="flex-1 overflow-hidden">
                     <ClassList
-                        classes={classes}
+                        classesHierarchy={classesHierarchy}
                         selectedClass={selectedClass}
                         setSelectedClass={handleSelectClass}
                         searchQuery={searchQuery}
