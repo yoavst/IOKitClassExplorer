@@ -20,52 +20,44 @@ const App: FC = () => {
     }, [])
 
     const loadClasses = () => {
-        const data = [
+        const data: Class[] = [
             {
                 name: 'Man',
                 parent: 'Human',
-                properties: [
-                    {
-                        name: 'name',
-                        type: 'string',
-                        description: 'The name',
-                        array: [1, 2, 3],
-                        twst: null,
-                    },
-                ],
+                properties: {
+                    name: 'name',
+                    type: 'string',
+                    description: 'The name',
+                    array: [1, 2, 3],
+                    twst: null,
+                },
             },
             {
                 name: 'Yoav',
                 parent: 'Man',
-                properties: [
-                    {
-                        name: 'name',
-                        type: 'string',
-                        description: 'The name',
-                    },
-                ],
+                properties: {
+                    name: 'name',
+                    type: 'string',
+                    description: 'The name',
+                },
             },
             {
                 name: 'Woman',
                 parent: 'Human',
-                properties: [
-                    {
-                        name: 'name',
-                        type: 'string',
-                        description: 'The name',
-                    },
-                ],
+                properties: {
+                    name: 'name',
+                    type: 'string',
+                    description: 'The name',
+                },
             },
             {
                 name: 'Human',
                 parent: null,
-                properties: [
-                    {
-                        name: 'name',
-                        type: 'string',
-                        description: 'The name',
-                    },
-                ],
+                properties: {
+                    name: 'name',
+                    type: 'string',
+                    description: 'The name',
+                },
             },
         ]
         setClasses(data)

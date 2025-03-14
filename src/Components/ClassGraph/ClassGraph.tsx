@@ -15,7 +15,7 @@ import {
 import '@xyflow/react/dist/style.css'
 import { Download, Eye, EyeOff, ZoomOut, ZoomIn, Minimize, LucideProps } from 'lucide-react'
 import { Button } from '@/components/ui/button.tsx'
-import { Class } from '@/utils/types.tsx'
+import { Class } from '../../utils/types.tsx'
 import {
     getParents,
     getChildren,

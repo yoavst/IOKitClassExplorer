@@ -3,7 +3,7 @@ import { getDirectChildren, getChildren, getParents, Hierarchy } from '../../uti
 import JSONView from './JSONView.tsx'
 import InhertianceChain from './InhertianceChain.tsx'
 import ChildrenBadges from './ChildrenBadges.tsx'
-import { Class } from '@/utils/types.tsx'
+import { Class } from '../../utils/types.tsx'
 
 interface ClassDetailsProps {
     selectedClass: Class | null
