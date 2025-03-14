@@ -1,7 +1,7 @@
 import { DirectedGraph } from 'graphology'
 import { subgraph } from 'graphology-operators'
 
-type BaseNode = {
+interface BaseNode {
     name: string
     parent: string | null
 }
@@ -83,6 +83,9 @@ export function getNodes<NodeType extends BaseNode>(graph: Hierarchy<NodeType>):
 export function getNode<NodeType extends BaseNode>(
     graph: Hierarchy<NodeType>,
     node: string
-): NodeType {
-    return graph.getNodeAttributes(node)
+): NodeType | null {
+    if (graph.hasNode(node)) {
+        return graph.getNodeAttributes(node)
+    }
+    return null
 }

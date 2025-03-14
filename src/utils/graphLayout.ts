@@ -1,6 +1,6 @@
 import Dagre from '@dagrejs/dagre'
 
-type LayoutOptions = {
+interface LayoutOptions {
     direction: 'TB' | 'BT' | 'LR' | 'RL'
 }
 

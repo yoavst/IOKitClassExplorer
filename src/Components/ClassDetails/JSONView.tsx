@@ -1,7 +1,7 @@
 import { FC } from 'react'
 
-type JSONViewProps = {
-    data: any
+interface JSONViewProps {
+    data: unknown
     level?: number
 }
 
@@ -10,11 +10,12 @@ const JSONView: FC<JSONViewProps> = ({ data, level = 0 }) => {
 
     // primitives
     if (typeof data !== 'object') {
-        if (typeof data === 'string') return <span className="text-green-400">"{data}"</span>
+        if (typeof data === 'string')
+            return <span className="text-green-400">&quot;{data}&quot;</span>
         if (typeof data === 'number') return <span className="text-blue-400">{data}</span>
         if (typeof data === 'boolean')
             return <span className="text-purple-400">{data.toString()}</span>
-        return <span>{String(data)}</span>
+        return <span>{JSON.stringify(data)}</span>
     }
 
     const isArray = Array.isArray(data)
@@ -31,7 +32,7 @@ const JSONView: FC<JSONViewProps> = ({ data, level = 0 }) => {
                 <div key={key} className="ml-4">
                     {!isArray && <span className="text-red-400">{key}</span>}
                     {!isArray && <span>: </span>}
-                    <JSONView data={value} level={level + 1} />
+                    <JSONView data={value as unknown} level={level + 1} />
                     {index < Object.keys(data).length - 1 && <span>,</span>}
                 </div>
             ))}

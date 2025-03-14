@@ -1,9 +1,9 @@
-import { Class } from '../../types.tsx'
+import { Class } from '../../utils/types.tsx'
 import { FC } from 'react'
 import { GitBranchPlus } from 'lucide-react'
 import { Button } from '@/components/ui/button.tsx'
 
-type InhertianceChainProps = {
+interface InhertianceChainProps {
     setSelectedClass: (selectedClass: Class) => void
     currentClass: Class
     inhertianceChain: Class[]
@@ -38,7 +38,7 @@ const InhertianceChain: FC<InhertianceChainProps> = ({
     )
 }
 
-type InhertianceChainButtonProps = {
+interface InhertianceChainButtonProps {
     setSelectedClass: (selectedClass: Class) => void
     clazz: Class
     showArrow: boolean
@@ -58,7 +58,7 @@ const InhertianceChainButton: FC<InhertianceChainButtonProps> = ({
                 variant="ghost"
                 size="sm"
                 className="text-blue-400 hover:text-blue-300 px-2 h-6"
-                onClick={() => setSelectedClass(clazz)}
+                onClick={() => { setSelectedClass(clazz); }}
             >
                 {clazz.name}
             </Button>

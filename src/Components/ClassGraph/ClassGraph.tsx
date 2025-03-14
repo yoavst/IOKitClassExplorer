@@ -14,8 +14,8 @@ import {
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import { Download, Eye, EyeOff, ZoomOut, ZoomIn, Minimize, LucideProps } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Class } from '@/types.tsx'
+import { Button } from '@/components/ui/button.tsx'
+import { Class } from '@/utils/types.tsx'
 import {
     getParents,
     getChildren,
@@ -61,7 +61,7 @@ const ClassNode: FC<NodeProps<ClassNodeType>> = ({ data: { isSelected, label } }
     )
 }
 
-type GraphButtonProps = {
+interface GraphButtonProps {
     onClick: () => void
     Icon: FC<LucideProps>
     color?: string
@@ -90,7 +90,7 @@ const nodeTypes: NodeTypes = {
     classNode: ClassNode,
 }
 
-type ClassGraphProps = {
+interface ClassGraphProps {
     classes: Hierarchy<Class>
     setSelectedClass: (cls: Class) => void
     selectedClass: Class | null
@@ -147,7 +147,7 @@ const ClassGraph: FC<ClassGraphProps> = ({ classes, setSelectedClass, selectedCl
     }, [selectedClass, visibleClassesGraph])
 
     useLayoutEffect(() => {
-        setTimeout(() => fitView({ duration: 500 }))
+        setTimeout(() => void fitView({ duration: 500 }))
     }, [selectedClass, shouldFilter, fitView])
 
     const { nodes: positionedNodes, edges: positionedEdges } = useMemo(
@@ -157,7 +157,7 @@ const ClassGraph: FC<ClassGraphProps> = ({ classes, setSelectedClass, selectedCl
 
     // Handle node click
     const handleNodeClick = useCallback(
-        (_: any, node: ClassNodeType) => {
+        (_: unknown, node: ClassNodeType) => {
             const clickedClass = getNode(visibleClassesGraph, node.id)
             if (clickedClass) {
                 setSelectedClass(clickedClass)
@@ -184,10 +184,10 @@ const ClassGraph: FC<ClassGraphProps> = ({ classes, setSelectedClass, selectedCl
             }
 
             // Add properties as class members
-            if (cls.properties && Object.keys(cls.properties).length > 0) {
+            if (cls.properties && Object.keys(cls.properties as object).length > 0) {
                 mermaidCode += `    class ${cls.name} {\n`
 
-                for (const [key, value] of Object.entries(cls.properties)) {
+                for (const [key, value] of Object.entries(cls.properties as object)) {
                     // Format properties based on type
                     if (typeof value === 'boolean') {
                         mermaidCode += `        ${key}: ${value}\n`
@@ -232,14 +232,16 @@ const ClassGraph: FC<ClassGraphProps> = ({ classes, setSelectedClass, selectedCl
                 <Background variant={BackgroundVariant.Dots} gap={16} size={1} color="#334155" />
                 <Panel position="top-right" className="flex flex-col gap-2">
                     <GraphButton
-                        onClick={() => setShouldFilter((shouldFilter) => !shouldFilter)}
+                        onClick={() => {
+                            setShouldFilter((shouldFilter) => !shouldFilter)
+                        }}
                         Icon={shouldFilter ? EyeOff : Eye}
                         color={shouldFilter ? 'bg-blue-900 border-blue-700' : 'bg-gray-700'}
                         variant={shouldFilter ? 'outline' : 'secondary'}
                     />
-                    <GraphButton onClick={zoomIn} Icon={ZoomIn} />
-                    <GraphButton onClick={zoomOut} Icon={ZoomOut} />
-                    <GraphButton onClick={fitView} Icon={Minimize} />
+                    <GraphButton onClick={() => void zoomIn()} Icon={ZoomIn} />
+                    <GraphButton onClick={() => void zoomOut()} Icon={ZoomOut} />
+                    <GraphButton onClick={() => void fitView()} Icon={Minimize} />
                     <GraphButton onClick={exportToMermaid} Icon={Download} />
                 </Panel>
             </ReactFlow>

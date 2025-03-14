@@ -1,11 +1,11 @@
-import { Class } from '../../types.tsx'
+import { Class } from '../../utils/types.tsx'
 import { FC } from 'react'
-import { Badge } from '@/components/ui/badge'
+import { Badge } from '@/components/ui/badge.tsx'
 import { ArrowUpRight, ArrowRight } from 'lucide-react'
 
 const MAX_BADGES = 10
 
-type ChildrenBadgesProps = {
+interface ChildrenBadgesProps {
     directChildren: Class[]
     indirectChildren: Class[]
     selectedClass: Class
@@ -99,7 +99,7 @@ const ChildrenBadges: FC<ChildrenBadgesProps> = ({
     )
 }
 
-type ChildBadgeProps = {
+interface ChildBadgeProps {
     child: Class
     setSelectedClass: (selectedClass: Class) => void
 }
@@ -110,7 +110,7 @@ const ChildBadge: FC<ChildBadgeProps> = ({ child, setSelectedClass }) => {
             key={child.name}
             variant="secondary"
             className="cursor-pointer bg-gray-700 hover:bg-gray-600 text-xs"
-            onClick={() => setSelectedClass(child)}
+            onClick={() => { setSelectedClass(child); }}
         >
             {child.name}
             <ArrowUpRight className="w-3 h-3 ml-1" />
@@ -118,7 +118,7 @@ const ChildBadge: FC<ChildBadgeProps> = ({ child, setSelectedClass }) => {
     )
 }
 
-type ShowMoreChildrenBadgeProps = {
+interface ShowMoreChildrenBadgeProps {
     count: number
     parent: Class
     setSearchQuery: (query: string) => void
@@ -133,14 +133,14 @@ const ShowMoreChildrenBadge: FC<ShowMoreChildrenBadgeProps> = ({
         <Badge
             variant="outline"
             className="cursor-pointer bg-gray-700 hover:bg-gray-600 text-xs"
-            onClick={() => setSearchQuery(`children: ${parent.name}`)}
+            onClick={() => { setSearchQuery(`children: ${parent.name}`); }}
         >
             ...and {count} more
         </Badge>
     )
 }
 
-type ChildrenTitleProps = {
+interface ChildrenTitleProps {
     text: string
     count: number
 }

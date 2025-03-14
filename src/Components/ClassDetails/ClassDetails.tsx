@@ -3,9 +3,9 @@ import { getDirectChildren, getChildren, getParents, Hierarchy } from '../../uti
 import JSONView from './JSONView.tsx'
 import InhertianceChain from './InhertianceChain.tsx'
 import ChildrenBadges from './ChildrenBadges.tsx'
-import { Class } from '@/types.tsx'
+import { Class } from '@/utils/types.tsx'
 
-type ClassDetailsProps = {
+interface ClassDetailsProps {
     selectedClass: Class | null
     setSelectedClass: (selectedClass: Class) => void
     allClasses: Hierarchy<Class>
@@ -79,7 +79,7 @@ const ClassDetailsInternal: FC<ClassDetailsProps & { selectedClass: Class }> = (
                 <div>
                     <h3 className="text-sm font-semibold mb-2 text-gray-300">Properties</h3>
                     <div className="bg-gray-900 rounded-md p-3 overflow-auto text-xs max-h-96 text-gray-200 border border-gray-700">
-                        <JSONView data={selectedClass.properties || {}} />
+                        <JSONView data={selectedClass.properties ?? {}} />
                     </div>
                 </div>
             </div>

@@ -1,12 +1,11 @@
 import { useMemo, FC } from 'react'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Badge } from '@/components/ui/badge'
+import { ScrollArea } from '@/components/ui/scroll-area.tsx'
 import ClassListItem from './ClassListItem.tsx'
 import SearchBar from './SearchBar.tsx'
-import { Class } from '../../types.tsx'
+import { Class } from '../../utils/types.tsx'
 import { getNodes, getChildren, getParents, Hierarchy, getNode } from '../../utils/hierarchy.ts'
 
-type ClassListProps = {
+interface ClassListProps {
     classesHierarchy: Hierarchy<Class>
     selectedClass: Class | null
     setSelectedClass: (selectedClass: Class) => void
@@ -72,7 +71,7 @@ const ClassList: FC<ClassListProps> = ({
         }
         filteredClasses.sort((a, b) => a.name.localeCompare(b.name))
         return filteredClasses
-    }, [searchType, searchTerm, classesHierarchy])
+    }, [searchType, classesHierarchy, searchTerm, classesSorted, searchQuery])
 
     return (
         <div className="w-full h-full flex flex-col">
