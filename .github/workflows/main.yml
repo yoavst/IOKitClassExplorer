@@ -3,7 +3,15 @@ name: Deploy
 on:
     push:
         branches:
-            - main
+            - 'main'
+    pull_request:
+        branches:
+            - '**'
+
+permissions:
+    contents: read
+    pages: write
+    id-token: write
 
 jobs:
     lint:
