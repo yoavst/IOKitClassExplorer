@@ -61,27 +61,31 @@ const ClassDetailsInternal: FC<ClassDetailsProps & { selectedClass: Class }> = (
     return (
         <div className="p-4">
             <h2 className="text-xl font-bold mb-4 text-white">{selectedClass.name}</h2>
-            <div className="space-y-5">
-                <InhertianceChain
-                    setSelectedClass={setSelectedClass}
-                    inhertianceChain={parentsChain}
-                    currentClass={selectedClass}
-                />
+            <div className="space-y-5 flex flex-row">
+                <div className="flex-1">
+                    <InhertianceChain
+                        setSelectedClass={setSelectedClass}
+                        inhertianceChain={parentsChain}
+                        currentClass={selectedClass}
+                    />
 
-                <ChildrenBadges
-                    directChildren={directChildren}
-                    indirectChildren={indirectChildren}
-                    selectedClass={selectedClass}
-                    setSelectedClass={setSelectedClass}
-                    setSearchQuery={setSearchQuery}
-                />
-
-                <div>
-                    <h3 className="text-sm font-semibold mb-2 text-gray-300">Properties</h3>
-                    <div className="bg-gray-900 rounded-md p-3 overflow-auto text-xs max-h-96 text-gray-200 border border-gray-700">
-                        <JSONView data={selectedClass.properties ?? {}} />
-                    </div>
+                    <ChildrenBadges
+                        directChildren={directChildren}
+                        indirectChildren={indirectChildren}
+                        selectedClass={selectedClass}
+                        setSelectedClass={setSelectedClass}
+                        setSearchQuery={setSearchQuery}
+                    />
                 </div>
+
+                {Object.keys(selectedClass.properties ?? {}).length !== 0 && (
+                    <div className="flex-1">
+                        <h3 className="text-sm font-semibold mb-2 text-gray-300">Properties</h3>
+                        <div className="bg-gray-900 rounded-md p-3 overflow-auto text-xs max-h-96 text-gray-200 border border-gray-700">
+                            <JSONView data={selectedClass.properties ?? {}} />
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     )

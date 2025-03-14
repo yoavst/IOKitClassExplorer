@@ -15,7 +15,7 @@ const InhertianceChain: FC<InhertianceChainProps> = ({
 }) => {
     return (
         <div>
-            <h3 className="text-sm font-semibold mb-2 flex items-center gap-1 text-gray-300">
+            <h3 className="text-sm font-semibold flex items-center gap-1 text-gray-300">
                 <GitBranchPlus className="w-4 h-4" />
                 Inheritance Chain
             </h3>
@@ -58,7 +58,9 @@ const InhertianceChainButton: FC<InhertianceChainButtonProps> = ({
                 variant="ghost"
                 size="sm"
                 className="text-blue-400 hover:text-blue-300 px-2 h-6"
-                onClick={() => { setSelectedClass(clazz); }}
+                onClick={() => {
+                    setSelectedClass(clazz)
+                }}
             >
                 {clazz.name}
             </Button>

@@ -33,8 +33,11 @@ import {
     getEdges,
     getNode,
     Hierarchy,
+    getNodesCount,
 } from '../../utils/hierarchy.ts'
 import { layout } from '../../utils/graphLayout.ts'
+
+const MAX_NODES_IN_GRAPH = 50
 
 type ClassNodeType = Node<
     {
@@ -122,15 +125,21 @@ const ClassGraph: FC<ClassGraphProps> = ({ classes, setSelectedClass, selectedCl
     const [shouldFilter, setShouldFilter] = useState(true)
     const flowWrapperRef = useRef<HTMLDivElement | null>(null)
 
-    const visibleClassesGraph = useMemo(() => {
-        if (selectedClass === null || !shouldFilter) return classes
+    const [visibleClassesGraph, hasTooMuchChildren] = useMemo(() => {
+        if (
+            selectedClass === null ||
+            (!shouldFilter && getNodesCount(classes) <= MAX_NODES_IN_GRAPH * 2)
+        )
+            return [classes, false]
+
         const parents = getParents(classes, selectedClass.name)
         let children = getChildren(classes, selectedClass.name)
-        if (children.length > 50) {
-            children = children.slice(0, 50)
+        const hasTooMuchChildren = !shouldFilter || children.length > MAX_NODES_IN_GRAPH
+        if (hasTooMuchChildren) {
+            children = children.slice(0, MAX_NODES_IN_GRAPH)
         }
         const visibleClasses = parents.concat(children).concat([selectedClass])
-        return getSubgraph(classes, visibleClasses)
+        return [getSubgraph(classes, visibleClasses), hasTooMuchChildren]
     }, [classes, selectedClass, shouldFilter])
 
     const nodes: Omit<ClassNodeType, 'measured' | 'position'>[] = useMemo(() => {
@@ -240,6 +249,11 @@ const ClassGraph: FC<ClassGraphProps> = ({ classes, setSelectedClass, selectedCl
 
     return (
         <div className="w-full h-full bg-gray-900" style={{ height: '100%' }} ref={flowWrapperRef}>
+            {hasTooMuchChildren && (
+                <div className="bg-gray-800 text-white font-semibold text-xs p-1 text-center">
+                    Too many nodes to display - showing only first {MAX_NODES_IN_GRAPH}
+                </div>
+            )}
             <ReactFlow
                 nodes={positionedNodes}
                 edges={positionedEdges}

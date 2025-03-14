@@ -80,6 +80,10 @@ export function getNodes<NodeType extends BaseNode>(graph: Hierarchy<NodeType>):
     return graph.nodes().map((node) => graph.getNodeAttributes(node))
 }
 
+export function getNodesCount<NodeType extends BaseNode>(graph: Hierarchy<NodeType>): number {
+    return graph.order
+}
+
 export function getNode<NodeType extends BaseNode>(
     graph: Hierarchy<NodeType>,
     node: string
