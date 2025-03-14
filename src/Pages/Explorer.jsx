@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { List, BookOpenText, Share2 } from 'lucide-react'
 
 import ClassList from '../components/Explorer/ClassList.jsx'
-import ClassDetails from '../components/Explorer/ClassDetails.jsx'
+import ClassDetails from '../components/Explorer/ClassDetails.tsx'
 import ClassGraph from '../components/Explorer/ClassGraph.jsx'
 
 import { createHierarchy } from '../utils/hierarchy.ts'
@@ -38,6 +38,7 @@ export default function Explorer() {
                         name: 'name',
                         type: 'string',
                         description: 'The name',
+                        array: [1, 2, 3],
                     },
                 ],
             },
@@ -179,6 +180,7 @@ export default function Explorer() {
                         selectedClass={selectedClass}
                         setSelectedClass={handleSelectClass}
                         allClasses={classesHierarchy}
+                        setSearchQuery={setSearchQuery}
                     />
                 </div>
             </div>

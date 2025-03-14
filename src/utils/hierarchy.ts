@@ -6,7 +6,7 @@ type BaseNode = {
     parent: string | null
 }
 
-type Hierarchy<NodeType extends BaseNode> = DirectedGraph<NodeType>
+export type Hierarchy<NodeType extends BaseNode> = DirectedGraph<NodeType>
 
 export function createHierarchy<NodeType extends BaseNode>(nodes: NodeType[]): Hierarchy<NodeType> {
     const graph = new DirectedGraph<NodeType>()
@@ -37,7 +37,7 @@ export function getParents<NodeType extends BaseNode>(
     return parents
 }
 
-export function getDirectChildren<NodeType extends BaseNode>(    
+export function getDirectChildren<NodeType extends BaseNode>(
     graph: Hierarchy<NodeType>,
     node: string
 ): NodeType[] {
