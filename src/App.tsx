@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, FC } from 'react'
+import { useState, useMemo, FC } from 'react'
 import { List, BookOpenText, Share2 } from 'lucide-react'
 
 import ClassList from './components/ClassList/ClassList.tsx'
@@ -7,69 +7,18 @@ import ClassGraph from './components/ClassGraph/ClassGraph.tsx'
 
 import { createHierarchy } from './utils/hierarchy.ts'
 import { Class } from './utils/types.tsx'
+import classes from './classes.json'
 
 const App: FC = () => {
-    const [classes, setClasses] = useState<Class[]>([])
-    const [selectedClass, setSelectedClass] = useState<Class | null>(null)
+    const [selectedClass, setSelectedClass] = useState<Class | null>(classes[0])
     const [searchQuery, setSearchQuery] = useState('')
 
-    const classesHierarchy = useMemo(() => createHierarchy(classes), [classes])
-
-    useEffect(() => {
-        loadClasses()
-    }, [])
-
-    const loadClasses = () => {
-        const data: Class[] = [
-            {
-                name: 'Man',
-                parent: 'Human',
-                properties: {
-                    name: 'name',
-                    type: 'string',
-                    description: 'The name',
-                    array: [1, 2, 3],
-                    twst: null,
-                },
-            },
-            {
-                name: 'Yoav',
-                parent: 'Man',
-                properties: {
-                    name: 'name',
-                    type: 'string',
-                    description: 'The name',
-                },
-            },
-            {
-                name: 'Woman',
-                parent: 'Human',
-                properties: {
-                    name: 'name',
-                    type: 'string',
-                    description: 'The name',
-                },
-            },
-            {
-                name: 'Human',
-                parent: null,
-                properties: {
-                    name: 'name',
-                    type: 'string',
-                    description: 'The name',
-                },
-            },
-        ]
-        setClasses(data)
-        if (data.length > 0) {
-            setSelectedClass(data[0])
-        }
-    }
+    const classesHierarchy = useMemo(() => createHierarchy(classes), [])
 
     return (
         <div className="flex flex-col md:flex-row h-screen dark">
             {/* Left Pane - Class List */}
-            <div className="md:w-64 lg:w-72 border-r bg-gray-800 border-gray-700 flex flex-col">
+            <div className="md:w-72 lg:w-80 border-r bg-gray-800 border-gray-700 flex flex-col">
                 <div className="p-3 border-b border-gray-700 flex items-center gap-2">
                     <List className="w-4 h-4 text-blue-400" />
                     <h2 className="font-medium text-white">Classes</h2>
@@ -108,11 +57,13 @@ const App: FC = () => {
                     <h2 className="font-medium text-white">Inheritance Graph</h2>
                 </div>
                 <div className="flex-1">
-                    <ClassGraph
-                        classes={classesHierarchy}
-                        setSelectedClass={setSelectedClass}
-                        selectedClass={selectedClass}
-                    />
+                    {
+                        <ClassGraph
+                            classes={classesHierarchy}
+                            setSelectedClass={setSelectedClass}
+                            selectedClass={selectedClass}
+                        />
+                    }
                 </div>
             </div>
         </div>

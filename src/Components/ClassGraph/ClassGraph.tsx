@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useLayoutEffect, FC } from 'react'
+import { useState, useCallback, useMemo, useLayoutEffect, FC, useRef } from 'react'
 import {
     ReactFlow,
     Background,
@@ -13,7 +13,16 @@ import {
     type NodeProps,
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
-import { Download, Eye, EyeOff, ZoomOut, ZoomIn, Minimize, LucideProps } from 'lucide-react'
+import {
+    Download,
+    Eye,
+    EyeOff,
+    ZoomOut,
+    ZoomIn,
+    Minimize,
+    LucideProps,
+    AlignCenter,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button.tsx'
 import { Class } from '../../utils/types.tsx'
 import {
@@ -111,11 +120,15 @@ const ClassGraphWrapper: FC<ClassGraphProps> = ({ classes, setSelectedClass, sel
 const ClassGraph: FC<ClassGraphProps> = ({ classes, setSelectedClass, selectedClass }) => {
     const { zoomIn, zoomOut, fitView } = useReactFlow()
     const [shouldFilter, setShouldFilter] = useState(true)
+    const flowWrapperRef = useRef<HTMLDivElement | null>(null)
 
     const visibleClassesGraph = useMemo(() => {
         if (selectedClass === null || !shouldFilter) return classes
         const parents = getParents(classes, selectedClass.name)
-        const children = getChildren(classes, selectedClass.name)
+        let children = getChildren(classes, selectedClass.name)
+        if (children.length > 50) {
+            children = children.slice(0, 50)
+        }
         const visibleClasses = parents.concat(children).concat([selectedClass])
         return getSubgraph(classes, visibleClasses)
     }, [classes, selectedClass, shouldFilter])
@@ -155,7 +168,14 @@ const ClassGraph: FC<ClassGraphProps> = ({ classes, setSelectedClass, selectedCl
         [nodes, edges]
     )
 
-    // Handle node click
+    const toggleFullscreen = async () => {
+        if (!document.fullscreenElement) {
+            await flowWrapperRef.current?.requestFullscreen()
+        } else {
+            await document.exitFullscreen()
+        }
+    }
+
     const handleNodeClick = useCallback(
         (_: unknown, node: ClassNodeType) => {
             const clickedClass = getNode(visibleClassesGraph, node.id)
@@ -219,7 +239,7 @@ const ClassGraph: FC<ClassGraphProps> = ({ classes, setSelectedClass, selectedCl
     }, [visibleClassesGraph])
 
     return (
-        <div className="w-full h-full bg-gray-900" style={{ height: '100%' }}>
+        <div className="w-full h-full bg-gray-900" style={{ height: '100%' }} ref={flowWrapperRef}>
             <ReactFlow
                 nodes={positionedNodes}
                 edges={positionedEdges}
@@ -241,7 +261,8 @@ const ClassGraph: FC<ClassGraphProps> = ({ classes, setSelectedClass, selectedCl
                     />
                     <GraphButton onClick={() => void zoomIn()} Icon={ZoomIn} />
                     <GraphButton onClick={() => void zoomOut()} Icon={ZoomOut} />
-                    <GraphButton onClick={() => void fitView()} Icon={Minimize} />
+                    <GraphButton onClick={() => void toggleFullscreen()} Icon={Minimize} />
+                    <GraphButton onClick={() => void fitView()} Icon={AlignCenter} />
                     <GraphButton onClick={exportToMermaid} Icon={Download} />
                 </Panel>
             </ReactFlow>
