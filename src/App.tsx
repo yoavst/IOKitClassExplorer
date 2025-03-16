@@ -1,4 +1,4 @@
-import { useState, useMemo, FC } from 'react'
+import { useState, useMemo, FC, useCallback, useEffect } from 'react'
 import { List, BookOpenText, Share2 } from 'lucide-react'
 
 import ClassList from './components/ClassList/ClassList.tsx'
@@ -10,10 +10,47 @@ import { Class } from './utils/types.tsx'
 import classes from './classes.json'
 
 const App: FC = () => {
-    const [selectedClass, setSelectedClass] = useState<Class | null>(classes[0])
+    const [selectedClass, setSelectedClass] = useState<Class | null>(null)
     const [searchQuery, setSearchQuery] = useState('')
-
     const classesHierarchy = useMemo(() => createHierarchy(classes), [])
+
+    const setSelectedClassFromUrl = useCallback(() => {
+        if (classes.length === 0) return
+
+        const hash = window.location.hash
+        if (hash.length !== 0) {
+            const className = hash.slice(1)
+            const selectedClass = classes.find((c) => c.name === className)
+            setSelectedClass(selectedClass ?? classes[0])
+        } else {
+            setSelectedClass(classes[0])
+        }
+    }, [])
+
+    if (selectedClass === null) {
+        setSelectedClassFromUrl()
+    }
+
+    useEffect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const onPopState = (_: PopStateEvent) => {
+            setSelectedClassFromUrl()
+        }
+
+        window.addEventListener('popstate', onPopState)
+        return () => {
+            window.removeEventListener('popstate', onPopState)
+        }
+    }, [setSelectedClassFromUrl])
+
+    const handleSelectedClass = useCallback((selectedClass: Class) => {
+        setSelectedClass(selectedClass)
+        history.pushState(
+            selectedClass,
+            `IOKitClassExplorer - ${selectedClass.name}`,
+            `#${selectedClass.name}`
+        )
+    }, [])
 
     return (
         <div className="flex flex-col md:flex-row h-screen dark bg-gray-800">
@@ -27,7 +64,7 @@ const App: FC = () => {
                     <ClassList
                         classesHierarchy={classesHierarchy}
                         selectedClass={selectedClass}
-                        setSelectedClass={setSelectedClass}
+                        setSelectedClass={handleSelectedClass}
                         searchQuery={searchQuery}
                         setSearchQuery={setSearchQuery}
                     />
@@ -44,7 +81,7 @@ const App: FC = () => {
                     <div className="flex-1 overflow-auto">
                         <ClassDetails
                             selectedClass={selectedClass}
-                            setSelectedClass={setSelectedClass}
+                            setSelectedClass={handleSelectedClass}
                             allClasses={classesHierarchy}
                             setSearchQuery={setSearchQuery}
                         />
@@ -61,7 +98,7 @@ const App: FC = () => {
                         {
                             <ClassGraph
                                 classes={classesHierarchy}
-                                setSelectedClass={setSelectedClass}
+                                setSelectedClass={handleSelectedClass}
                                 selectedClass={selectedClass}
                             />
                         }
