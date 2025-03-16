@@ -126,12 +126,15 @@ const ClassGraph: FC<ClassGraphProps> = ({ classes, setSelectedClass, selectedCl
     const flowWrapperRef = useRef<HTMLDivElement | null>(null)
 
     const [visibleClassesGraph, hasTooMuchChildren] = useMemo(() => {
-        if (
-            selectedClass === null ||
-            (!shouldFilter && getNodesCount(classes) <= MAX_NODES_IN_GRAPH * 2)
-        )
+        if (selectedClass === null) {
+            if (getNodesCount(classes) <= MAX_NODES_IN_GRAPH * 2) {
+                return [classes, false]
+            }
+            const nodes = getNodes(classes).slice(0, MAX_NODES_IN_GRAPH * 2)
+            return [getSubgraph(classes, nodes), true]
+        } else if (!shouldFilter && getNodesCount(classes) <= MAX_NODES_IN_GRAPH * 2) {
             return [classes, false]
-
+        }
         const parents = getParents(classes, selectedClass.name)
         let children = getChildren(classes, selectedClass.name)
         const hasTooMuchChildren = !shouldFilter || children.length > MAX_NODES_IN_GRAPH
