@@ -4,6 +4,8 @@ import JSONView from './JSONView.tsx'
 import InhertianceChain from './InhertianceChain.tsx'
 import ChildrenBadges from './ChildrenBadges.tsx'
 import { Class } from '../../utils/types.tsx'
+import { FileCode } from 'lucide-react'
+import { Badge } from '@/components/ui/badge.tsx'
 
 interface ClassDetailsProps {
     selectedClass: Class | null
@@ -60,7 +62,18 @@ const ClassDetailsInternal: FC<ClassDetailsProps & { selectedClass: Class }> = (
 
     return (
         <div className="p-4">
-            <h2 className="text-xl font-bold mb-4 text-white">{selectedClass.name}</h2>
+            <div className="flex items-center mb-4">
+                <h2 className="text-xl font-bold text-white mr-3">{selectedClass.name}</h2>
+                {selectedClass.isAbstract && (
+                    <Badge
+                        variant="outline"
+                        className="bg-purple-900/30 text-purple-300 border-purple-700 mt-1.5"
+                    >
+                        <FileCode className="w-3 h-3 mr-1" />
+                        Abstract
+                    </Badge>
+                )}
+            </div>
             <div className="space-y-5 flex flex-row">
                 <div className="flex-1">
                     <InhertianceChain

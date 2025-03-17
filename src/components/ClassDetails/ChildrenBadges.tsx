@@ -1,7 +1,7 @@
 import { Class } from '../../utils/types.tsx'
 import { FC } from 'react'
 import { Badge } from '@/components/ui/badge.tsx'
-import { ArrowUpRight, ArrowRight } from 'lucide-react'
+import { ArrowUpRight, ArrowRight, FileCode } from 'lucide-react'
 
 const MAX_BADGES = 10
 
@@ -110,8 +110,11 @@ const ChildBadge: FC<ChildBadgeProps> = ({ child, setSelectedClass }) => {
             key={child.name}
             variant="secondary"
             className="cursor-pointer bg-gray-700 hover:bg-gray-600 text-xs"
-            onClick={() => { setSelectedClass(child); }}
+            onClick={() => {
+                setSelectedClass(child)
+            }}
         >
+            {child.isAbstract && <FileCode className="w-3 h-3 ml-1 text-purple-400" />}
             {child.name}
             <ArrowUpRight className="w-3 h-3 ml-1" />
         </Badge>
@@ -133,7 +136,9 @@ const ShowMoreChildrenBadge: FC<ShowMoreChildrenBadgeProps> = ({
         <Badge
             variant="outline"
             className="cursor-pointer bg-gray-700 hover:bg-gray-600 text-xs"
-            onClick={() => { setSearchQuery(`children: ${parent.name}`); }}
+            onClick={() => {
+                setSearchQuery(`children: ${parent.name}`)
+            }}
         >
             ...and {count} more
         </Badge>

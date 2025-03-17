@@ -42,18 +42,22 @@ const MAX_NODES_IN_GRAPH = 50
 type ClassNodeType = Node<
     {
         isSelected: boolean
+        isAbstract: boolean
         label: string
     },
     'classNode'
 >
 
-const ClassNode: FC<NodeProps<ClassNodeType>> = ({ data: { isSelected, label } }) => {
+const ClassNode: FC<NodeProps<ClassNodeType>> = ({ data: { isSelected, isAbstract, label } }) => {
+    const background = isAbstract
+        ? 'bg-violet-900 hover:bg-violet-700'
+        : 'bg-gray-800 hover:bg-gray-700'
     return (
         <div
             className={`px-4 py-2 rounded-md font-medium shadow-md border transition-colors ${
                 isSelected
                     ? 'bg-blue-600 text-white border-blue-400'
-                    : 'bg-gray-800 text-gray-100 border-gray-700 hover:bg-gray-700'
+                    : `text-gray-100 border-gray-700 ${background}`
             }`}
         >
             <Handle
@@ -152,6 +156,7 @@ const ClassGraph: FC<ClassGraphProps> = ({ classes, setSelectedClass, selectedCl
             data: {
                 label: cls.name,
                 isSelected: selectedClass?.name === cls.name,
+                isAbstract: cls.isAbstract,
             },
         }))
     }, [visibleClassesGraph, selectedClass])
