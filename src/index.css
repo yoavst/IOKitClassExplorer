@@ -132,3 +132,30 @@
         @apply bg-background text-foreground;
     }
 }
+
+.row-pure-virtual {
+    background-image: repeating-linear-gradient(
+        -45deg,
+        rgb(51, 14, 215) 4px,
+        transparent,
+        transparent 10px
+    );
+}
+
+.row-override {
+    background-image: repeating-linear-gradient(
+        -45deg,
+        rgb(215, 14, 14) 4px,
+        transparent,
+        transparent 10px
+    );
+}
+
+.ag-horizontal-right-spacer,
+.ag-horizontal-left-spacer {
+    visibility: hidden;
+}
+
+body {
+    --ag-range-selection-border-color: transparent;
+}

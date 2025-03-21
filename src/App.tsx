@@ -53,9 +53,9 @@ const App: FC = () => {
     }, [])
 
     return (
-        <div className="flex flex-col md:flex-row h-screen dark bg-gray-800">
+        <div className="flex flex-col md:flex-row h-screen w-full dark bg-gray-800">
             {/* Left Pane - Class List */}
-            <div className="w-110 border-r border-gray-700 flex flex-col">
+            <div className="w-90 border-r border-gray-700 flex flex-col">
                 <div className="p-3 border-b border-gray-700 flex items-center gap-2">
                     <List className="w-4 h-4 text-blue-400" />
                     <h2 className="font-medium text-white">Classes</h2>
@@ -71,7 +71,7 @@ const App: FC = () => {
                 </div>
             </div>
 
-            <div className="w-full h-full flex flex-col">
+            <div className="flex-1 flex flex-col">
                 {/* Details */}
                 <div className="w-full border-r border-b border-gray-700 flex flex-col max-h-6/10">
                     <div className="p-3 border-b border-gray-700 flex items-center gap-2">
@@ -89,7 +89,7 @@ const App: FC = () => {
                 </div>
 
                 {/* Graph View */}
-                <div className="flex-1 flex flex-col">
+                <div className="w-full flex-1 flex flex-col">
                     <div className="p-3 border-b border-gray-700 flex items-center gap-2">
                         <Share2 className="w-4 h-4 text-purple-400" />
                         <h2 className="font-medium text-white">Inheritance Graph</h2>
