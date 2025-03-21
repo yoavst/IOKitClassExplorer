@@ -20,6 +20,7 @@ enum SearchType {
     normal,
     parents,
     children,
+    overrides,
 }
 
 const ClassList: FC<ClassListProps> = ({
@@ -33,14 +34,23 @@ const ClassList: FC<ClassListProps> = ({
         () => getNodes(classesHierarchy).toSorted((a, b) => a.name.localeCompare(b.name)),
         [classesHierarchy]
     )
-    const [searchType, searchTerm] = useMemo(() => {
+    const [searchType, searchTerm, index] = useMemo(() => {
         if (searchQuery.startsWith('parents:')) {
-            return [SearchType.parents, searchQuery.slice(8).trim()]
+            return [SearchType.parents, searchQuery.slice(8).trim(), null]
         } else if (searchQuery.startsWith('children:')) {
-            return [SearchType.children, searchQuery.slice(9).trim()]
-        } else {
-            return [SearchType.normal, searchQuery.trim()]
+            return [SearchType.children, searchQuery.slice(9).trim(), null]
+        } else if (searchQuery.startsWith('overrides:')) {
+            const slicedQuery = searchQuery.slice(10).trim()
+            if (slicedQuery.includes(';')) {
+                const [indexStr, className] = slicedQuery.split(';')
+                const index = parseInt(indexStr)
+                if (!isNaN(index) && index >= 0) {
+                    return [SearchType.overrides, className, index]
+                }
+            }
+            // Invalid state, since the user should not write this manually just ignore it.
         }
+        return [SearchType.normal, searchQuery.trim(), null]
     }, [searchQuery])
 
     const filteredClasses = useMemo(() => {
@@ -71,10 +81,21 @@ const ClassList: FC<ClassListProps> = ({
                 }
                 break
             }
+            case SearchType.overrides: {
+                const clazz = getNode(classesHierarchy, searchTerm)
+                if (clazz == null || index == null || (clazz.vtable?.length ?? 0) <= index)
+                    filteredClasses = []
+                else {
+                    const children = getChildren(classesHierarchy, clazz.name)
+                    filteredClasses = children.filter((child) => {
+                        return child.vtable?.[index]?.isImplementedByCurrentClass
+                    })
+                }
+            }
         }
         filteredClasses.sort((a, b) => a.name.localeCompare(b.name))
         return filteredClasses
-    }, [searchType, classesHierarchy, searchTerm, classesSorted, searchQuery])
+    }, [searchType, classesHierarchy, searchTerm, classesSorted, searchQuery, index])
 
     return (
         <div className="w-full h-full flex flex-col">
@@ -100,9 +121,10 @@ const ClassList: FC<ClassListProps> = ({
                 <div
                     className={`p-1 pl-3 text-xs text-white font-semibold ${searchType === SearchType.parents ? 'bg-blue-800' : 'bg-purple-800'}`}
                 >
-                    {searchType === SearchType.parents
-                        ? 'Showing parents of: '
-                        : 'Showing all children of: '}
+                    {searchType === SearchType.parents && 'Showing parents of: '}
+                    {searchType === SearchType.children && 'Showing all children of: '}
+                    {searchType === SearchType.overrides &&
+                        `Showing overrides of method at index ${index} of class: `}
                     {searchTerm}
                 </div>
             )}

@@ -142,15 +142,6 @@
     );
 }
 
-.row-override {
-    background-image: repeating-linear-gradient(
-        -45deg,
-        rgb(215, 14, 14) 4px,
-        transparent,
-        transparent 10px
-    );
-}
-
 .ag-horizontal-right-spacer,
 .ag-horizontal-left-spacer {
     visibility: hidden;

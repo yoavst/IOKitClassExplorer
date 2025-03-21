@@ -104,6 +104,7 @@ const ClassDetailsInternal: FC<ClassDetailsProps & { selectedClass: Class }> = (
                                     currentClass={selectedClass}
                                     allClasses={allClasses}
                                     setSelectedClass={setSelectedClass}
+                                    setSearchQuery={setSearchQuery}
                                 />
                             </div>
                         </div>

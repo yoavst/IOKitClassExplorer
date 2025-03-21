@@ -191,7 +191,172 @@
     { "name": "OSString", "parent": "OSObject", "isAbstract": false },
     { "name": "OSSymbol", "parent": "OSString", "isAbstract": false },
     { "name": "OSValueObject<int>", "parent": "OSObject", "isAbstract": false },
-    { "name": "OSAction", "parent": "OSObject", "isAbstract": false },
+    {
+        "name": "OSAction",
+        "parent": "OSObject",
+        "isAbstract": false,
+        "vtable": [
+            {
+                "vtableIndex": 0,
+                "parameters": [],
+                "returnType": "void",
+                "name": "~OSAction",
+                "isPureVirtual": false,
+                "isImplementedByCurrentClass": true
+            },
+            {
+                "vtableIndex": 1,
+                "parameters": [],
+                "returnType": "void",
+                "name": "~OSAction",
+                "isPureVirtual": false,
+                "isImplementedByCurrentClass": true
+            },
+            {
+                "vtableIndex": 2,
+                "parameters": [
+                    {
+                        "name": "freeWhen",
+                        "type": "int"
+                    }
+                ],
+                "returnType": "void",
+                "name": "release",
+                "isPureVirtual": false,
+                "isImplementedByCurrentClass": false
+            },
+            {
+                "vtableIndex": 3,
+                "parameters": [],
+                "returnType": "int",
+                "name": "getRetainCount",
+                "isPureVirtual": false,
+                "isImplementedByCurrentClass": false
+            },
+            {
+                "vtableIndex": 4,
+                "parameters": [],
+                "returnType": "void",
+                "name": "retain",
+                "isPureVirtual": false,
+                "isImplementedByCurrentClass": false
+            },
+            {
+                "vtableIndex": 5,
+                "parameters": [],
+                "returnType": "void",
+                "name": "release",
+                "isPureVirtual": false,
+                "isImplementedByCurrentClass": false
+            },
+            {
+                "vtableIndex": 6,
+                "returnType": "bool",
+                "parameters": [
+                    {
+                        "name": "serializer",
+                        "type": "OSSerialize*"
+                    }
+                ],
+                "name": "serialize",
+                "isPureVirtual": false,
+                "isImplementedByCurrentClass": false
+            },
+            {
+                "vtableIndex": 7,
+                "returnType": "OSMetaClass*",
+                "parameters": [],
+                "name": "getMetaClass",
+                "isPureVirtual": false,
+                "isImplementedByCurrentClass": true
+            },
+            {
+                "vtableIndex": 8,
+                "returnType": "bool",
+                "parameters": [
+                    {
+                        "name": "anObject",
+                        "type": "OSMetaClassBase*"
+                    }
+                ],
+                "name": "isEqualTo",
+                "isPureVirtual": false,
+                "isImplementedByCurrentClass": false
+            },
+            {
+                "vtableIndex": 9,
+                "returnType": "void",
+                "parameters": [
+                    {
+                        "name": "tag",
+                        "type": "void*"
+                    }
+                ],
+                "name": "taggedRetain",
+                "isPureVirtual": false,
+                "isImplementedByCurrentClass": false
+            },
+            {
+                "vtableIndex": 10,
+                "returnType": "void",
+                "parameters": [
+                    {
+                        "name": "tag",
+                        "type": "void*"
+                    }
+                ],
+                "name": "taggedRelease",
+                "isPureVirtual": false,
+                "isImplementedByCurrentClass": false
+            },
+            {
+                "vtableIndex": 11,
+                "returnType": "void",
+                "parameters": [
+                    {
+                        "name": "tag",
+                        "type": "void*"
+                    },
+                    {
+                        "name": "freeWhen",
+                        "type": "int"
+                    }
+                ],
+                "name": "taggedRelease",
+                "isPureVirtual": false,
+                "isImplementedByCurrentClass": false
+            },
+            {
+                "vtableIndex": 12,
+                "returnType": "kern_return_t",
+                "parameters": [
+                    {
+                        "name": "rpc",
+                        "type": "IORPC*"
+                    }
+                ],
+                "name": "dispatch",
+                "isPureVirtual": false,
+                "isImplementedByCurrentClass": true
+            },
+            {
+                "vtableIndex": 13,
+                "parameters": [],
+                "returnType": "bool",
+                "name": "init",
+                "isPureVirtual": false,
+                "isImplementedByCurrentClass": false
+            },
+            {
+                "vtableIndex": 14,
+                "parameters": [],
+                "returnType": "void",
+                "name": "free",
+                "isPureVirtual": false,
+                "isImplementedByCurrentClass": true
+            }
+        ]
+    },
     {
         "name": "OSAction_IOUserClient_KernelCompletion",
         "parent": "OSAction",
