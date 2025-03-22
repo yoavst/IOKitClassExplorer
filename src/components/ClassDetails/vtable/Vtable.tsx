@@ -244,6 +244,7 @@ const VTable: FC<VTableProps> = ({
                 defaultColDef: {
                     suppressMovable: true,
                 },
+                suppressScrollOnNewData: true,
                 suppressCellFocus: false,
             }}
             enableCellTextSelection={true}
