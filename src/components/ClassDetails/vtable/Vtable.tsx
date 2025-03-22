@@ -206,7 +206,7 @@ const VTable: FC<VTableProps> = ({
             pinned: 'left',
             sortingOrder: ['asc', 'desc'],
             sort: 'asc',
-            cellStyle: { paddingLeft: 5, paddingRight: 0, paddingTop: 5 },
+            cellStyle: { paddingLeft: 4, paddingRight: 0, paddingTop: 4 },
             headerStyle: { paddingLeft: 0, paddingRight: 0 },
         },
         {
