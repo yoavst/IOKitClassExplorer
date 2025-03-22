@@ -214,7 +214,7 @@ const VTable: FC<VTableProps> = ({
             field: 'name',
             cellRenderer: MethodName,
             filter: true,
-            flex: 2,
+            flex: 3,
             cellStyle: { paddingLeft: 0 },
         },
         { headerName: 'Return type', field: 'returnType', flex: 1, cellRenderer: ReturnType },

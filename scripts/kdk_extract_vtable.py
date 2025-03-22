@@ -17,7 +17,7 @@ UNKNOWN_TYPE = "???"
 @dataclasses.dataclass
 class MethodParam:
     type: str
-    name: str | None
+    name: str | None = None
 
 
 @dataclasses.dataclass
@@ -62,6 +62,29 @@ def get_demangled_class_method_name(symbol: str) -> tuple[str, str] | None:
     return cls, method.split("(")[0]
 
 
+def get_parameter_types_from_demangled_name(
+    demangled_name: str,
+) -> list[MethodParam] | None:
+    if not demangled_name:
+        return None
+
+    # The demangled name looks like: "int __cdecl myFunc(int, char, double)"
+    open_paren = demangled_name.find("(")
+    close_paren = demangled_name.rfind(")")
+
+    if open_paren == -1 or close_paren == -1:
+        return None
+
+    params_str = demangled_name[open_paren + 1 : close_paren]
+    param_types = (
+        [MethodParam(type=param.strip()) for param in params_str.split(",")]
+        if params_str
+        else []
+    )
+
+    return param_types
+
+
 all_imports = None
 
 
@@ -86,10 +109,18 @@ def get_import_name(ea: int) -> str | None:
     return get_all_imports().get(ea, None)
 
 
-def get_func_types(func_addr: int) -> tuple[str, list[MethodParam]]:
+def get_func_types(func_addr: int, mangled_name: str) -> tuple[str, list[MethodParam]]:
     """Get the return type and parameters of a function."""
     tif = ida_typeinf.tinfo_t()
     if not ida_nalt.get_tinfo(tif, func_addr):
+        # Try to fallback into parsing the function name
+        demangled_name = demangle(mangled_name)
+        if demangled_name:
+            parameters = get_parameter_types_from_demangled_name(demangled_name)
+            if parameters is not None:
+                return [UNKNOWN_TYPE, parameters]
+
+        # Failed to get the function type, return unknown
         return [UNKNOWN_TYPE, [MethodParam(UNKNOWN_TYPE, None)]]
 
     return_type = tif.get_rettype().dstr()
@@ -126,7 +157,7 @@ def extract_vtable(type_name: str, vtbl_ea: int) -> list[Method] | None:
             return None
 
         class_name, method_name = get_demangled_class_method_name(mangled_name)
-        return_type, parameters = get_func_types(func_addr)
+        return_type, parameters = get_func_types(func_addr, mangled_name)
 
         if method_name is not None and not method_name.startswith("_RESERVED"):
             methods.append(
@@ -163,7 +194,7 @@ def serialize(data):
                 return dataclasses.asdict(o)
             return super().default(o)
 
-    with open(r"C:\Users\yoavs\Downloads\prj\methods.json", "w") as f:
+    with open(r"/tmp/methods.json", "w") as f:
         json.dump(data, f, indent=4, cls=EnhancedJSONEncoder)
 
 
