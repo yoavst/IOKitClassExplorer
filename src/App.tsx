@@ -73,7 +73,7 @@ const App: FC = () => {
 
             <div className="flex-1 flex flex-col">
                 {/* Details */}
-                <div className="w-full border-r border-b border-gray-700 flex flex-col max-h-6/10">
+                <div className="w-full border-r border-b border-gray-700 flex flex-col flex-55">
                     <div className="p-3 border-b border-gray-700 flex items-center gap-2">
                         <BookOpenText className="w-4 h-4 text-green-400" />
                         <h2 className="font-medium text-white">Class Details</h2>
@@ -89,7 +89,7 @@ const App: FC = () => {
                 </div>
 
                 {/* Graph View */}
-                <div className="w-full flex-1 flex flex-col">
+                <div className="w-full flex-45 flex flex-col">
                     <div className="p-3 border-b border-gray-700 flex items-center gap-2">
                         <Share2 className="w-4 h-4 text-purple-400" />
                         <h2 className="font-medium text-white">Inheritance Graph</h2>

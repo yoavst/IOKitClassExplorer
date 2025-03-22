@@ -62,7 +62,7 @@ const ClassDetailsInternal: FC<ClassDetailsProps & { selectedClass: Class }> = (
     )
 
     return (
-        <div className="p-4">
+        <div className="p-4 h-full flex flex-col">
             <div className="flex items-center mb-4">
                 <h2 className="text-xl font-bold text-white mr-3">{selectedClass.name}</h2>
                 {selectedClass.isAbstract && (
@@ -75,7 +75,7 @@ const ClassDetailsInternal: FC<ClassDetailsProps & { selectedClass: Class }> = (
                     </Badge>
                 )}
             </div>
-            <div className="space-y-5 flex flex-row gap-3">
+            <div className="space-y-5 flex flex-row gap-3 flex-1">
                 <div className="flex-1">
                     <InhertianceChain
                         setSelectedClass={setSelectedClass}

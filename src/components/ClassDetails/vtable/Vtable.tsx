@@ -55,9 +55,12 @@ const enrichVirtualMethods = (
             }
         }
     }
+    const vtableSize = currentClass.vtable.length
     for (const child of getChildren(allClasses, currentClass.name)) {
         if (!child.vtable) continue
         for (const [index, method] of child.vtable.entries()) {
+            if (index >= vtableSize) break
+
             if (method.isImplementedByCurrentClass && !method.isPureVirtual) {
                 childrenImplementations[index].push(child)
             }
@@ -82,7 +85,7 @@ const VtableIndex: FC<TableCellProps> = ({ data }) => {
     if (data === undefined) return ''
 
     let color: string, hint: string
-    if (data.parentImplementation === null) {
+    if (data.definedAt.name === data.className) {
         color = 'bg-green-500'
         hint = 'Defined in this class'
     } else if (data.isImplementedByCurrentClass) {
@@ -139,17 +142,16 @@ const Actions: FC<TableCellProps> = ({ data }) => {
 
     return (
         <div className="text-center">
-            {data.parentImplementation !== null && (
+            {(data.definedAt.name !== data.className || data.parentImplementation != null) && (
                 <button
                     className="rounded hover:bg-gray-600 cursor-pointer"
                     onClick={() => {
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        data.setSelectedClass(data.parentImplementation!)
+                        data.setSelectedClass(data.parentImplementation ?? data.definedAt)
                         toast(
                             `Going to parent implementation for method ${data.className}::${data.name}`
                         )
                     }}
-                    title="Going to parent implementation"
+                    title="Go to parent implementation"
                 >
                     <ChevronUp width={20} height={20} className="text-blue-400" />
                 </button>
@@ -208,9 +210,10 @@ const VTable: FC<VTableProps> = ({
             field: 'name',
             cellRenderer: MethodName,
             filter: true,
+            flex: 2,
             cellStyle: { paddingLeft: 0 },
         },
-        { headerName: 'Return type', field: 'returnType', cellRenderer: ReturnType },
+        { headerName: 'Return type', field: 'returnType', flex: 1, cellRenderer: ReturnType },
         {
             headerName: '',
             width: 40,
