@@ -19,7 +19,7 @@ def parse_cpp_signature(signature: str) -> list[str, list[dict]]:
         return None
 
     return_type = clean_type_name(match.group(1).strip())  # Clean return type
-    args_string = match.group(2).strip()
+    args_string = match.group(3).strip()
 
     args = []
     if args_string and args_string != "void":
