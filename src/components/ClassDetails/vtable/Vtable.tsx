@@ -96,6 +96,10 @@ const VtableIndex: FC<TableCellProps> = ({ data }) => {
         hint = 'Inherited from parent class'
     }
 
+    if (data.isPureVirtual) {
+        hint += ' (pure virtual)'
+    }
+
     return (
         <TooltipProvider>
             <Tooltip>
