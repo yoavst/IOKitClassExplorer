@@ -7,7 +7,8 @@ import ClassGraph from './components/ClassGraph/ClassGraph.tsx'
 
 import { createHierarchy } from './utils/hierarchy.ts'
 import { Class } from './utils/types.tsx'
-import classes from './classes.json'
+import _classes from './classes.json'
+const classes = _classes as Class[]
 
 const App: FC = () => {
     const [selectedClass, setSelectedClass] = useState<Class | null>(null)
