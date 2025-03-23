@@ -1,6 +1,6 @@
-import { getChildren, getParents, Hierarchy } from '../../../utils/hierarchy'
+import { getChildren, getNode, getParents, Hierarchy } from '../../../utils/hierarchy'
 import { ColDef, colorSchemeDark, ICellRendererParams, themeQuartz } from 'ag-grid-community'
-import { Class, VirtualMethod } from '../../../utils/types'
+import { Class, Prototype, VirtualMethod } from '../../../utils/types'
 import { FC, useMemo } from 'react'
 import { AgGridReact } from 'ag-grid-react' // React Data Grid Component
 import CircleText from '@/components/ui/circle-text'
@@ -12,6 +12,7 @@ import { toast } from 'sonner'
 interface VTableProps {
     currentClass: Class
     allClasses: Hierarchy<Class>
+    prototypes: Prototype[]
     setSelectedClass: (selectedClass: Class) => void
     setSearchQuery: (searchQuery: string) => void
 }
@@ -24,7 +25,7 @@ export interface VirtualMethodUI extends VirtualMethod {
     className: string
     parentImplementation: Class | null
     childrenImplementations: Class[]
-    definedAt: Class
+    prototype: Prototype
 
     allClasses: Hierarchy<Class>
     setSelectedClass: (selectedClass: Class) => void
@@ -34,6 +35,7 @@ export interface VirtualMethodUI extends VirtualMethod {
 const enrichVirtualMethods = (
     currentClass: Class,
     allClasses: Hierarchy<Class>,
+    prototypes: Prototype[],
     setSelectedClass: (selectedClass: Class) => void,
     setSearchQuery: (searchQuery: string) => void
 ): VirtualMethodUI[] => {
@@ -42,14 +44,10 @@ const enrichVirtualMethods = (
     if (!currentClass.vtable || currentClass.vtable.length === 0) return []
     const parentsImplementations = createArray<Class[]>(currentClass.vtable.length, () => [])
     const childrenImplementations = createArray<Class[]>(currentClass.vtable.length, () => [])
-    const definedAt = createArray<Class | null>(currentClass.vtable.length, () => null)
 
     for (const parent of getParents(allClasses, currentClass.name)) {
         if (!parent.vtable) continue
         for (const [index, method] of parent.vtable.entries()) {
-            if (definedAt[index] == null) {
-                definedAt[index] = parent
-            }
             if (!method.isPureVirtual) {
                 parentsImplementations[index].push(parent)
             }
@@ -61,7 +59,7 @@ const enrichVirtualMethods = (
         for (const [index, method] of child.vtable.entries()) {
             if (index >= vtableSize) break
 
-            if (method.isImplementedByCurrentClass && !method.isPureVirtual) {
+            if (method.isOverriden && !method.isPureVirtual) {
                 childrenImplementations[index].push(child)
             }
         }
@@ -69,10 +67,10 @@ const enrichVirtualMethods = (
 
     return currentClass.vtable.map((method, index) => ({
         ...method,
+        prototype: prototypes[method.prototypeIndex],
         className: currentClass.name,
         parentImplementation: parentsImplementations[index].at(-1) ?? null,
         childrenImplementations: childrenImplementations[index],
-        definedAt: definedAt[index] ?? currentClass,
         allClasses,
         setSelectedClass,
         setSearchQuery,
@@ -85,10 +83,10 @@ const VtableIndex: FC<TableCellProps> = ({ data }) => {
     if (data === undefined) return ''
 
     let color: string, hint: string
-    if (data.definedAt.name === data.className) {
+    if (data.prototype.declaringClass === data.className) {
         color = 'bg-green-500'
         hint = 'Defined in this class'
-    } else if (data.isImplementedByCurrentClass) {
+    } else if (data.isOverriden) {
         color = 'bg-red-500'
         hint = 'Overridden in this class'
     } else {
@@ -105,7 +103,7 @@ const VtableIndex: FC<TableCellProps> = ({ data }) => {
             <Tooltip>
                 <TooltipTrigger asChild>
                     <div className="flex w-full h-full items-center">
-                        <CircleText text={data.vtableIndex.toString()} color={color} />
+                        <CircleText text={data.prototype.vtableIndex.toString()} color={color} />
                     </div>
                 </TooltipTrigger>
                 <TooltipContent side="left">
@@ -121,8 +119,8 @@ const MethodName: FC<TableCellProps> = ({ data }) => {
 
     return (
         <FunctionNameView
-            name={data.name}
-            parameters={data.parameters}
+            name={data.prototype.name}
+            parameters={data.prototype.parameters}
             allClasses={data.allClasses}
             setSelectedClass={data.setSelectedClass}
         />
@@ -134,7 +132,7 @@ const ReturnType: FC<TableCellProps> = ({ data }) => {
 
     return (
         <TypeView
-            type={data.returnType}
+            type={data.prototype.returnType}
             allClasses={data.allClasses}
             setSelectedClass={data.setSelectedClass}
         />
@@ -146,13 +144,28 @@ const Actions: FC<TableCellProps> = ({ data }) => {
 
     return (
         <div className="text-center">
-            {(data.definedAt.name !== data.className || data.parentImplementation != null) && (
+            {(data.prototype.declaringClass !== data.className ||
+                data.parentImplementation != null) && (
                 <button
                     className="rounded hover:bg-gray-600 cursor-pointer"
                     onClick={() => {
-                        data.setSelectedClass(data.parentImplementation ?? data.definedAt)
+                        if (data.parentImplementation != null)
+                            data.setSelectedClass(data.parentImplementation)
+                        else {
+                            const declaringClass = getNode(
+                                data.allClasses,
+                                data.prototype.declaringClass
+                            )
+                            if (declaringClass != null) {
+                                data.setSelectedClass(declaringClass)
+                            } else {
+                                toast("Couldn't find the declaring class")
+                                return
+                            }
+                        }
+
                         toast(
-                            `Going to parent implementation for method ${data.className}::${data.name}`
+                            `Going to parent implementation for method ${data.className}::${data.prototype.name}`
                         )
                     }}
                     title="Go to parent implementation"
@@ -167,12 +180,14 @@ const Actions: FC<TableCellProps> = ({ data }) => {
                         if (data.childrenImplementations.length === 1) {
                             data.setSelectedClass(data.childrenImplementations[0])
                             toast(
-                                `Going to the single override for the method ${data.className}::${data.name}`
+                                `Going to the single override for the method ${data.className}::${data.prototype.name}`
                             )
                         } else {
-                            data.setSearchQuery(`overrides:${data.vtableIndex};${data.className}`)
+                            data.setSearchQuery(
+                                `overrides:${data.prototype.vtableIndex};${data.className}`
+                            )
                             toast(
-                                `Showing results for overrides of ${data.className}::${data.name}`
+                                `Showing results for overrides of ${data.className}::${data.prototype.name}`
                             )
                         }
                     }}
@@ -189,17 +204,25 @@ const VTable: FC<VTableProps> = ({
     allClasses,
     setSelectedClass,
     setSearchQuery,
+    prototypes,
 }) => {
     const enrichedVirtualMethods = useMemo(
-        () => enrichVirtualMethods(currentClass, allClasses, setSelectedClass, setSearchQuery),
-        [currentClass, allClasses, setSelectedClass, setSearchQuery]
+        () =>
+            enrichVirtualMethods(
+                currentClass,
+                allClasses,
+                prototypes,
+                setSelectedClass,
+                setSearchQuery
+            ),
+        [currentClass, allClasses, prototypes, setSelectedClass, setSearchQuery]
     )
 
     // Column Definitions: Defines the columns to be displayed.
     const colDefs: ColDef<VirtualMethodUI>[] = [
         {
             headerName: '',
-            field: 'vtableIndex',
+            field: 'prototype.vtableIndex',
             cellRenderer: VtableIndex,
             width: 30,
             resizable: false,
@@ -211,13 +234,18 @@ const VTable: FC<VTableProps> = ({
         },
         {
             headerName: 'Name',
-            field: 'name',
+            field: 'prototype.name',
             cellRenderer: MethodName,
             filter: true,
             flex: 3,
             cellStyle: { paddingLeft: 0 },
         },
-        { headerName: 'Return type', field: 'returnType', flex: 1, cellRenderer: ReturnType },
+        {
+            headerName: 'Return type',
+            field: 'prototype.returnType',
+            flex: 1,
+            cellRenderer: ReturnType,
+        },
         {
             headerName: '',
             width: 40,

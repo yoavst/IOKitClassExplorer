@@ -3,7 +3,7 @@ import { getDirectChildren, getChildren, getParents, Hierarchy } from '../../uti
 import JSONView from './JSONView.tsx'
 import InhertianceChain from './InhertianceChain.tsx'
 import ChildrenBadges from './ChildrenBadges.tsx'
-import { Class } from '../../utils/types.tsx'
+import { Class, Prototype } from '../../utils/types.tsx'
 import { Code, FileCode } from 'lucide-react'
 import { Badge } from '@/components/ui/badge.tsx'
 import VTable from './vtable/Vtable.tsx'
@@ -12,6 +12,7 @@ interface ClassDetailsProps {
     selectedClass: Class | null
     setSelectedClass: (selectedClass: Class) => void
     allClasses: Hierarchy<Class>
+    prototypes: Prototype[]
     setSearchQuery: (query: string) => void
 }
 
@@ -20,6 +21,7 @@ const ClassDetails: FC<ClassDetailsProps> = ({
     setSelectedClass,
     allClasses,
     setSearchQuery,
+    prototypes,
 }) => {
     if (!selectedClass) {
         return (
@@ -34,6 +36,7 @@ const ClassDetails: FC<ClassDetailsProps> = ({
             setSelectedClass={setSelectedClass}
             allClasses={allClasses}
             setSearchQuery={setSearchQuery}
+            prototypes={prototypes}
         />
     )
 }
@@ -43,6 +46,7 @@ const ClassDetailsInternal: FC<ClassDetailsProps & { selectedClass: Class }> = (
     setSelectedClass,
     allClasses,
     setSearchQuery,
+    prototypes,
 }) => {
     const directChildren = useMemo(
         () => getDirectChildren(allClasses, selectedClass.name),
@@ -103,6 +107,7 @@ const ClassDetailsInternal: FC<ClassDetailsProps & { selectedClass: Class }> = (
                                 <VTable
                                     currentClass={selectedClass}
                                     allClasses={allClasses}
+                                    prototypes={prototypes}
                                     setSelectedClass={setSelectedClass}
                                     setSearchQuery={setSearchQuery}
                                 />

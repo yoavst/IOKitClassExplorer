@@ -76,11 +76,15 @@ def get_parameter_types_from_demangled_name(
         return None
 
     params_str = demangled_name[open_paren + 1 : close_paren]
+    # FIXME: support function types as parameters
     param_types = (
         [MethodParam(type=param.strip()) for param in params_str.split(",")]
         if params_str
         else []
     )
+
+    if len(param_types) == 1 and param_types[0].type == "void":
+        return []
 
     return param_types
 

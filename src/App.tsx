@@ -6,9 +6,12 @@ import ClassDetails from './components/ClassDetails/ClassDetails.tsx'
 import ClassGraph from './components/ClassGraph/ClassGraph.tsx'
 
 import { createHierarchy } from './utils/hierarchy.ts'
-import { Class } from './utils/types.tsx'
+import { Class, Prototype } from './utils/types.tsx'
 import _classes from './classes.json'
+import _prototypes from './prototypes.json'
+
 const classes = _classes as Class[]
+const prototypes = _prototypes as Prototype[]
 
 const App: FC = () => {
     const [selectedClass, setSelectedClass] = useState<Class | null>(null)
@@ -84,6 +87,7 @@ const App: FC = () => {
                             selectedClass={selectedClass}
                             setSelectedClass={handleSelectedClass}
                             allClasses={classesHierarchy}
+                            prototypes={prototypes}
                             setSearchQuery={setSearchQuery}
                         />
                     </div>

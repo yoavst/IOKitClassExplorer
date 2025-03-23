@@ -7,12 +7,18 @@ export interface Class {
 }
 
 export interface VirtualMethod {
-    vtableIndex: number
-    name: string
-    parameters: MethodParameter[]
-    returnType: string
+    prototypeIndex: number
+    isOverriden: boolean
     isPureVirtual: boolean
-    isImplementedByCurrentClass: boolean
+}
+
+export interface Prototype {
+    name: string
+    returnType: string
+    parameters: MethodParameter[]
+    vtableIndex: number
+    declaringClass: string
+    protoIndex: number
 }
 
 export interface MethodParameter {
