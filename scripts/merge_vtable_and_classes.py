@@ -1,5 +1,6 @@
 import dataclasses
 import json
+import os
 import sys
 
 UNKNOWN = "???"
@@ -81,15 +82,15 @@ class MethodPrototype:
 
 
 def main(args):
-    if len(args) < 2:
-        print("Usage: merge_vtable_and_classes.py <classes.json> [<methods.json> ...]")
+    if len(args) != 2:
+        print("Usage: merge_vtable_and_classes.py folder_of_classes_json")
         return
-    classes_file_name = args[0]
+    classes_file_name, folder_of_classes_json = args
     with open(classes_file_name) as f:
         classes = json.load(f)
     methods: dict[str, list[InputMethod]] = {}
-    for methods_file_name in args[1:]:
-        with open(methods_file_name, "r") as f:
+    for methods_file_name in os.listdir(folder_of_classes_json):
+        with open(os.path.join(folder_of_classes_json, methods_file_name), "r") as f:
             methods.update(
                 {
                     k: [InputMethod.from_dict(m) for m in v]
@@ -168,6 +169,12 @@ def collect_prototypes_for_class(
     parent_proto_methods = new_methods_with_proto.get(parent, [])
 
     my_methods = []
+    if len(parent_proto_methods) > len(methods):
+        print(
+            f"Not enough methods for {class_name}. Expected: {len(parent_proto_methods)} has: {len(methods)}"
+        )
+        return
+
     for i in range(len(parent_proto_methods)):
         parent_method = parent_proto_methods[i]
         input_method = methods[i]
@@ -218,6 +225,13 @@ def enrich_prototype(class_name, prototype, input_method):
     ) or prototype.name == "":
         prototype.parameters = input_method.parameters
         prototype.name = prototype.name or input_method.name
+    elif (
+        prototype.name != input_method.name
+        and not prototype.name.startswith("~")
+        and not input_method.name.startswith("sub_")
+    ):
+        print("Name mismatch:", class_name, prototype, input_method)
+        return
     else:
         if len(prototype.parameters) != len(input_method.parameters):
             print("Prototype mismatch:", class_name, prototype, input_method)

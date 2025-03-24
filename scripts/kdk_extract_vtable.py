@@ -1,3 +1,4 @@
+from pathlib import Path
 import idautils
 import idc
 import ida_bytes
@@ -58,6 +59,10 @@ def get_demangled_class_method_name(symbol: str) -> tuple[str, str] | None:
     demangled = demangle(symbol)
     if demangled is None:
         return None, symbol
+    if demangled.find("::") == -1:
+        print(f"[Error] Failed to get class and method name for {symbol}")
+        return None, symbol
+
     cls, method = demangled.split("::", maxsplit=1)
     return cls, method.split("(")[0]
 
@@ -89,12 +94,13 @@ def get_parameter_types_from_demangled_name(
     return param_types
 
 
-all_imports = None
+all_imports_binary = None
+all_imports: dict[int, str] = None
 
 
-def get_all_imports():
-    global all_imports
-    if all_imports is not None:
+def get_all_imports() -> dict[int, str]:
+    global all_imports, all_imports_binary
+    if all_imports is not None and all_imports_binary == ida_nalt.get_input_file_path():
         return all_imports
 
     all_imports = {}
@@ -105,6 +111,7 @@ def get_all_imports():
             return True
 
         ida_nalt.enum_import_names(i, import_callback)
+    all_imports_binary = ida_nalt.get_input_file_path()
     return all_imports
 
 
@@ -148,7 +155,7 @@ def extract_vtable(type_name: str, vtbl_ea: int) -> list[Method] | None:
     # Skip the thisOffset and rtti. Both are pointers.
     methods = []
     if ida_bytes.get_qword(vtbl_ea) != NULL_PTR:
-        print(f"Imported vtable for {type_name}")
+        print(f"[Info] Imported vtable for {type_name}, skipping type.")
         return None
 
     current_ea = vtbl_ea + (PTR_SIZE * 2)
@@ -157,7 +164,9 @@ def extract_vtable(type_name: str, vtbl_ea: int) -> list[Method] | None:
         if ida_funcs.get_func(func_addr):
             mangled_name = idc.get_func_name(func_addr)
         elif not (mangled_name := get_import_name(func_addr)):
-            print(f"Failed to get func for {current_ea} of {vtbl_ea}")
+            print(
+                f"[Error] {type_name}: Failed to get func from vtable {hex(vtbl_ea)} at {hex(current_ea)}. Data: {hex(func_addr)}"
+            )
             return None
 
         class_name, method_name = get_demangled_class_method_name(mangled_name)
@@ -181,25 +190,25 @@ def extract_vtable(type_name: str, vtbl_ea: int) -> list[Method] | None:
     return methods
 
 
-def main():
+def get_methods():
     vtbls = get_all_memory_vtables()
     all_methods = {
         type_name: extract_vtable(type_name, ea) for type_name, ea in vtbls.items()
     }
-    all_methods = {k: v for k, v in all_methods.items() if v is not None}
-
-    serialize(all_methods)
+    return {k: v for k, v in all_methods.items() if v is not None}
 
 
-def serialize(data):
+def serialize(data, path: Path):
     class EnhancedJSONEncoder(json.JSONEncoder):
         def default(self, o):
             if dataclasses.is_dataclass(o):
                 return dataclasses.asdict(o)
             return super().default(o)
 
-    with open(r"/tmp/methods.json", "w") as f:
+    with path.open("w") as f:
         json.dump(data, f, indent=4, cls=EnhancedJSONEncoder)
 
 
-main()
+def ida_main():
+    methods = get_methods()
+    serialize(methods, Path("/tmp/methods.json"))
