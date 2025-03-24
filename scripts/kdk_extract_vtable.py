@@ -67,6 +67,26 @@ def get_demangled_class_method_name(symbol: str) -> tuple[str, str] | None:
     return cls, method.split("(")[0]
 
 
+def split_function_params(params: str) -> list[str]:
+    """Split function parameters."""
+    params_arr = []
+    inner_level = 0
+    start_index = 0
+    for i in range(len(params)):
+        if params[i] == "(":
+            inner_level += 1
+        elif params[i] == ")":
+            inner_level -= 1
+        elif params[i] == "," and inner_level == 0:
+            params_arr.append(params[start_index:i].strip())
+            start_index = i + 1
+
+    if start_index < len(params):
+        params_arr.append(params[start_index:].strip())
+
+    return params_arr
+
+
 def get_parameter_types_from_demangled_name(
     demangled_name: str,
 ) -> list[MethodParam] | None:
@@ -81,9 +101,8 @@ def get_parameter_types_from_demangled_name(
         return None
 
     params_str = demangled_name[open_paren + 1 : close_paren]
-    # FIXME: support function types as parameters
     param_types = (
-        [MethodParam(type=param.strip()) for param in params_str.split(",")]
+        [MethodParam(type=param.strip()) for param in split_function_params(params_str)]
         if params_str
         else []
     )
@@ -155,7 +174,7 @@ def extract_vtable(type_name: str, vtbl_ea: int) -> list[Method] | None:
     # Skip the thisOffset and rtti. Both are pointers.
     methods = []
     if ida_bytes.get_qword(vtbl_ea) != NULL_PTR:
-        print(f"[Info] Imported vtable for {type_name}, skipping type.")
+        print(f"[Debug] Imported vtable for {type_name}, skipping type.")
         return None
 
     current_ea = vtbl_ea + (PTR_SIZE * 2)
