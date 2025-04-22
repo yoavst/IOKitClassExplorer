@@ -44,10 +44,13 @@ const enrichVirtualMethods = (
     if (!currentClass.vtable || currentClass.vtable.length === 0) return []
     const parentsImplementations = createArray<Class[]>(currentClass.vtable.length, () => [])
     const childrenImplementations = createArray<Class[]>(currentClass.vtable.length, () => [])
-
     for (const parent of getParents(allClasses, currentClass.name)) {
         if (!parent.vtable) continue
         for (const [index, method] of parent.vtable.entries()) {
+            if (index >= parentsImplementations.length) {
+                // TODO: fix the bug at the merge scripts
+                continue
+            }
             if (!method.isPureVirtual) {
                 parentsImplementations[index].push(parent)
             }
