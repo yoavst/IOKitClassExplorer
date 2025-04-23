@@ -45,7 +45,10 @@ def vtable_symbol_get_class(symbol: str) -> str | None:
 
 
 def get_all_memory_vtables() -> dict[str, int]:
-    """Get all vtables in memory."""
+    """
+    Searching for symbols of the form `vtable for <class name>` in the memory.
+    Return mapping of class name to vtable address.
+    """
     d = {}
     for ea, name in idautils.Names():
         cls = vtable_symbol_get_class(name)
@@ -209,8 +212,9 @@ def extract_vtable(type_name: str, vtbl_ea: int) -> list[Method] | None:
     return methods
 
 
-def get_methods():
-    vtbls = get_all_memory_vtables()
+def get_methods() -> dict[str, list[Method]]:
+    """Returns a mapping of class name to list of methods."""
+    vtbls = get_all_memory_vtables()  # class -> vtable address
     all_methods = {
         type_name: extract_vtable(type_name, ea) for type_name, ea in vtbls.items()
     }
