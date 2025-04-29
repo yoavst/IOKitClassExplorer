@@ -1,6 +1,6 @@
 import dataclasses
 import json
-import os
+from pathlib import Path
 import sys
 
 UNKNOWN = "???"
@@ -11,7 +11,7 @@ class EnhancedJSONEncoder(json.JSONEncoder):
         if dataclasses.is_dataclass(o):
             return {
                 EnhancedJSONEncoder.camelcase(k): v
-                for k, v in dataclasses.asdict(o).items()
+                for k, v in EnhancedJSONEncoder.asdict_shallow(o).items()
             }
         return super().default(o)
 
@@ -28,6 +28,13 @@ class EnhancedJSONEncoder(json.JSONEncoder):
                 lst[i] = lst[i].capitalize()
 
         return "".join(lst)
+    
+    @staticmethod
+    def asdict_shallow(obj):
+        if not dataclasses.is_dataclass(obj):
+            raise TypeError("asdict_shallow() should be called on dataclass instances")
+        return {f.name: getattr(obj, f.name) for f in dataclasses.fields(obj)}
+
 
 
 @dataclasses.dataclass
@@ -80,26 +87,41 @@ class MethodPrototype:
     declaring_class: str
     proto_index: int
 
+@dataclasses.dataclass
+class ClassInfo:
+    name: str
+    parent: str | None
+    is_abstract: bool
+    vtable: list[MethodWithPrototype] | None = None
+
+    @classmethod
+    def from_dict(cls, data):
+        return cls(
+            name=data["name"],
+            parent=data.get("parent", None),
+            is_abstract=data["isAbstract"]
+        )
+
 
 def main(args):
     if len(args) != 2:
-        print("Usage: merge_vtable_and_classes.py folder_of_classes_json")
+        print("Usage: merge_vtable_and_classes.py classes.json folder_of_classes_json")
         return
     classes_file_name, folder_of_classes_json = args
     with open(classes_file_name) as f:
-        classes = json.load(f)
-    methods: dict[str, list[InputMethod]] = {}
-    for methods_file_name in os.listdir(folder_of_classes_json):
-        with open(os.path.join(folder_of_classes_json, methods_file_name), "r") as f:
+        classes = [ClassInfo.from_dict(cls) for cls in json.load(f)]
+
+    methods: dict[str, list[InputMethod]] = {}   # class_name -> vtable methods
+    for methods_file_name in Path(folder_of_classes_json).glob('*'):    
+        with methods_file_name.open("r") as f:
             methods.update(
                 {
-                    k: [InputMethod.from_dict(m) for m in v]
-                    for k, v in json.load(f).items()
+                    class_name: [InputMethod.from_dict(m) for m in list_methods]
+                    for class_name, list_methods in json.load(f).items()
                 }
             )
 
-    classes_dict = {c["name"]: c for c in classes}
-    new_methods, prototypes = collect_prototypes(methods, classes_dict)
+    new_methods, prototypes = collect_prototypes(methods, classes)
     merge(classes, new_methods)
     with open("new_classes.json", "w") as f:
         json.dump(classes, f, indent=4, cls=EnhancedJSONEncoder)
@@ -107,19 +129,20 @@ def main(args):
         json.dump(prototypes, f, indent=4, cls=EnhancedJSONEncoder)
 
 
-def merge(classes, methods):
+def merge(classes: list[ClassInfo], methods: dict[str, list[MethodWithPrototype]]):
     for clazz in classes:
-        name = clazz["name"]
-        new_methods = methods.get(name, None)
+        new_methods = methods.get(clazz.name, None)
         if new_methods:
-            clazz["vtable"] = new_methods
+            clazz.vtable = new_methods
 
 
-def collect_prototypes(all_methods: dict[str, list[InputMethod]], classes_dict):
+def collect_prototypes(all_methods: dict[str, list[InputMethod]], classes: list[ClassInfo]) -> dict[str, list[MethodWithPrototype]]:
+    classes_dict = {c.name: c for c in classes} # class_name -> class
     prototypes = []
-    new_methods_with_proto = {}
+    new_methods_with_proto = {} # class_name -> vtable based on prototypes
     for class_name, methods in all_methods.items():
         if class_name not in classes_dict:
+            print('Class not in classes json', class_name)
             continue
 
         collect_prototypes_for_class(
@@ -146,26 +169,29 @@ def collect_prototypes_for_class(
     methods: list[InputMethod],
     prototypes: list[MethodPrototype],
     all_methods: dict[str, list[InputMethod]],
-    classes_dict,
+    classes_dict: dict[str, ClassInfo],
     new_methods_with_proto: dict[str, list[MethodWithPrototype]],
 ):
+    # If already run, don't run again.
     if class_name in new_methods_with_proto:
         return
+    
+    # For each parent, collect its prototypes.
+    my_class = classes_dict[class_name]
 
-    clz = classes_dict[class_name]
-    while (clz := classes_dict.get(clz["parent"], None)) is not None:
-        clz_name = clz["name"]
-        if clz_name in all_methods:
+    clz = my_class
+    while (clz := classes_dict.get(clz.parent, None)) is not None:
+        if clz.name in all_methods:
             collect_prototypes_for_class(
-                clz_name,
-                all_methods[clz_name],
+                clz.name,
+                all_methods[clz.name],
                 prototypes,
                 all_methods,
                 classes_dict,
                 new_methods_with_proto,
             )
 
-    parent = classes_dict[class_name]["parent"]
+    parent = my_class.parent
     parent_proto_methods = new_methods_with_proto.get(parent, [])
 
     my_methods = []
