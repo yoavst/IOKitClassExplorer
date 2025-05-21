@@ -28,13 +28,12 @@ class EnhancedJSONEncoder(json.JSONEncoder):
                 lst[i] = lst[i].capitalize()
 
         return "".join(lst)
-    
+
     @staticmethod
     def asdict_shallow(obj):
         if not dataclasses.is_dataclass(obj):
             raise TypeError("asdict_shallow() should be called on dataclass instances")
         return {f.name: getattr(obj, f.name) for f in dataclasses.fields(obj)}
-
 
 
 @dataclasses.dataclass
@@ -61,8 +60,9 @@ class InputMethod:
 
     @classmethod
     def from_dict(cls, data):
+        name = data["name"]
         return cls(
-            name=data["name"],
+            name="" if name.startswith("sub_") else name,
             return_type=data["return_type"],
             is_pure_virtual=data["is_pure_virtual"],
             is_implemented_by_current_class=data["is_implemented_by_current_class"],
@@ -87,6 +87,7 @@ class MethodPrototype:
     declaring_class: str
     proto_index: int
 
+
 @dataclasses.dataclass
 class ClassInfo:
     name: str
@@ -99,20 +100,20 @@ class ClassInfo:
         return cls(
             name=data["name"],
             parent=data.get("parent", None),
-            is_abstract=data["isAbstract"]
+            is_abstract=data["is_abstract"],
         )
 
 
 def main(args):
     if len(args) != 2:
-        print("Usage: merge_vtable_and_classes.py classes.json folder_of_classes_json")
+        print("Usage: merge_vtable_and_classes.py classes.json folder_of_methods_json")
         return
     classes_file_name, folder_of_classes_json = args
     with open(classes_file_name) as f:
         classes = [ClassInfo.from_dict(cls) for cls in json.load(f)]
 
-    methods: dict[str, list[InputMethod]] = {}   # class_name -> vtable methods
-    for methods_file_name in Path(folder_of_classes_json).glob('*'):    
+    methods: dict[str, list[InputMethod]] = {}  # class_name -> vtable methods
+    for methods_file_name in Path(folder_of_classes_json).glob("*"):
         with methods_file_name.open("r") as f:
             methods.update(
                 {
@@ -136,13 +137,15 @@ def merge(classes: list[ClassInfo], methods: dict[str, list[MethodWithPrototype]
             clazz.vtable = new_methods
 
 
-def collect_prototypes(all_methods: dict[str, list[InputMethod]], classes: list[ClassInfo]) -> dict[str, list[MethodWithPrototype]]:
-    classes_dict = {c.name: c for c in classes} # class_name -> class
+def collect_prototypes(
+    all_methods: dict[str, list[InputMethod]], classes: list[ClassInfo]
+) -> dict[str, list[MethodWithPrototype]]:
+    classes_dict = {c.name: c for c in classes}  # class_name -> class
     prototypes = []
-    new_methods_with_proto = {} # class_name -> vtable based on prototypes
+    new_methods_with_proto = {}  # class_name -> vtable based on prototypes
     for class_name, methods in all_methods.items():
         if class_name not in classes_dict:
-            print('Class not in classes json', class_name)
+            print("Class not in classes json", class_name)
             continue
 
         collect_prototypes_for_class(
@@ -175,7 +178,7 @@ def collect_prototypes_for_class(
     # If already run, don't run again.
     if class_name in new_methods_with_proto:
         return
-    
+
     # For each parent, collect its prototypes.
     my_class = classes_dict[class_name]
 
