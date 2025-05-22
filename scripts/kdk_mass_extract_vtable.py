@@ -2,6 +2,7 @@ import contextlib
 import os
 import sys
 from tqdm import tqdm
+
 try:
     import ida
 except ModuleNotFoundError:
@@ -17,13 +18,15 @@ def is_kext(path: Path) -> bool:
     """Check if the given file is a kext file"""
     if not path.is_file():
         return False
-    
-    with path.open('rb') as f:
+
+    with path.open("rb") as f:
         magic = f.read(4)
-        
-        if magic == b'\xcf\xfa\xed\xfe' or magic == b'\xfe\xed\xfa\xce':  # MH_MAGIC_64 or MH_MAGIC (32-bit)
-            pass     
-        elif magic == b'\xca\xfe\xba\xbe': # FAT binary
+
+        if (
+            magic == b"\xcf\xfa\xed\xfe" or magic == b"\xfe\xed\xfa\xce"
+        ):  # MH_MAGIC_64 or MH_MAGIC (32-bit)
+            pass
+        elif magic == b"\xca\xfe\xba\xbe":  # FAT binary
             # struct fat_header {
             #     uint32_t	magic;		/* FAT_MAGIC */
             #     uint32_t	nfat_arch;	/* number of structs that follow */
@@ -36,19 +39,19 @@ def is_kext(path: Path) -> bool:
             #     uint32_t	size;		/* size of this object file */
             #     uint32_t	align;		/* alignment as a power of 2 */
             # };
-            _, = struct.unpack('>I', f.read(4))
-            fmt = '>IIIII'
+            (_,) = struct.unpack(">I", f.read(4))
+            fmt = ">IIIII"
             arch_data = f.read(struct.calcsize(fmt))
             _, _, offset, _, _ = struct.unpack(fmt, arch_data)
             # Jump to slice
             f.seek(offset)
 
             magic = f.read(4)
-            if magic != b'\xcf\xfa\xed\xfe' and magic != b'\xfe\xed\xfa\xce':
+            if magic != b"\xcf\xfa\xed\xfe" and magic != b"\xfe\xed\xfa\xce":
                 return False
         else:
             return False  # Not Mach-O
-        
+
         #   struct mach_header {
         #       uint32_t magic;      // 0xFEEDFACE or 0xFEEDFACF
         #       cpu_type_t cputype;
@@ -56,21 +59,46 @@ def is_kext(path: Path) -> bool:
         #       uint32_t filetype;   // <== this field
         #       ...
         #   };
-        header_fmt = '<iiI'
+        header_fmt = "<iiI"
         header = f.read(struct.calcsize(header_fmt))
         _, _, filetype = struct.unpack(header_fmt, header)
         return filetype == 0x0B  # MH_KEXT_BUNDLE
 
 
+def is_fat(path: Path) -> bool:
+    """Check if the given file is a fat file"""
+    if not path.is_file():
+        return False
+
+    with path.open("rb") as f:
+        magic = f.read(4)
+
+        if (
+            magic == b"\xcf\xfa\xed\xfe" or magic == b"\xfe\xed\xfa\xce"
+        ):  # MH_MAGIC_64 or MH_MAGIC (32-bit)
+            return False
+        elif magic == b"\xca\xfe\xba\xbe":  # FAT binary
+            return True
+        else:
+            return False  # Not Mach-O
+
+
 def get_all_kexts(kdk_folder: Path) -> list[Path]:
-    return [binary for binary in kdk_folder.glob('**') if not binary.name.endswith('.thin') and is_kext(binary)]
+    return [
+        binary
+        for binary in kdk_folder.glob("**")
+        if not binary.name.endswith(".thin") and is_kext(binary)
+    ]
+
 
 def thin_binary(binary: Path) -> Path:
     # Until IDA will support passing params to idalib open
-    new_binary = binary.with_name(binary.name + '.thin')
+    if not is_fat(binary):
+        return binary
+    new_binary = binary.with_name(binary.name + ".thin")
     if new_binary.exists():
         return new_binary
-    elif not os.system(f'lipo {binary} -thin arm64e -output {new_binary}'):
+    elif not os.system(f"lipo {binary} -thin arm64e -output {new_binary}"):
         return new_binary
     return binary
 
@@ -81,7 +109,7 @@ def main(argv):
             "Usage: kdk_mass_extract_vtable.py <kdk_folder> path_to_kernel_development"
         )
         return
-    
+
     kdk_folder, path_to_kernel = Path(argv[0]), Path(argv[1])
     kexts = get_all_kexts(kdk_folder)
     files = [path_to_kernel] + kexts
@@ -89,7 +117,8 @@ def main(argv):
 
     OUT_FOLDER.mkdir(exist_ok=True)
 
-    for i, file in tqdm(enumerate(files), total=len(files)):
+    for i, file in (pbar := tqdm(enumerate(files), total=len(files))):
+        pbar.set_description(file.name)
         open_and_process_file(file, i, len(files))
 
 
@@ -107,7 +136,7 @@ def open_and_process_file(file_path: Path, index, total):
 def process_file(file_path: Path):
     methods = get_methods()
     serialize(methods, Path("out") / (file_path.name + ".json"))
-    print(f'[Info] Serialized {len(methods)} classes')
+    print(f"[Info] Serialized {len(methods)} classes")
 
 
 @contextlib.contextmanager

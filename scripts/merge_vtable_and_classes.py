@@ -139,10 +139,12 @@ def merge(classes: list[ClassInfo], methods: dict[str, list[MethodWithPrototype]
 
 def collect_prototypes(
     all_methods: dict[str, list[InputMethod]], classes: list[ClassInfo]
-) -> dict[str, list[MethodWithPrototype]]:
+) -> tuple[dict[str, list[MethodWithPrototype]], list[MethodPrototype]]:
     classes_dict = {c.name: c for c in classes}  # class_name -> class
-    prototypes = []
-    new_methods_with_proto = {}  # class_name -> vtable based on prototypes
+    prototypes: list[MethodPrototype] = []
+    new_methods_with_proto: dict[
+        str, list[MethodWithPrototype]
+    ] = {}  # class_name -> vtable based on prototypes
     for class_name, methods in all_methods.items():
         if class_name not in classes_dict:
             print("Class not in classes json", class_name)

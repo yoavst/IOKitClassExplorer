@@ -27,5 +27,5 @@ dist-ssr
 __pycache__
 *.pyc
 
-scripts/out
-scripts/logs.txt
+scripts/out*
+scripts/log*
