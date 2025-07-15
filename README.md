@@ -3,8 +3,8 @@
 Visualize classes in iOS kernel.
 
 ## Update
-
-* Run kc_collect_classes.py on iPhone kernelcache with KC_ng plugin.
+* Install `idahelper` python package.
+* Run collect_classes.py on iPhone kernelcache with KC_ng plugin.
 * (Use KDK) run `kdk_mass_extract_vtable.py` with KDK path
 * run `merge_vtable_and_classes`
 * Copy the resources to src.

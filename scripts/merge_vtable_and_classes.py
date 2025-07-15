@@ -1,7 +1,8 @@
 import dataclasses
 import json
-from pathlib import Path
 import sys
+from dataclasses import dataclass
+from pathlib import Path
 
 UNKNOWN = "???"
 
@@ -36,22 +37,23 @@ class EnhancedJSONEncoder(json.JSONEncoder):
         return {f.name: getattr(obj, f.name) for f in dataclasses.fields(obj)}
 
 
-@dataclasses.dataclass
+@dataclass
 class MethodParam:
     type: str
     name: str | None = None
 
     @classmethod
-    def from_dict(cls, data):
+    def from_dict(cls, data: dict) -> "MethodParam":
         return cls(
             type=data["type"],
             name=data.get("name", None),
         )
 
 
-@dataclasses.dataclass
+@dataclass
 class InputMethod:
     name: str
+    mangled_name: str
     return_type: str
     parameters: list[MethodParam]
     is_pure_virtual: bool
@@ -59,10 +61,12 @@ class InputMethod:
     vtable_index: int
 
     @classmethod
-    def from_dict(cls, data):
+    def from_dict(cls, data: dict) -> "InputMethod":
         name = data["name"]
+        mangled_name = data["mangled_name"]
         return cls(
             name="" if name.startswith("sub_") else name,
+            mangled_name="" if mangled_name.startswith("sub_") else mangled_name,
             return_type=data["return_type"],
             is_pure_virtual=data["is_pure_virtual"],
             is_implemented_by_current_class=data["is_implemented_by_current_class"],
@@ -71,16 +75,17 @@ class InputMethod:
         )
 
 
-@dataclasses.dataclass
+@dataclass
 class MethodWithPrototype:
     prototype_index: int
     is_overriden: bool
     is_pure_virtual: bool
 
 
-@dataclasses.dataclass
+@dataclass
 class MethodPrototype:
     name: str
+    mangled_name: str
     return_type: str
     parameters: list[MethodParam]
     vtable_index: int
@@ -88,7 +93,7 @@ class MethodPrototype:
     proto_index: int
 
 
-@dataclasses.dataclass
+@dataclass
 class ClassInfo:
     name: str
     parent: str | None
@@ -96,7 +101,7 @@ class ClassInfo:
     vtable: list[MethodWithPrototype] | None = None
 
     @classmethod
-    def from_dict(cls, data):
+    def from_dict(cls, data: dict) -> "ClassInfo":
         return cls(
             name=data["name"],
             parent=data.get("parent", None),
@@ -163,6 +168,7 @@ def collect_prototypes(
     for prototype in prototypes:
         if prototype.name == "":
             prototype.name = f"vmethod{prototype.vtable_index}"
+            prototype.mangled_name = f"{prototype.declaring_class}::{prototype.name}"
             prototype.return_type = UNKNOWN
             prototype.parameters = [MethodParam(type=UNKNOWN)]
 
@@ -184,8 +190,8 @@ def collect_prototypes_for_class(
     # For each parent, collect its prototypes.
     my_class = classes_dict[class_name]
 
-    clz = my_class
-    while (clz := classes_dict.get(clz.parent, None)) is not None:
+    clz: ClassInfo | None = my_class
+    while (clz := classes_dict.get(clz.parent or "")) is not None:
         if clz.name in all_methods:
             collect_prototypes_for_class(
                 clz.name,
@@ -197,7 +203,7 @@ def collect_prototypes_for_class(
             )
 
     parent = my_class.parent
-    parent_proto_methods = new_methods_with_proto.get(parent, [])
+    parent_proto_methods = new_methods_with_proto.get(parent or "", [])
 
     my_methods = []
     if len(parent_proto_methods) > len(methods):
@@ -227,6 +233,9 @@ def collect_prototypes_for_class(
         input_method = methods[i]
         prototype = MethodPrototype(
             name="" if input_method.is_pure_virtual else input_method.name,
+            mangled_name=""
+            if input_method.is_pure_virtual
+            else input_method.mangled_name,
             return_type=input_method.return_type,
             parameters=input_method.parameters,
             vtable_index=input_method.vtable_index,
@@ -245,7 +254,9 @@ def collect_prototypes_for_class(
     new_methods_with_proto[class_name] = my_methods
 
 
-def enrich_prototype(class_name, prototype, input_method):
+def enrich_prototype(
+    class_name: str, prototype: MethodPrototype, input_method: InputMethod
+):
     if prototype.return_type == UNKNOWN:
         prototype.return_type = input_method.return_type
 
@@ -256,6 +267,7 @@ def enrich_prototype(class_name, prototype, input_method):
     ) or prototype.name == "":
         prototype.parameters = input_method.parameters
         prototype.name = prototype.name or input_method.name
+        prototype.mangled_name = prototype.mangled_name or input_method.mangled_name
     elif (
         prototype.name != input_method.name
         and not prototype.name.startswith("~")
