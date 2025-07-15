@@ -1,20 +1,51 @@
 import json
 import re
 import urllib.request
-import idautils
-import idc
-import ida_typeinf
-import ida_bytes
+from typing import TypedDict
+
 import ida_funcs
-import ida_name
-import idaapi
+from ida_typeinf import tinfo_t, udm_t
+from idahelper import cpp, memory, tif
 
-
-VTABLE_PREFIX = "`vtable for'"
-PTR_SIZE = 8
 GENERIC_FUNCTION_TYPE_PATTERN = re.compile(
-    r"__int64 \(__fastcall \*\)\((\w+) \*__hidden this\)"
+    r"(__int64|void) \(__fastcall \*\)\((\w+) \*__hidden this\)"
 )
+
+
+# Types of prototypes.json
+class Parameter(TypedDict):
+    type: str
+    name: str
+
+
+class Prototype(TypedDict):
+    name: str
+    mangledName: str
+    returnType: str
+    parameters: list[Parameter]
+    vtableIndex: int
+    declaringClass: str
+    protoIndex: int
+
+
+# Types of classes.json
+class VtableEntry(TypedDict):
+    prototypeIndex: int
+    isOverriden: bool
+    isPureVirtual: bool
+
+
+class Clazz(TypedDict):
+    name: str
+    parent: str | None
+    isAbstract: bool
+    vtable: list[VtableEntry]
+
+
+# Types of the script
+class ExtendedPrototype(Prototype):
+    isOverriden: bool
+    isPureVirtual: bool
 
 
 ## Mangle utils
@@ -83,87 +114,27 @@ def llvm_mangle(name: str, class_name: str | None = None):
     return mangled
 
 
-## TIF (c types in ida) utils
-
-
-def type_to_tif(c_type: str) -> ida_typeinf.tinfo_t | None:
-    tif = ida_typeinf.tinfo_t()
-    if c_type == "void":
-        tif.create_simple_type(ida_typeinf.BT_VOID)
-        return tif
-    else:
-        if (
-            ida_typeinf.parse_decl(
-                tif,
-                None,
-                c_type + ";",
-                ida_typeinf.PT_SIL | ida_typeinf.PT_NDC | ida_typeinf.PT_TYP,
-            )
-            is not None
-        ):
-            return tif
-    return None
-
-
 def unkown_to_int64(typ: str) -> str:
     return typ if typ != "???" else "__int64"
 
 
-def func_to_tif(
-    class_name: str, return_type: str, parameters
-) -> ida_typeinf.tinfo_t | None:
-    params_str = f"{class_name} *__hidden this"
-    if len(parameters) != 0:
-        params_str += ", "
-        params_str += ",".join(
-            f"{unkown_to_int64(p['type'])} {p.get('name', '')}" for p in parameters
-        )
-    sig = f"{unkown_to_int64(return_type)} f({params_str})"
-    return type_to_tif(sig)
-
-
-def ptr_to_tif(tif: ida_typeinf.tinfo_t) -> ida_typeinf.tinfo_t:
-    new_tif = ida_typeinf.tinfo_t()
-    new_tif.create_ptr(tif)
-    return new_tif
-
-
-## vtable types utils
-
-
-def get_all_vtbl_types() -> dict[str, int]:
-    """Retrieve all types that start with `_vtbl` from IDA's type system."""
-    vtbl_types = {}
-
-    tli = ida_typeinf.get_idati()
-    qty = ida_typeinf.get_ordinal_count(tli)
-
-    for ordinal in range(1, qty + 1):
-        type_name = ida_typeinf.get_numbered_type_name(tli, ordinal)
-        if type_name and type_name.endswith("_vtbl"):
-            vtbl_types[type_name] = ordinal
-
-    return vtbl_types
-
-
-def remove_rtii_from_vtbl(type_name, type_ord):
-    tli = ida_typeinf.get_idati()
-    tif = ida_typeinf.tinfo_t()
-
-    if not tif.get_numbered_type(tli, type_ord, ida_typeinf.BTF_STRUCT):
-        print(f"Failed to retrieve type information for {type_ord}")
+def remove_rtii_from_vtbl(cpp_type: tinfo_t):
+    """Remove fake rtii fields from start of vtable type"""
+    vtable_type = tif.vtable_type_from_type(cpp_type)
+    if vtable_type is None:
+        print(f"[Error] Failed to find vtable type for {cpp_type}")
         return
 
-    udt_data = ida_typeinf.udt_type_data_t()
-    if not tif.get_udt_details(udt_data):
-        print(f"Failed to retrieve UDT details for {type_name}")
+    udt_data = tif.get_udt(vtable_type)
+    if not udt_data:
+        print(f"[Error] Failed to retrieve UDT details for {vtable_type}")
         return
 
     for member in udt_data:
         if not member.type.is_funcptr():
-            print(f"Removing {type_name}::{member.name} of size {member.size}")
-            tif.del_udm(0)
-            tif.expand_udt(1, -(member.size // 8))
+            print(f"Removing {vtable_type}::{member.name} of size {member.size}")
+            vtable_type.del_udm(0)
+            vtable_type.expand_udt(1, -(member.size // 8))
         else:
             break
 
@@ -172,72 +143,68 @@ def is_nonchanged_type_method(function_ptr) -> bool:
     return bool(GENERIC_FUNCTION_TYPE_PATTERN.match(str(function_ptr.type)))
 
 
-def get_ea_type(ea: int) -> ida_typeinf.tinfo_t | None:
-    """Get the type of a function at a given address."""
-    tif = ida_typeinf.tinfo_t()
-    if idaapi.get_tinfo(tif, ea):
-        return tif
-    return None
-
-
-def build_type(type_name: str, method, func_ea: int) -> ida_typeinf.tinfo_t | None:
-    func_cls_type = type_name if method["isOverriding"] else method["declaringClass"]
+def build_type(
+    type_name: str, proto: ExtendedPrototype, func_ea: int
+) -> tinfo_t | None:
+    func_cls_type = type_name if proto["isOverriden"] else proto["declaringClass"]
+    func_cls_tif = tif.from_struct_name(func_cls_type)
 
     # Try to get the function type from KDK
-    func_type = func_to_tif(
-        func_cls_type,
-        method["returnType"],
-        method["parameters"],
+    func_type = tif.from_func_components(
+        proto["returnType"],
+        [tif.FuncParam(f"{func_cls_type}*", "this")]
+        + [
+            tif.FuncParam(type=unkown_to_int64(p["type"]), name=p["name"])
+            for p in proto["parameters"]
+        ],
     )
+
     if func_type is not None:
         return func_type
 
     # Try to get it from the function
-    if ida_funcs.get_func(func_ea):
-        tif = get_ea_type(func_ea)
-        if tif is not None:
-            tif.set_funcarg_type(0, type_to_tif(f"{func_cls_type} *"))
-            return tif
+    func = ida_funcs.get_func(func_ea)
+    if func is not None:
+        func_type = tif.from_func(func)
+        if func_type is not None and func_cls_tif is not None:
+            func_type.set_funcarg_type(0, tif.pointer_of(func_cls_tif))
+            return func_type
 
     # Try to get the right number of parameters at least
-    if len(method["parameters"]) != 1 or method["parameters"][0]["type"] != "???":
-        return func_to_tif(
-            func_cls_type,
-            method["returnType"],
-            [{"type": "???"}] * len(method["parameters"]),
+    if len(proto["parameters"]) != 1 or proto["parameters"][0]["type"] != "???":
+        return tif.from_func_components(
+            proto["returnType"],
+            [tif.FuncParam(f"{func_cls_type}*", "this")]
+            + ([tif.FuncParam(type="__int64")] * len(proto["parameters"])),
         )
-
     return None
 
 
-def rename_methods(type_name, type_ord, vtable_ea, methods):
+def rename_methods(cpp_type: tinfo_t, vtable_ea: int, methods: list[ExtendedPrototype]):
     # Verify the type is not buggy
     if methods[0]["name"] != "~OSObject":
-        print(f"Type {type_name} is buggy")
+        print(f"[Error] Type {cpp_type} is buggy")
         return
 
-    tli = ida_typeinf.get_idati()
-    tif = ida_typeinf.tinfo_t()
-
-    if not tif.get_numbered_type(tli, type_ord, ida_typeinf.BTF_STRUCT):
-        print(f"Failed to retrieve type information for {type_ord}")
+    vtable_type = tif.vtable_type_from_type(cpp_type)
+    if vtable_type is None:
+        print(f"[Error] Failed to find vtable type for {cpp_type}")
         return
 
-    udt_data = ida_typeinf.udt_type_data_t()
-    if not tif.get_udt_details(udt_data):
-        print(f"Failed to retrieve UDT details for {type_name}")
+    udt_data = tif.get_udt(vtable_type)
+    if udt_data is None:
+        print(f"Failed to retrieve UDT details for {cpp_type}")
         return
 
-    # Skip "this" and "rtii" pointers
-    vtable_ea += 2 * PTR_SIZE
-
-    for i, member in enumerate(udt_data):
-        assert member.type.is_funcptr()
-
+    for entry in cpp.iterate_vtable(vtable_ea):
         # If we recovered only part of the vtable, skip the rest
-        if i >= len(methods):
+        if entry.index >= len(methods):
             return
-        method = methods[i]
+        method = methods[entry.index]
+
+        member = udt_data[entry.index]
+        if not member.type.is_funcptr():
+            print(f"[Warning] Member type is not function ptr: {cpp_type} {entry}")
 
         # Skip destructor
         if "~" in method["name"]:
@@ -245,77 +212,46 @@ def rename_methods(type_name, type_ord, vtable_ea, methods):
 
         # Rename the member in the vtable type
         vtable_new_name = method["name"]
-        rename_udm_with_retry(tif, i, vtable_new_name)
-
-        # Get the function address
-        func_ptr_ea = vtable_ea + member.offset // 8
-        func_addr = ida_bytes.get_qword(func_ptr_ea)
+        rename_udm_with_retry(vtable_type, member, vtable_new_name)
 
         # Apply the type to the UDM
         if method["isPureVirtual"]:
             continue
 
-        new_type = build_type(type_name, method, func_addr)
+        new_type = build_type(str(cpp_type), method, entry.func_ea)
 
-        if new_type is not None and is_nonchanged_type_method(member):
-            tif.set_udm_type(i, ptr_to_tif(new_type))
+        should_apply_type = is_nonchanged_type_method(member)
+        if new_type is not None and should_apply_type:
+            tif.set_udm_type(vtable_type, member, tif.pointer_of(new_type))
 
         # Apply the type to the function if it is defined by this class
-        if method["declaringClass"] == type_name or method["isOverriding"]:
-            if ida_funcs.get_func(func_addr):
-                new_name = llvm_mangle(method["name"], type_name)
-                ida_name.set_name(func_addr, new_name, ida_name.SN_CHECK)
-                if new_type is not None and is_nonchanged_type_method(member):
-                    ida_typeinf.apply_tinfo(func_addr, new_type, idaapi.TINFO_DEFINITE)
-                print(f"Renamed {hex(func_addr)} -> {new_name}")
+        if method["declaringClass"] == str(cpp_type) or method["isOverriden"]:
+            if ida_funcs.get_func(entry.func_ea):
+                if "~" in method["mangledName"]:
+                    new_name = llvm_mangle(method["name"], str(cpp_type))
+                else:
+                    new_name = method["mangledName"]
+                memory.set_name(entry.func_ea, new_name)
+                if new_type is not None and should_apply_type:
+                    tif.apply_tinfo_to_ea(new_type, entry.func_ea)
+                print(f"Renamed {entry.func_ea:X} -> {new_name}")
 
 
-def rename_udm_with_retry(tif: ida_typeinf.tinfo_t, udm_index: int, new_name: str):
+def rename_udm_with_retry(typ: tinfo_t, udm: udm_t, new_name: str):
     suffix = ""
     for j in range(20):
         name = f"{new_name}{suffix}"
-        if not tif.rename_udm(udm_index, name):
+        if tif.set_udm_name(typ, udm, name):
             break
         suffix = str(j)
 
 
 ## memory vtables utils
-def demangle(symbol: str) -> str | None:
-    """Demangle cpp symbol."""
-    return idc.demangle_name(symbol, idc.get_inf_attr(idc.INF_SHORT_DEMNAMES))
 
 
-def vtable_symbol_get_class(symbol: str) -> str | None:
-    """Get the class name for a vtable symbol."""
-    demangled = demangle(symbol)
-    if demangled is not None and demangled.startswith(VTABLE_PREFIX):
-        return demangled[len(VTABLE_PREFIX) :]
-    return None
-
-
-def get_all_memory_vtables() -> dict[str, int]:
-    d = {}
-    for ea, name in idautils.Names():
-        cls = vtable_symbol_get_class(name)
-        if cls is not None:
-            d[cls] = ea
-    return d
-
-
-def get_all_vtbls(vtables_types) -> dict[tuple[str, int], int]:
-    d = {}
-    memory_vtables = get_all_memory_vtables()
-    for name, ordinal in vtables_types.items():
-        type_name = name.removesuffix("_vtbl")
-        vtable = memory_vtables.get(type_name, None)
-        if vtable is None:
-            print(f"Failed to find vtable for {type_name}")
-            continue
-        d[(type_name, ordinal)] = vtable
-    return d
-
-
-def search_methods_for_type(prototypes: dict, classes: dict, type_name: str) -> list:
+def search_methods_for_type(
+    prototypes: list[Prototype], classes: dict, type_name: str
+) -> list[ExtendedPrototype]:
     # searching for the first class in the hirarchy chaing that it's vtable is not none
     cls = classes[type_name]
     check_override = True
@@ -327,16 +263,16 @@ def search_methods_for_type(prototypes: dict, classes: dict, type_name: str) -> 
             return []
         cls = classes[parent]
 
-    res = []
+    res: list[ExtendedPrototype] = []
     for m in cls["vtable"]:
-        proto = prototypes[m["prototypeIndex"]]
-        is_overriding = check_override and m["isOverriden"]
+        proto: Prototype = prototypes[m["prototypeIndex"]]
+        is_overriden = check_override and m["isOverriden"]
         res.append(
             {
                 **proto,
-                "isOverriding": is_overriding,
+                "isOverriden": is_overriden,
                 "isPureVirtual": m["isPureVirtual"],
-            }
+            }  # pyright: ignore[reportArgumentType]
         )
     return res
 
@@ -347,16 +283,13 @@ def get_file(name: str) -> str:
 
 
 def main():
-    prototypes = json.loads(get_file("prototypes.json"))
-    classes = json.loads(get_file("classes.json"))
-    classes_dict = {cls["name"]: cls for cls in classes}
+    prototypes: list[Prototype] = json.loads(get_file("prototypes.json"))
+    classes: list[Clazz] = json.loads(get_file("classes.json"))
+    classes_dict: dict[str, Clazz] = {cls["name"]: cls for cls in classes}
 
-    vtbl_types = get_all_vtbl_types()
-    print("Got all vtable types")
-    vtbls = get_all_vtbls(vtbl_types)
-    print("got all vtables")
-    for i, ((type_name, type_ord), vtable_ea) in enumerate(vtbls.items()):
-        print(i, type_name, type_ord, hex(vtable_ea))
+    for i, (cpp_type, vtable_ea) in enumerate(cpp.get_all_cpp_classes()):
+        print(f"{i}. {cpp_type} at {vtable_ea:X}")
+        type_name = str(cpp_type)
         if type_name not in classes_dict:
             continue
 
@@ -364,13 +297,8 @@ def main():
         if not methods:
             continue
 
-        remove_rtii_from_vtbl(type_name, type_ord)
-        rename_methods(
-            type_name,
-            type_ord,
-            vtable_ea,
-            methods,
-        )
+        remove_rtii_from_vtbl(cpp_type)
+        rename_methods(cpp_type, vtable_ea, methods)
 
 
 main()
