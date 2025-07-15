@@ -3,7 +3,7 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 
-from idahelper import cpp, tif
+from idahelper import cpp, memory, tif
 
 PURE_VIRTUAL_FUNC_NAME = "___cxa_pure_virtual"
 UNKNOWN_TYPE = "???"
@@ -102,6 +102,11 @@ def get_func_types(
     return return_type, parameters
 
 
+def reset_imports_caching():
+    """hack to fix ida-ios-helper caching of imports"""
+    memory.imports.cache_clear()
+
+
 def extract_vtable(type_name: str, vtable_ea: int) -> list[Method] | None:
     """Return list of virtual methods from vtable ea"""
     methods: list[Method] = []
@@ -137,6 +142,7 @@ def extract_vtable(type_name: str, vtable_ea: int) -> list[Method] | None:
 
 def get_methods() -> dict[str, list[Method]]:
     """Returns a mapping of class name to list of methods."""
+    reset_imports_caching()
     all_methods = {
         type_name: extract_vtable(type_name, ea)
         for type_name, ea in cpp.iterate_vtables()

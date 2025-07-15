@@ -1,14 +1,16 @@
 import contextlib
 import os
+import struct
 import sys
+from pathlib import Path
+
 from tqdm import tqdm
 
 try:
     import ida
 except ModuleNotFoundError:
     import idapro as ida
-from pathlib import Path
-import struct
+
 from kdk_extract_vtable import get_methods, serialize
 
 OUT_FOLDER = Path("out")
