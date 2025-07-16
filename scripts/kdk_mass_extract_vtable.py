@@ -7,7 +7,7 @@ from pathlib import Path
 from tqdm import tqdm
 
 try:
-    import ida
+    import ida  # pyright: ignore[reportMissingImports]
 except ModuleNotFoundError:
     import idapro as ida
 
@@ -75,10 +75,7 @@ def is_fat(path: Path) -> bool:
 
         if magic == b"\xcf\xfa\xed\xfe" or magic == b"\xfe\xed\xfa\xce":  # MH_MAGIC_64 or MH_MAGIC (32-bit)
             return False
-        elif magic == b"\xca\xfe\xba\xbe":  # FAT binary
-            return True
-        else:
-            return False  # Not Mach-O
+        return magic == b"\xca\xfe\xba\xbe"  # FAT binary
 
 
 def get_all_kexts(kdk_folder: Path) -> list[Path]:
@@ -90,9 +87,7 @@ def thin_binary(binary: Path) -> Path:
     if not is_fat(binary):
         return binary
     new_binary = binary.with_name(binary.name + ".thin")
-    if new_binary.exists():
-        return new_binary
-    elif not os.system(f"lipo {binary} -thin arm64e -output {new_binary}"):
+    if new_binary.exists() or not os.system(f"lipo {binary} -thin arm64e -output {new_binary}"):
         return new_binary
     return binary
 
@@ -104,7 +99,7 @@ def main(argv):
 
     kdk_folder, path_to_kernel = Path(argv[0]), Path(argv[1])
     kexts = get_all_kexts(kdk_folder)
-    files = [path_to_kernel] + kexts
+    files = [path_to_kernel, *kexts]
     files = [thin_binary(f) for f in files]
 
     OUT_FOLDER.mkdir(exist_ok=True)
@@ -115,14 +110,12 @@ def main(argv):
 
 
 def open_and_process_file(file_path: Path, index, total):
-    with ida_open(file_path):
-        with open("logs.txt", "a") as f:
-            with redirect_stdout(f):
-                print(f"[Status] {index}/{total}: Processing {file_path.name}")
-                try:
-                    process_file(file_path)
-                except Exception as e:
-                    print(f"Failed to process {file_path}: {e}")
+    with ida_open(file_path), open("logs.txt", "a") as f, redirect_stdout(f):
+        print(f"[Status] {index}/{total}: Processing {file_path.name}")
+        try:
+            process_file(file_path)
+        except Exception as e:
+            print(f"Failed to process {file_path}: {e}")
 
 
 def process_file(file_path: Path):

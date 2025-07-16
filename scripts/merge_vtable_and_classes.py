@@ -10,10 +10,7 @@ UNKNOWN = "???"
 class EnhancedJSONEncoder(json.JSONEncoder):
     def default(self, o):
         if dataclasses.is_dataclass(o):
-            return {
-                EnhancedJSONEncoder.camelcase(k): v
-                for k, v in EnhancedJSONEncoder.asdict_shallow(o).items()
-            }
+            return {EnhancedJSONEncoder.camelcase(k): v for k, v in EnhancedJSONEncoder.asdict_shallow(o).items()}
         return super().default(o)
 
     @staticmethod
@@ -46,7 +43,7 @@ class MethodParam:
     def from_dict(cls, data: dict) -> "MethodParam":
         return cls(
             type=data["type"],
-            name=data.get("name", None),
+            name=data.get("name"),
         )
 
 
@@ -104,7 +101,7 @@ class ClassInfo:
     def from_dict(cls, data: dict) -> "ClassInfo":
         return cls(
             name=data["name"],
-            parent=data.get("parent", None),
+            parent=data.get("parent"),
             is_abstract=data["is_abstract"],
         )
 
@@ -147,9 +144,7 @@ def collect_prototypes(
 ) -> tuple[dict[str, list[MethodWithPrototype]], list[MethodPrototype]]:
     classes_dict = {c.name: c for c in classes}  # class_name -> class
     prototypes: list[MethodPrototype] = []
-    new_methods_with_proto: dict[
-        str, list[MethodWithPrototype]
-    ] = {}  # class_name -> vtable based on prototypes
+    new_methods_with_proto: dict[str, list[MethodWithPrototype]] = {}  # class_name -> vtable based on prototypes
     for class_name, methods in all_methods.items():
         if class_name not in classes_dict:
             print("Class not in classes json", class_name)
@@ -207,9 +202,7 @@ def collect_prototypes_for_class(
 
     my_methods = []
     if len(parent_proto_methods) > len(methods):
-        print(
-            f"Not enough methods for {class_name}. Expected: {len(parent_proto_methods)} has: {len(methods)}"
-        )
+        print(f"Not enough methods for {class_name}. Expected: {len(parent_proto_methods)} has: {len(methods)}")
         return
 
     for i in range(len(parent_proto_methods)):
@@ -224,18 +217,14 @@ def collect_prototypes_for_class(
             )
         )
 
-        enrich_prototype(
-            class_name, prototypes[parent_method.prototype_index], input_method
-        )
+        enrich_prototype(class_name, prototypes[parent_method.prototype_index], input_method)
 
     # Add new methods' prototypes
     for i in range(len(parent_proto_methods), len(methods)):
         input_method = methods[i]
         prototype = MethodPrototype(
             name="" if input_method.is_pure_virtual else input_method.name,
-            mangled_name=""
-            if input_method.is_pure_virtual
-            else input_method.mangled_name,
+            mangled_name="" if input_method.is_pure_virtual else input_method.mangled_name,
             return_type=input_method.return_type,
             parameters=input_method.parameters,
             vtable_index=input_method.vtable_index,
@@ -254,17 +243,13 @@ def collect_prototypes_for_class(
     new_methods_with_proto[class_name] = my_methods
 
 
-def enrich_prototype(
-    class_name: str, prototype: MethodPrototype, input_method: InputMethod
-):
+def enrich_prototype(class_name: str, prototype: MethodPrototype, input_method: InputMethod):
     if prototype.return_type == UNKNOWN:
         prototype.return_type = input_method.return_type
 
     if input_method.is_pure_virtual:
         return
-    elif (
-        len(prototype.parameters) == 1 and prototype.parameters[0].type == UNKNOWN
-    ) or prototype.name == "":
+    elif (len(prototype.parameters) == 1 and prototype.parameters[0].type == UNKNOWN) or prototype.name == "":
         prototype.parameters = input_method.parameters
         prototype.name = prototype.name or input_method.name
         prototype.mangled_name = prototype.mangled_name or input_method.mangled_name
@@ -279,16 +264,13 @@ def enrich_prototype(
         if len(prototype.parameters) != len(input_method.parameters):
             print("Prototype mismatch:", class_name, prototype, input_method)
             if len(prototype.parameters) < len(input_method.parameters) and not (
-                len(prototype.parameters) == 1
-                and prototype.parameters[0].type == UNKNOWN
+                len(prototype.parameters) == 1 and prototype.parameters[0].type == UNKNOWN
             ):
                 print("\t Still updating info")
                 prototype.parameters = input_method.parameters
             return
 
-        for proto_param, input_param in zip(
-            prototype.parameters, input_method.parameters
-        ):
+        for proto_param, input_param in zip(prototype.parameters, input_method.parameters, strict=True):
             if proto_param.type == UNKNOWN:
                 proto_param.type = input_param.type
             if proto_param.name is None:
