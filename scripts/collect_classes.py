@@ -35,16 +35,12 @@ def collect_classes() -> list[BaseClass]:
     pure_virtual_ea = find_pure_virtual_function()
 
     for cls, vtable_ea in cpp.get_all_cpp_classes():
-        is_abstract = any(
-            entry.func_ea == pure_virtual_ea for entry in cpp.iterate_vtable(vtable_ea)
-        )
+        is_abstract = any(entry.func_ea == pure_virtual_ea for entry in cpp.iterate_vtable(vtable_ea))
         parent = tif.get_parent_class(cls)
         classes.append(
             {
                 "name": cast(str, cls.get_type_name()),
-                "parent": cast(str, parent.get_type_name())
-                if parent is not None
-                else None,
+                "parent": cast(str, parent.get_type_name()) if parent is not None else None,
                 "is_abstract": is_abstract,
             }
         )

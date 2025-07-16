@@ -24,9 +24,7 @@ def is_kext(path: Path) -> bool:
     with path.open("rb") as f:
         magic = f.read(4)
 
-        if (
-            magic == b"\xcf\xfa\xed\xfe" or magic == b"\xfe\xed\xfa\xce"
-        ):  # MH_MAGIC_64 or MH_MAGIC (32-bit)
+        if magic == b"\xcf\xfa\xed\xfe" or magic == b"\xfe\xed\xfa\xce":  # MH_MAGIC_64 or MH_MAGIC (32-bit)
             pass
         elif magic == b"\xca\xfe\xba\xbe":  # FAT binary
             # struct fat_header {
@@ -75,9 +73,7 @@ def is_fat(path: Path) -> bool:
     with path.open("rb") as f:
         magic = f.read(4)
 
-        if (
-            magic == b"\xcf\xfa\xed\xfe" or magic == b"\xfe\xed\xfa\xce"
-        ):  # MH_MAGIC_64 or MH_MAGIC (32-bit)
+        if magic == b"\xcf\xfa\xed\xfe" or magic == b"\xfe\xed\xfa\xce":  # MH_MAGIC_64 or MH_MAGIC (32-bit)
             return False
         elif magic == b"\xca\xfe\xba\xbe":  # FAT binary
             return True
@@ -86,11 +82,7 @@ def is_fat(path: Path) -> bool:
 
 
 def get_all_kexts(kdk_folder: Path) -> list[Path]:
-    return [
-        binary
-        for binary in kdk_folder.glob("**")
-        if not binary.name.endswith(".thin") and is_kext(binary)
-    ]
+    return [binary for binary in kdk_folder.glob("**") if not binary.name.endswith(".thin") and is_kext(binary)]
 
 
 def thin_binary(binary: Path) -> Path:
@@ -107,9 +99,7 @@ def thin_binary(binary: Path) -> Path:
 
 def main(argv):
     if len(argv) != 2:
-        print(
-            "Usage: kdk_mass_extract_vtable.py <kdk_folder> path_to_kernel_development"
-        )
+        print("Usage: kdk_mass_extract_vtable.py <kdk_folder> path_to_kernel_development")
         return
 
     kdk_folder, path_to_kernel = Path(argv[0]), Path(argv[1])

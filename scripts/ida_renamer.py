@@ -7,9 +7,7 @@ import ida_funcs
 from ida_typeinf import tinfo_t, udm_t
 from idahelper import cpp, memory, tif
 
-GENERIC_FUNCTION_TYPE_PATTERN = re.compile(
-    r"(__int64|void) \(__fastcall \*\)\((\w+) \*__hidden this\)"
-)
+GENERIC_FUNCTION_TYPE_PATTERN = re.compile(r"(__int64|void) \(__fastcall \*\)\((\w+) \*__hidden this\)")
 
 
 # Types of prototypes.json
@@ -81,9 +79,7 @@ def llvm_mangle(name: str, class_name: str | None = None):
     """
 
     # Detect constructor, destructor type, and clean name
-    is_ctor, dtor_variant, clean_name = (
-        detect_ctor_dtor(name, class_name) if class_name else (False, None, name)
-    )
+    is_ctor, dtor_variant, clean_name = detect_ctor_dtor(name, class_name) if class_name else (False, None, name)
 
     if not is_ctor and dtor_variant is None and clean_name == name:
         return f"{class_name}::{name}" if class_name else name
@@ -143,9 +139,7 @@ def is_nonchanged_type_method(function_ptr) -> bool:
     return bool(GENERIC_FUNCTION_TYPE_PATTERN.match(str(function_ptr.type)))
 
 
-def build_type(
-    type_name: str, proto: ExtendedPrototype, func_ea: int
-) -> tinfo_t | None:
+def build_type(type_name: str, proto: ExtendedPrototype, func_ea: int) -> tinfo_t | None:
     func_cls_type = type_name if proto["isOverriden"] else proto["declaringClass"]
     func_cls_tif = tif.from_struct_name(func_cls_type)
 
@@ -153,10 +147,7 @@ def build_type(
     func_type = tif.from_func_components(
         proto["returnType"],
         [tif.FuncParam(f"{func_cls_type}*", "this")]
-        + [
-            tif.FuncParam(type=unkown_to_int64(p["type"]), name=p["name"])
-            for p in proto["parameters"]
-        ],
+        + [tif.FuncParam(type=unkown_to_int64(p["type"]), name=p["name"]) for p in proto["parameters"]],
     )
 
     if func_type is not None:
@@ -174,8 +165,7 @@ def build_type(
     if len(proto["parameters"]) != 1 or proto["parameters"][0]["type"] != "???":
         return tif.from_func_components(
             proto["returnType"],
-            [tif.FuncParam(f"{func_cls_type}*", "this")]
-            + ([tif.FuncParam(type="__int64")] * len(proto["parameters"])),
+            [tif.FuncParam(f"{func_cls_type}*", "this")] + ([tif.FuncParam(type="__int64")] * len(proto["parameters"])),
         )
     return None
 
@@ -249,9 +239,7 @@ def rename_udm_with_retry(typ: tinfo_t, udm: udm_t, new_name: str):
 ## memory vtables utils
 
 
-def search_methods_for_type(
-    prototypes: list[Prototype], classes: dict, type_name: str
-) -> list[ExtendedPrototype]:
+def search_methods_for_type(prototypes: list[Prototype], classes: dict, type_name: str) -> list[ExtendedPrototype]:
     # searching for the first class in the hirarchy chaing that it's vtable is not none
     cls = classes[type_name]
     check_override = True

@@ -60,11 +60,7 @@ def get_parameter_types_from_demangled_name(
         return None
 
     params_str = demangled_name[open_paren + 1 : close_paren]
-    param_types = (
-        [MethodParam(type=param.strip()) for param in split_function_params(params_str)]
-        if params_str
-        else []
-    )
+    param_types = [MethodParam(type=param.strip()) for param in split_function_params(params_str)] if params_str else []
 
     if len(param_types) == 1 and param_types[0].type == "void":
         return []
@@ -72,9 +68,7 @@ def get_parameter_types_from_demangled_name(
     return param_types
 
 
-def get_func_types(
-    func_addr: int, demangled_name: str | None
-) -> tuple[str, list[MethodParam]]:
+def get_func_types(func_addr: int, demangled_name: str | None) -> tuple[str, list[MethodParam]]:
     """Get the return type and parameters of a function."""
     func_type = tif.from_ea(func_addr)
     if func_type is None:
@@ -94,9 +88,7 @@ def get_func_types(
     else:
         parameters = []
         for i in range(func_data.size()):
-            parameters.append(
-                {"name": func_data[i].name, "type": func_data[i].type.dstr()}
-            )
+            parameters.append({"name": func_data[i].name, "type": func_data[i].type.dstr()})
         parameters = parameters[1:]  # Remove this argument
 
     return return_type, parameters
@@ -111,18 +103,14 @@ def extract_vtable(type_name: str, vtable_ea: int) -> list[Method] | None:
     """Return list of virtual methods from vtable ea"""
     methods: list[Method] = []
     try:
-        for entry in cpp.iterate_vtable(
-            vtable_ea, skip_reserved=True, raise_on_error=True
-        ):
+        for entry in cpp.iterate_vtable(vtable_ea, skip_reserved=True, raise_on_error=True):
             class_and_name = cpp.demangle_class_and_name(entry.func_name)
             if class_and_name is None:
                 class_name, method_name = None, entry.demangled_func_name
             else:
                 class_name, method_name = class_and_name
 
-            return_type, parameters = get_func_types(
-                entry.func_ea, entry.demangled_func_name
-            )
+            return_type, parameters = get_func_types(entry.func_ea, entry.demangled_func_name)
 
             methods.append(
                 Method(
@@ -143,10 +131,7 @@ def extract_vtable(type_name: str, vtable_ea: int) -> list[Method] | None:
 def get_methods() -> dict[str, list[Method]]:
     """Returns a mapping of class name to list of methods."""
     reset_imports_caching()
-    all_methods = {
-        type_name: extract_vtable(type_name, ea)
-        for type_name, ea in cpp.iterate_vtables()
-    }
+    all_methods = {type_name: extract_vtable(type_name, ea) for type_name, ea in cpp.iterate_vtables()}
     return {k: v for k, v in all_methods.items() if v}
 
 
