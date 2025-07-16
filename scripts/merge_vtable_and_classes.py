@@ -127,9 +127,9 @@ def main(args):
     new_methods, prototypes = collect_prototypes(methods, classes)
     fix_getters(prototypes)
     merge(classes, new_methods)
-    with open("new_classes.json", "w") as f:
+    with open("../src/classes.json", "w") as f:
         json.dump(classes, f, indent=4, cls=EnhancedJSONEncoder)
-    with open("new_prototypes.json", "w") as f:
+    with open("../src/prototypes.json", "w") as f:
         json.dump(prototypes, f, indent=4, cls=EnhancedJSONEncoder)
 
 
@@ -143,6 +143,7 @@ def merge(classes: list[ClassInfo], methods: dict[str, list[MethodWithPrototype]
 def fix_getters(prototypes: list[MethodPrototype]):
     for prototype in prototypes:
         if prototype.name.startswith("get") and prototype.return_type == "void":
+            print(f"Fixed getter for {prototype}")
             prototype.return_type = "???"
 
 
@@ -232,7 +233,7 @@ def collect_prototypes_for_class(
         prototype = MethodPrototype(
             name="" if input_method.is_pure_virtual else input_method.name,
             mangled_name="" if input_method.is_pure_virtual else input_method.mangled_name,
-            return_type=input_method.return_type,
+            return_type=UNKNOWN if input_method.is_pure_virtual else input_method.return_type,
             parameters=input_method.parameters,
             vtable_index=input_method.vtable_index,
             declaring_class=class_name,
