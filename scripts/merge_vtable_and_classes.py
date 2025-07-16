@@ -125,6 +125,7 @@ def main(args):
             )
 
     new_methods, prototypes = collect_prototypes(methods, classes)
+    fix_getters(prototypes)
     merge(classes, new_methods)
     with open("new_classes.json", "w") as f:
         json.dump(classes, f, indent=4, cls=EnhancedJSONEncoder)
@@ -137,6 +138,12 @@ def merge(classes: list[ClassInfo], methods: dict[str, list[MethodWithPrototype]
         new_methods = methods.get(clazz.name, None)
         if new_methods:
             clazz.vtable = new_methods
+
+
+def fix_getters(prototypes: list[MethodPrototype]):
+    for prototype in prototypes:
+        if prototype.name.startswith("get") and prototype.return_type == "void":
+            prototype.return_type = "???"
 
 
 def collect_prototypes(
