@@ -138,7 +138,7 @@ class ClassVtableRenamer:
             tif.set_udm_type(self.vtable_type, vtable_type_member, tif.pointer_of(func_type))
 
         # Only touch the function itself if it is an override or defined by this class
-        if not self.is_override(entry.vtable_offset) or not functions.is_in_function(entry.func_ea):
+        if not self.is_override(entry.vtable_offset) or not functions.is_in_function(entry.func_ea) or entry.func_ea == pure_virtual_function_ea:
             return
 
         # Rename the function
