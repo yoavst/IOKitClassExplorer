@@ -9,15 +9,18 @@ from idahelper import cpp, functions, memory, strings, tif, xrefs
 
 GENERIC_FUNCTION_TYPE_PATTERN = re.compile(r"(__int64|void) \(__fastcall \*\)\((\w+) \*__hidden this\)")
 
+
 # region Types of prototypes.json
 class Parameter(TypedDict):
     """Function parameter type from prototypes.json"""
+
     type: str
     name: str
 
 
 class Prototype(TypedDict):
     """Function prototype type from prototypes.json"""
+
     name: str
     mangledName: str
     returnType: str
@@ -25,7 +28,10 @@ class Prototype(TypedDict):
     vtableIndex: int
     declaringClass: str
     protoIndex: int
+
+
 # endregion
+
 
 # region Types of classes.json
 class VtableEntry(TypedDict):
@@ -39,7 +45,10 @@ class Clazz(TypedDict):
     parent: str | None
     isAbstract: bool
     vtable: list[VtableEntry]
+
+
 # endregion
+
 
 def unknown_to_int64(typ: str) -> str:
     """Convert an unknown type (???) to a known type, defaulting to __int64."""
@@ -63,7 +72,9 @@ def _pure_virtual_function_ea() -> int:
     assert pure_virtual_func_ea is not None
     return pure_virtual_func_ea
 
+
 pure_virtual_function_ea = _pure_virtual_function_ea()
+
 
 class ClassVtableRenamer:
     def __init__(self, class_type: tinfo_t, vtable_ea: int, is_verbose: bool = True, force_apply: bool = False):
@@ -117,15 +128,11 @@ class ClassVtableRenamer:
                 self._rename_method(entry, methods[entry.index])
             else:
                 self._rename_unknown(entry)
-                continue
-
-            self._rename_method(entry, methods[entry.index])
 
     def _rename_method(self, entry: cpp.VTableItem, prototype: Prototype):
         vtable_type_member = self.vtable_type_udt[entry.index]
         if not vtable_type_member.type.is_funcptr():
             print(f"[Warning] Member type is not function ptr: {self.class_type} {entry}")
-
         # Skip destructor
         if "~" in prototype["name"]:
             return
@@ -167,7 +174,6 @@ class ClassVtableRenamer:
         if self.is_verbose:
             print(f"Renamed {entry.func_ea:X} ({memory.name_from_ea(entry.func_ea)}) -> {name}")
 
-
     def _rename_unknown(self, entry: cpp.VTableItem):
         """Rename a vtable member that we don't know its name or type."""
 
@@ -183,7 +189,7 @@ class ClassVtableRenamer:
         ):
             return
 
-        if not self._is_valid_this_class_method(memory.name_from_ea(entry.func_ea)):
+        if not self._is_valid_this_class_method(memory.name_from_ea(entry.func_ea) or ""):
             func_new_new_name = f"{self.class_type}::{vtable_new_name}"
             memory.set_name(entry.func_ea, func_new_new_name)
             if self.is_verbose:
@@ -206,7 +212,7 @@ class ClassVtableRenamer:
             unknown_to_int64(proto["returnType"]),
             [tif.FuncParam(f"{class_type}*", "this")]
             + [tif.FuncParam(type=unknown_to_int64(p["type"]), name=p["name"]) for p in proto["parameters"]],
-            )
+        )
 
         if func_type is not None:
             return func_type
@@ -227,7 +233,6 @@ class ClassVtableRenamer:
                 + ([tif.FuncParam(type="__int64")] * len(proto["parameters"])),
             )
         return None
-
 
 
 def is_default_vtable_method_type(typ: tinfo_t) -> bool:
