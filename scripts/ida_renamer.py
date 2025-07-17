@@ -122,7 +122,7 @@ class ClassVtableRenamer:
 
     def apply(self, methods: list[tuple[Prototype, str | None]]):
         # Verify the type is not buggy
-        if methods[0][0]["name"] != "~OSObject":
+        if methods and methods[0][0]["name"] != "~OSObject":
             print(f"[Error] Type {self.class_type} has unexpected first method: {methods[0][0]['name']}")
             return
 
@@ -173,6 +173,8 @@ class ClassVtableRenamer:
             or is_default_vtable_method_type(tif.pointer_of(func_current_type))
         ):
             tif.apply_tinfo_to_ea(func_type, entry.func_ea)
+        else:
+            self._try_fix_first_arg(entry.func_ea, func_current_type)
 
         if self.is_verbose:
             print(f"Renamed {entry.func_ea:X} ({memory.name_from_ea(entry.func_ea)}) -> {name}")
@@ -197,6 +199,8 @@ class ClassVtableRenamer:
             memory.set_name(entry.func_ea, func_new_new_name)
             if self.is_verbose:
                 print(f"Renamed {entry.func_ea:X} ({memory.name_from_ea(entry.func_ea)}) -> {vtable_new_name}")
+
+        self._try_fix_first_arg(entry.func_ea, tif.from_ea(entry.func_ea))
 
     def _is_valid_this_class_method(self, current_name: str) -> bool:
         """
@@ -236,6 +240,19 @@ class ClassVtableRenamer:
                 + ([tif.FuncParam(type="__int64")] * len(proto["parameters"])),
             )
         return None
+
+    def _try_fix_first_arg(self, func_ea: int, func_current_type: tinfo_t | None):
+        """If the function type is not what we expect, try to fix it."""
+        if func_current_type is None or not func_current_type.is_func():
+            return
+
+        # If the first argument is not a pointer to the class type, fix it
+        if func_current_type.get_nargs() > 0:
+            current_arg_0_type = func_current_type.get_nth_arg(0)
+            if not current_arg_0_type.is_ptr() or current_arg_0_type.get_pointed_object() != self.class_type:
+                func_current_type.set_funcarg_type(0, tif.pointer_of(self.class_type))
+                tif.apply_tinfo_to_ea(func_current_type, func_ea)
+
 
 
 def is_default_vtable_method_type(typ: tinfo_t) -> bool:
@@ -296,9 +313,6 @@ def main(is_verbose: bool, show_progress: bool, force_apply: bool):
             continue
 
         methods = get_methods_for_type(prototypes, classes_dict, type_name)
-        if not methods:
-            continue
-
         renamer = ClassVtableRenamer(cpp_type, vtable_ea, is_verbose, force_apply)
         renamer.remove_rtti_from_vtable()
         renamer.apply(methods)
