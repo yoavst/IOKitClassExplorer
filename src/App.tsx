@@ -6,11 +6,11 @@ import ClassDetails from './components/ClassDetails/ClassDetails.tsx'
 import ClassGraph from './components/ClassGraph/ClassGraph.tsx'
 
 import { createHierarchy } from './utils/hierarchy.ts'
-import { Class, Prototype } from './utils/types.tsx'
+import { Class, JSONClass, classesFromJSON, Prototype } from './utils/types.tsx'
 import _classes from './classes.json'
 import _prototypes from './prototypes.json'
 
-const classes = _classes as Class[]
+const classes = classesFromJSON(_classes as JSONClass[])
 const prototypes = _prototypes as Prototype[]
 
 const App: FC = () => {

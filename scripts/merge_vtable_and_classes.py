@@ -1,3 +1,4 @@
+import abc
 import dataclasses
 import json
 import sys
@@ -9,9 +10,18 @@ UNKNOWN = "???"
 FUNC_PREFIX_UNKNOWN = "sub_"
 
 
+# Region json encoding
+class CustomToJson(abc.ABC):
+    @abc.abstractmethod
+    def to_json(self) -> object:
+        """Convert the object to a JSON compatible type."""
+
+
 class EnhancedJSONEncoder(json.JSONEncoder):
     def default(self, o):
-        if dataclasses.is_dataclass(o):
+        if isinstance(o, CustomToJson):
+            return o.to_json()
+        elif dataclasses.is_dataclass(o):
             return {EnhancedJSONEncoder.camelcase(k): v for k, v in EnhancedJSONEncoder.asdict_shallow(o).items()}
         return super().default(o)
 
@@ -33,7 +43,10 @@ class EnhancedJSONEncoder(json.JSONEncoder):
     def asdict_shallow(obj):
         if not dataclasses.is_dataclass(obj):
             raise TypeError("asdict_shallow() should be called on dataclass instances")
-        return {f.name: getattr(obj, f.name) for f in dataclasses.fields(obj)}
+        return {f.name: getattr(obj, f.name) for f in dataclasses.fields(obj) if not f.name.startswith("_")}
+
+
+# endregion
 
 
 # region input file json structures
@@ -80,10 +93,14 @@ class InputMethod:
 
 # region output file json structures
 @dataclass
-class MethodWithPrototype:
+class MethodWithPrototype(CustomToJson):
     prototype_index: int
     is_overridden: bool
     is_pure_virtual: bool
+    mangled_name: str | None
+
+    def to_json(self) -> object:
+        return [self.prototype_index, self.is_overridden, self.is_pure_virtual, self.mangled_name]
 
 
 @dataclass
@@ -154,9 +171,9 @@ def main(args):
 
     # Serialize the results to JSON files
     with open("../src/classes.json", "w") as f:
-        json.dump(classes, f, indent=4, cls=EnhancedJSONEncoder)
+        json.dump(classes, f, cls=EnhancedJSONEncoder)
     with open("../src/prototypes.json", "w") as f:
-        json.dump(prototypes, f, indent=4, cls=EnhancedJSONEncoder)
+        json.dump(prototypes, f, cls=EnhancedJSONEncoder)
 
 
 def write_vtables_to_classes(classes: list[ClassInfo], methods: ClassNameToVtable):
@@ -250,6 +267,9 @@ def collect_prototypes_for_class(
                 parent_method.prototype_index,
                 input_method.is_implemented_by_current_class,
                 input_method.is_pure_virtual,
+                input_method.mangled_name
+                if not input_method.is_pure_virtual and input_method.is_implemented_by_current_class
+                else None,
             )
         )
 
@@ -284,6 +304,9 @@ def collect_prototypes_for_class(
                 prototype.proto_index,
                 input_method.is_implemented_by_current_class,
                 input_method.is_pure_virtual,
+                input_method.mangled_name
+                if not input_method.is_pure_virtual and input_method.is_implemented_by_current_class
+                else None,
             )
         )
 

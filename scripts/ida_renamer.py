@@ -1,7 +1,7 @@
 import json
 import re
 import urllib.request
-from typing import TypedDict
+from typing import NamedTuple, TypedDict
 
 import ida_funcs
 from ida_typeinf import tinfo_t, udm_t, udt_type_data_t
@@ -34,17 +34,18 @@ class Prototype(TypedDict):
 
 
 # region Types of classes.json
-class VtableEntry(TypedDict):
-    prototypeIndex: int
-    isOverridden: bool
-    isPureVirtual: bool
+class VtableEntry(NamedTuple):
+    prototype_index: int
+    is_overridden: bool
+    is_pure_virtual: bool
+    mangled_name: str | None
 
 
 class Clazz(TypedDict):
     name: str
     parent: str | None
     isAbstract: bool
-    vtable: list[VtableEntry]
+    vtable: list[VtableEntry] | None
 
 
 # endregion
@@ -117,19 +118,19 @@ class ClassVtableRenamer:
             # Remove the newly created gap in the vtable type
             self.vtable_type.expand_udt(1, -(member.size // 8))
 
-    def apply(self, methods: list[Prototype]):
+    def apply(self, methods: list[tuple[Prototype, str | None]]):
         # Verify the type is not buggy
-        if methods[0]["name"] != "~OSObject":
-            print(f"[Error] Type {self.class_type} has unexpected first method: {methods[0]['name']}")
+        if methods[0][0]["name"] != "~OSObject":
+            print(f"[Error] Type {self.class_type} has unexpected first method: {methods[0][0]['name']}")
             return
 
         for entry in cpp.iterate_vtable(self.vtable_ea):
             if entry.index < len(methods):
-                self._rename_method(entry, methods[entry.index])
+                self._rename_method(entry, *methods[entry.index])
             else:
                 self._rename_unknown(entry)
 
-    def _rename_method(self, entry: cpp.VTableItem, prototype: Prototype):
+    def _rename_method(self, entry: cpp.VTableItem, prototype: Prototype, mangled_name: str | None):
         vtable_type_member = self.vtable_type_udt[entry.index]
         if not vtable_type_member.type.is_funcptr():
             print(f"[Warning] Member type is not function ptr: {self.class_type} {entry}")
@@ -143,7 +144,7 @@ class ClassVtableRenamer:
 
         # Retype the vtable member
         func_type = self._build_func_type(self.class_type, prototype, entry.func_ea)
-        if self.force_apply or (is_default_vtable_method_type(vtable_type_member.type) and func_type is not None):
+        if func_type is not None and (self.force_apply or is_default_vtable_method_type(vtable_type_member.type)):
             tif.set_udm_type(self.vtable_type, vtable_type_member, tif.pointer_of(func_type))
 
         # Only touch the function itself if it is an override or defined by this class
@@ -155,7 +156,7 @@ class ClassVtableRenamer:
             return
 
         # Rename the function
-        name = prototype["mangledName"]
+        name = mangled_name
         if not name or not self._is_valid_this_class_method(name):
             # Probably because the mangled name is of the original vtable slot
             name = f"{self.class_type}::{prototype['name']}"
@@ -251,7 +252,10 @@ def rename_udm_with_retry(typ: tinfo_t, udm: udm_t, new_name: str):
 
 
 ## memory vtables utils
-def get_methods_for_type(prototypes: list[Prototype], classes: dict[str, Clazz], type_name: str) -> list[Prototype]:
+def get_methods_for_type(
+    prototypes: list[Prototype], classes: dict[str, Clazz], type_name: str
+) -> list[tuple[Prototype, str | None]]:
+    """For each type return pairs of (prototype, mangled name) from its vtable"""
     # search for the first class in the hierarchy chain that it's vtable is not none
     cls = classes[type_name]
     while cls.get("vtable") is None:
@@ -261,7 +265,7 @@ def get_methods_for_type(prototypes: list[Prototype], classes: dict[str, Clazz],
             return []
         cls = classes[parent]
 
-    return [prototypes[m["prototypeIndex"]] for m in cls["vtable"]]
+    return [(prototypes[m.prototype_index], m.mangled_name) for m in cls["vtable"]]
 
 
 def get_file(name: str) -> str:
@@ -270,9 +274,16 @@ def get_file(name: str) -> str:
     return urllib.request.urlopen(url).read()  # noqa: S310
 
 
+def get_classes() -> list[Clazz]:
+    classes: list[Clazz] = json.loads(get_file("classes.json"))
+    for cls in classes:
+        cls["vtable"] = [VtableEntry(*m) for m in cls["vtable"] or []] if cls.get("vtable") else None
+    return classes
+
+
 def main(is_verbose: bool, show_progress: bool, force_apply: bool):
     prototypes: list[Prototype] = json.loads(get_file("prototypes.json"))
-    classes: list[Clazz] = json.loads(get_file("classes.json"))
+    classes = get_classes()
     classes_dict: dict[str, Clazz] = {cls["name"]: cls for cls in classes}
 
     for i, (cpp_type, vtable_ea) in enumerate(cpp.get_all_cpp_classes()):
