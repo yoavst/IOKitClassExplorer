@@ -53,7 +53,9 @@ class Clazz(TypedDict):
 
 def unknown_to_int64(typ: str) -> str:
     """Convert an unknown type (???) to a known type, defaulting to __int64."""
-    return typ if typ != "???" else "__int64"
+    if typ == "???":
+        return "__int64"
+    return typ.replace("OSMetaClassBase", "OSOObject")
 
 
 def _pure_virtual_function_ea() -> int:
