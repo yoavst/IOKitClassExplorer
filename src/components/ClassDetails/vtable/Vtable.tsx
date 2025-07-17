@@ -62,7 +62,7 @@ const enrichVirtualMethods = (
         for (const [index, method] of child.vtable.entries()) {
             if (index >= vtableSize) break
 
-            if (method.isOverriden && !method.isPureVirtual) {
+            if (method.isOverridden && !method.isPureVirtual) {
                 childrenImplementations[index].push(child)
             }
         }
@@ -89,7 +89,7 @@ const VtableIndex: FC<TableCellProps> = ({ data }) => {
     if (data.prototype.declaringClass === data.className) {
         color = 'bg-green-500'
         hint = 'Defined in this class'
-    } else if (data.isOverriden) {
+    } else if (data.isOverridden) {
         color = 'bg-red-500'
         hint = 'Overridden in this class'
     } else {

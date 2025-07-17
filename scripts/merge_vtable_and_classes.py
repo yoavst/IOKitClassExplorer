@@ -75,7 +75,7 @@ class InputMethod:
 @dataclass
 class MethodWithPrototype:
     prototype_index: int
-    is_overriden: bool
+    is_overridden: bool
     is_pure_virtual: bool
 
 

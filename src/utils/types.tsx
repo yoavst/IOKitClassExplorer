@@ -8,7 +8,7 @@ export interface Class {
 
 export interface VirtualMethod {
     prototypeIndex: number
-    isOverriden: boolean
+    isOverridden: boolean
     isPureVirtual: boolean
 }
 

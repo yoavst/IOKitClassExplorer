@@ -88,7 +88,7 @@ const ClassList: FC<ClassListProps> = ({
                 else {
                     const children = getChildren(classesHierarchy, clazz.name)
                     filteredClasses = children.filter((child) => {
-                        return child.vtable?.[index]?.isOverriden
+                        return child.vtable?.[index]?.isOverridden
                     })
                 }
             }

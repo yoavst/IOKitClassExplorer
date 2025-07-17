@@ -36,7 +36,7 @@ class Prototype(TypedDict):
 # region Types of classes.json
 class VtableEntry(TypedDict):
     prototypeIndex: int
-    isOverriden: bool
+    isOverridden: bool
     isPureVirtual: bool
 
 
