@@ -4,7 +4,7 @@ import urllib.request
 from typing import NamedTuple, TypedDict
 
 import ida_funcs
-from ida_typeinf import tinfo_t, udm_t, udt_type_data_t
+from ida_typeinf import tinfo_t, udt_type_data_t
 from idahelper import cpp, functions, memory, strings, tif, xrefs
 
 GENERIC_FUNCTION_TYPE_PATTERN = re.compile(r"(__int64|void) \(__fastcall \*\)\((\w+) \*__hidden this\)")
@@ -140,12 +140,12 @@ class ClassVtableRenamer:
 
         # Rename the vtable member
         vtable_new_name = prototype["name"]
-        rename_udm_with_retry(self.vtable_type, vtable_type_member, vtable_new_name)
+        rename_udm_with_retry(self.vtable_type, entry.index, vtable_new_name)
 
         # Retype the vtable member
         func_type = self._build_func_type(self.class_type, prototype, entry.func_ea)
         if func_type is not None and (self.force_apply or is_default_vtable_method_type(vtable_type_member.type)):
-            tif.set_udm_type(self.vtable_type, vtable_type_member, tif.pointer_of(func_type))
+            self.vtable_type.set_udm_type(entry.index, tif.pointer_of(func_type))
 
         # Only touch the function itself if it is an override or defined by this class
         if (
@@ -241,12 +241,12 @@ def is_default_vtable_method_type(typ: tinfo_t) -> bool:
     return bool(GENERIC_FUNCTION_TYPE_PATTERN.match(str(typ)))
 
 
-def rename_udm_with_retry(typ: tinfo_t, udm: udm_t, new_name: str):
+def rename_udm_with_retry(typ: tinfo_t, udm_index: int, new_name: str):
     """Rename an udm. On failure, retry with a suffix."""
     suffix = ""
     for j in range(20):
         name = f"{new_name}{suffix}"
-        if tif.set_udm_name(typ, udm, name):
+        if typ.rename_udm(udm_index, name) == 0:
             break
         suffix = str(j)
 
