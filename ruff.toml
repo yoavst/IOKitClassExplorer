@@ -2,6 +2,7 @@ target-version = "py312"
 line-length = 120
 fix = true
 
+[lint]
 select = [
     # flake8-2020
     "YTT",

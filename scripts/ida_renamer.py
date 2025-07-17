@@ -66,10 +66,11 @@ def _pure_virtual_function_ea() -> int:
 pure_virtual_function_ea = _pure_virtual_function_ea()
 
 class ClassVtableRenamer:
-    def __init__(self, class_type: tinfo_t, vtable_ea: int, is_verbose: bool = True):
+    def __init__(self, class_type: tinfo_t, vtable_ea: int, is_verbose: bool = True, force_apply: bool = False):
         self.class_type: tinfo_t = class_type
         self.vtable_ea: int = vtable_ea
         self.is_verbose = is_verbose
+        self.force_apply = force_apply
         self.vtable_type: tinfo_t = tif.vtable_type_from_type(class_type)
         self.vtable_type_udt: udt_type_data_t = tif.get_udt(self.vtable_type)
 
@@ -112,8 +113,9 @@ class ClassVtableRenamer:
             return
 
         for entry in cpp.iterate_vtable(self.vtable_ea):
-            # If we recovered only part of the vtable, skip the rest
-            if entry.index >= len(methods):
+            if entry.index < len(methods):
+                self._rename_method(entry, methods[entry.index])
+            else:
                 self._rename_unknown(entry)
                 continue
 
@@ -134,24 +136,32 @@ class ClassVtableRenamer:
 
         # Retype the vtable member
         func_type = self._build_func_type(self.class_type, prototype, entry.func_ea)
-        if is_default_vtable_method_type(vtable_type_member.type) and func_type is not None:
+        if self.force_apply or (is_default_vtable_method_type(vtable_type_member.type) and func_type is not None):
             tif.set_udm_type(self.vtable_type, vtable_type_member, tif.pointer_of(func_type))
 
         # Only touch the function itself if it is an override or defined by this class
-        if not self.is_override(entry.vtable_offset) or not functions.is_in_function(entry.func_ea) or entry.func_ea == pure_virtual_function_ea:
+        if (
+            not self.is_override(entry.vtable_offset)
+            or not functions.is_in_function(entry.func_ea)
+            or entry.func_ea == pure_virtual_function_ea
+        ):
             return
 
         # Rename the function
         name = prototype["mangledName"]
         if not name or not self._is_valid_this_class_method(name):
-           # Probably because the mangled name is of the original vtable slot
+            # Probably because the mangled name is of the original vtable slot
             name = f"{self.class_type}::{prototype['name']}"
 
         memory.set_name(entry.func_ea, name, retry=True)
 
         # Retype the function
         func_current_type = tif.from_ea(entry.func_ea)
-        if func_type is not None and (func_current_type is None or is_default_vtable_method_type(tif.pointer_of(func_current_type))):
+        if func_type is not None and (
+            self.force_apply
+            or func_current_type is None
+            or is_default_vtable_method_type(tif.pointer_of(func_current_type))
+        ):
             tif.apply_tinfo_to_ea(func_type, entry.func_ea)
 
         if self.is_verbose:
@@ -166,7 +176,11 @@ class ClassVtableRenamer:
         tif.set_udm_name(self.vtable_type, self.vtable_type_udt[entry.index], vtable_new_name)
 
         # Don't rename pure virtual functions or functions that are not overrides or non functions
-        if entry.func_ea == pure_virtual_function_ea or not self.is_override(entry.vtable_offset) or not functions.is_in_function(entry.func_ea):
+        if (
+            entry.func_ea == pure_virtual_function_ea
+            or not self.is_override(entry.vtable_offset)
+            or not functions.is_in_function(entry.func_ea)
+        ):
             return
 
         if not self._is_valid_this_class_method(memory.name_from_ea(entry.func_ea)):
@@ -189,7 +203,7 @@ class ClassVtableRenamer:
         """Build a function type from the prototype and type of this parameter."""
         # Try to get the function type from KDK
         func_type = tif.from_func_components(
-            proto["returnType"],
+            unknown_to_int64(proto["returnType"]),
             [tif.FuncParam(f"{class_type}*", "this")]
             + [tif.FuncParam(type=unknown_to_int64(p["type"]), name=p["name"]) for p in proto["parameters"]],
             )
@@ -208,9 +222,10 @@ class ClassVtableRenamer:
         # Try to get the right number of parameters at least
         if len(proto["parameters"]) != 1 or proto["parameters"][0]["type"] != "???":
             return tif.from_func_components(
-                proto["returnType"],
-                [tif.FuncParam(f"{class_type}*", "this")] + ([tif.FuncParam(type="__int64")] * len(proto["parameters"])),
-                )
+                unknown_to_int64(proto["returnType"]),
+                [tif.FuncParam(f"{class_type}*", "this")]
+                + ([tif.FuncParam(type="__int64")] * len(proto["parameters"])),
+            )
         return None
 
 
@@ -250,7 +265,7 @@ def get_file(name: str) -> str:
     return urllib.request.urlopen(url).read()  # noqa: S310
 
 
-def main(is_verbose: bool, show_progress: bool):
+def main(is_verbose: bool, show_progress: bool, force_apply: bool):
     prototypes: list[Prototype] = json.loads(get_file("prototypes.json"))
     classes: list[Clazz] = json.loads(get_file("classes.json"))
     classes_dict: dict[str, Clazz] = {cls["name"]: cls for cls in classes}
@@ -266,8 +281,9 @@ def main(is_verbose: bool, show_progress: bool):
         if not methods:
             continue
 
-        renamer = ClassVtableRenamer(cpp_type, vtable_ea, is_verbose)
+        renamer = ClassVtableRenamer(cpp_type, vtable_ea, is_verbose, force_apply)
         renamer.remove_rtti_from_vtable()
         renamer.apply(methods)
 
-main(is_verbose=True, show_progress=True)
+
+main(is_verbose=False, show_progress=True, force_apply=False)
