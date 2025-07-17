@@ -254,7 +254,6 @@ class ClassVtableRenamer:
                 tif.apply_tinfo_to_ea(func_current_type, func_ea)
 
 
-
 def is_default_vtable_method_type(typ: tinfo_t) -> bool:
     """Is this the default type for a vtable method?"""
     return bool(GENERIC_FUNCTION_TYPE_PATTERN.match(str(typ)))

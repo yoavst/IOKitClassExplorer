@@ -142,10 +142,12 @@ type ClassNameToVtable = dict[str, list[MethodWithPrototype]]
 
 
 def main(args):
-    if len(args) != 2:
-        print("Usage: merge_vtable_and_classes.py classes.json folder_of_methods_json")
+    if len(args) not in (3, 4):
+        print("Usage: merge_vtable_and_classes.py classes.json folder_of_methods_json [16_5_methods.json]")
         return
-    classes_file_name, folder_of_methods = args
+    classes_file_name = args[0]
+    folder_of_methods = args[1]
+    extra_symbols_file = args[2] if len(args) == 3 else None
 
     # Load classes from the provided JSON file
     with open(classes_file_name) as f:
@@ -163,6 +165,11 @@ def main(args):
                     if class_name in classes_dict
                 }
             )
+    if extra_symbols_file:
+        with open(extra_symbols_file) as f:
+            for class_name, methods in json.load(f).items():
+                if class_name not in input_methods and not class_name.endswith("::MetaClass"):
+                    input_methods[class_name] = [InputMethod.from_dict(m) for m in methods]
 
     # Merge vtables
     new_methods, prototypes = collect_prototypes(input_methods, classes_dict)
@@ -273,7 +280,9 @@ def collect_prototypes_for_class(
             )
         )
 
-        enrich_prototype(class_name, prototypes[parent_method.prototype_index], input_method)
+        if not enrich_prototype(class_name, prototypes[parent_method.prototype_index], input_method):
+            # On name mismatch, we cannot continue with this class
+            return None
 
     # Add new methods' prototypes
     for i in range(len(parent_vtable), len(methods)):
@@ -313,10 +322,10 @@ def collect_prototypes_for_class(
     return my_methods
 
 
-def enrich_prototype(class_name: str, prototype: MethodPrototype, input_method: InputMethod):
+def enrich_prototype(class_name: str, prototype: MethodPrototype, input_method: InputMethod) -> bool:
     # Pure virtual method does not have any details we can use
     if input_method.is_pure_virtual:
-        return
+        return True
 
     # If we don't know the return type, we can use the input method's return type.
     if prototype.return_type == UNKNOWN:
@@ -327,15 +336,18 @@ def enrich_prototype(class_name: str, prototype: MethodPrototype, input_method: 
         prototype.name = prototype.name or input_method.name
         prototype.mangled_name = prototype.mangled_name or input_method.mangled_name
     # Check if the prototype name matches the input method name.
+    elif not input_method.name:
+        return True
     elif (
         prototype.name != input_method.name
         and not prototype.name.startswith("~")
         and not input_method.name.startswith(FUNC_PREFIX_UNKNOWN)
     ):
         print(f"[Error] Name mismatch on {class_name}: \n\t{prototype}\n\t{input_method}")
-        return
+        return False
 
     enrich_parameters(class_name, prototype, input_method)
+    return True
 
 
 def enrich_parameters(class_name: str, prototype: MethodPrototype, input_method: InputMethod):
