@@ -72,7 +72,7 @@ def get_func_types(func_addr: int, demangled_name: str | None) -> tuple[str, lis
     """Get the return type and parameters of a function."""
     func_type = tif.from_ea(func_addr)
     if func_type is None:
-        # Try to fallback into parsing the function name
+        # As a fallback, parse the function name
         if demangled_name:
             parameters = get_parameter_types_from_demangled_name(demangled_name)
             if parameters is not None:
@@ -110,7 +110,7 @@ def extract_vtable(type_name: str, vtable_ea: int) -> list[Method] | None:
             else:
                 class_name, method_name = class_and_name
 
-            return_type, parameters = get_func_types(entry.func_ea, entry.demangled_func_name)
+            return_type, parameters = get_func_types(entry.func_ea, cpp.demangle(entry.func_name))
 
             methods.append(
                 Method(
@@ -136,7 +136,7 @@ def get_methods() -> dict[str, list[Method]]:
 
 
 def serialize(data, path: Path):
-    """Write data as json to the given path, with support for serializing data classes"""
+    """Write data as JSON to the given path, with support for serializing data classes"""
 
     class EnhancedJSONEncoder(json.JSONEncoder):
         def default(self, o):
@@ -148,6 +148,10 @@ def serialize(data, path: Path):
         json.dump(data, f, indent=4, cls=EnhancedJSONEncoder)
 
 
-if __name__ == "__main__":
+def main():
     methods = get_methods()
     serialize(methods, Path("/tmp/methods.json"))
+
+
+if __name__ == "__main__":
+    main()
