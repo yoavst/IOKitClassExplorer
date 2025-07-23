@@ -142,7 +142,7 @@ type ClassNameToVtable = dict[str, list[MethodWithPrototype]]
 
 
 def main(args):
-    if len(args) not in (3, 4):
+    if len(args) not in (2, 3):
         print("Usage: merge_vtable_and_classes.py classes.json folder_of_methods_json [16_5_methods.json]")
         return
     classes_file_name = args[0]
