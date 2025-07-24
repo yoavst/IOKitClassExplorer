@@ -9,6 +9,12 @@ from idahelper import cpp, functions, memory, strings, tif, xrefs
 
 GENERIC_FUNCTION_TYPE_PATTERN = re.compile(r"(__int64|void) \(__fastcall \*\)\((\w+) \*__hidden this\)")
 
+OS_METACLASS_BASE = "OSMetaClassBase"
+OS_OBJECT = "OSObject"
+
+OS_OBJECT_PTR_TYPE: tinfo_t = tif.from_c_type(OS_OBJECT + "*")
+assert OS_OBJECT_PTR_TYPE is not None, f"Failed to create type for {OS_OBJECT}*"
+
 
 # region Types of prototypes.json
 class Parameter(TypedDict):
@@ -55,7 +61,7 @@ def unknown_to_int64(typ: str) -> str:
     """Convert an unknown type (???) to a known type, defaulting to __int64."""
     if typ == "???":
         return "__int64"
-    return typ.replace("OSMetaClassBase", "OSOObject")
+    return typ.replace(OS_METACLASS_BASE, OS_OBJECT)
 
 
 def _pure_virtual_function_ea() -> int:
@@ -230,6 +236,12 @@ class ClassVtableRenamer:
             func_type = tif.from_func(func)
             if func_type is not None and class_type is not None:
                 func_type.set_funcarg_type(0, tif.pointer_of(class_type))
+
+                for arg in range(1, func_type.get_nargs()):
+                    arg_type = func_type.get_nth_arg(arg)
+                    if arg_type.is_ptr() and arg_type.get_pointed_object().get_type_name() == OS_METACLASS_BASE:
+                        func_type.set_funcarg_type(arg, OS_OBJECT_PTR_TYPE)
+
                 return func_type
 
         # Try to get the right number of parameters at least
@@ -299,7 +311,7 @@ def get_classes() -> list[Clazz]:
     return classes
 
 
-def main(is_verbose: bool, show_progress: bool, force_apply: bool):
+def apply_renaming(is_verbose: bool, show_progress: bool, force_apply: bool):
     prototypes: list[Prototype] = json.loads(get_file("prototypes.json"))
     classes = get_classes()
     classes_dict: dict[str, Clazz] = {cls["name"]: cls for cls in classes}
@@ -317,4 +329,5 @@ def main(is_verbose: bool, show_progress: bool, force_apply: bool):
         renamer.apply(methods)
 
 
-main(is_verbose=False, show_progress=True, force_apply=False)
+if __name__ == "__main__":
+    apply_renaming(is_verbose=False, show_progress=True, force_apply=False)
