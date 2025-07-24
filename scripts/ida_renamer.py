@@ -132,7 +132,7 @@ class ClassVtableRenamer:
             print(f"[Error] Type {self.class_type} has unexpected first method: {methods[0][0]['name']}")
             return
 
-        for entry in cpp.iterate_vtable(self.vtable_ea):
+        for entry in cpp.iterate_vtable(self.vtable_ea, skip_reserved=False):
             if entry.index < len(methods):
                 self._rename_method(entry, *methods[entry.index])
             else:
