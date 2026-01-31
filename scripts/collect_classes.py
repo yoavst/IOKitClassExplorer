@@ -47,8 +47,34 @@ def collect_classes() -> list[BaseClass]:
     return classes
 
 
+def collect_classes_without_vtables(classes_already_found: set[str]) -> list[BaseClass]:
+    from ida_kernelcache.kernelcache import KernelCache
+    from ida_kernelcache.phases import CollectClasses
+
+    kc = KernelCache()
+    kc.process([CollectClasses])
+    classes: list[BaseClass] = []
+    for item in kc.class_info_map.items():
+        cls_name = item[1]
+        if cls_name in classes_already_found:
+            continue
+        super_class = item[2].superclass.class_name if item[2].superclass else None
+
+        classes.append(
+            {
+                "name": cls_name,
+                "parent": super_class or None,
+                # Not sure, but it does not have a vtable...
+                "is_abstract": True,
+            }
+        )
+
+    return classes
+
+
 def dump_classes(path: str):
     classes = collect_classes()
+    classes.extend(collect_classes_without_vtables({c["name"] for c in classes}))
     with open(path, "w") as f:
         json.dump(classes, f, indent=4)
 
