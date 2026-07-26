@@ -700,6 +700,11 @@
         "is_abstract": false
     },
     {
+        "name": "IOExclaveProxyStateWrapper",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
         "name": "IONVRAMController",
         "parent": "IOService",
         "is_abstract": true
@@ -760,7 +765,12 @@
         "is_abstract": false
     },
     {
-        "name": "AGXFirmwareKextG15RTBuddy",
+        "name": "AFKHIDTBDevice",
+        "parent": "IOHIDDevice",
+        "is_abstract": false
+    },
+    {
+        "name": "AGXFirmwareKextG16RTBuddy",
         "parent": "AGXFirmwareKextRTBuddy",
         "is_abstract": false
     },
@@ -802,6 +812,11 @@
     {
         "name": "AGXCommandQueue",
         "parent": "IOGPUCommandQueue",
+        "is_abstract": false
+    },
+    {
+        "name": "AGXCommandQueueReclaimableState",
+        "parent": "OSObject",
         "is_abstract": false
     },
     {
@@ -870,59 +885,74 @@
         "is_abstract": false
     },
     {
-        "name": "AGX3DChannelG15_AGX2",
+        "name": "AGXHAL200SecureMonitor",
+        "parent": "AGXSecureMonitorG16",
+        "is_abstract": false
+    },
+    {
+        "name": "AGX3DChannelG16",
         "parent": "AGX3DChannelGen2",
         "is_abstract": false
     },
     {
-        "name": "AGXCLChannelG15_AGX2",
+        "name": "AGX3DChannelG16_SKSM",
+        "parent": "AGX3DChannelSKSM",
+        "is_abstract": false
+    },
+    {
+        "name": "AGXCLChannelG16",
         "parent": "AGXCLChannelGen2",
         "is_abstract": false
     },
     {
-        "name": "AGXGartG15_AGX2",
+        "name": "AGXCLChannelG16_SKSM",
+        "parent": "AGXCLChannelSKSM",
+        "is_abstract": false
+    },
+    {
+        "name": "AGXKSMKickQueueG16",
+        "parent": "AGXKSMKickQueue",
+        "is_abstract": false
+    },
+    {
+        "name": "AGXGartG16",
         "parent": "AGXSecureGart",
         "is_abstract": false
     },
     {
-        "name": "AGXSharedGartTableBackingG15_AGX2",
+        "name": "AGXSharedGartTableBackingG16",
         "parent": "AGXSecureSharedGartTableBacking",
         "is_abstract": false
     },
     {
-        "name": "AGXLegacyGartG15_AGX2",
-        "parent": "AGXLegacyGart",
-        "is_abstract": false
-    },
-    {
-        "name": "AGXLegacySharedGartTableBackingG15_AGX2",
-        "parent": "AGXLegacySharedGartTableBacking",
-        "is_abstract": false
-    },
-    {
-        "name": "AGXFastRenderTargetG15_AGX2",
+        "name": "AGXFastRenderTargetG16",
         "parent": "AGXFastRenderTarget",
         "is_abstract": false
     },
     {
-        "name": "AGXRenderTargetMemoryG15_AGX2",
+        "name": "AGXRenderTargetMemoryG16",
         "parent": "AGXRenderTargetMemory",
         "is_abstract": false
     },
     {
-        "name": "AGXSecureMonitorG15_AGX2",
+        "name": "AGXSecureMonitorG16",
         "parent": "AGXSecureMonitor",
         "is_abstract": false
     },
     {
-        "name": "AGXTAChannelG15_AGX2",
+        "name": "AGXTAChannelG16",
         "parent": "AGXTAChannelGen2",
         "is_abstract": false
     },
     {
-        "name": "AGXAcceleratorG15P_B0",
-        "parent": "AGXFamilyAccelerator",
+        "name": "AGXTAChannelG16_SKSM",
+        "parent": "AGXTAChannelSKSM",
         "is_abstract": false
+    },
+    {
+        "name": "AGXAccelerator",
+        "parent": "IOGPU",
+        "is_abstract": true
     },
     {
         "name": "AGXInternalResource",
@@ -961,21 +991,6 @@
     },
     {
         "name": "AGXLateEvalEventResourceManager",
-        "parent": "OSObject",
-        "is_abstract": false
-    },
-    {
-        "name": "AGXLegacyMemoryMap",
-        "parent": "AGXMemoryMap",
-        "is_abstract": false
-    },
-    {
-        "name": "AGXMeshShadersEmuMemory",
-        "parent": "OSObject",
-        "is_abstract": false
-    },
-    {
-        "name": "AGXMeshShadersEmuMemoryBlock",
         "parent": "OSObject",
         "is_abstract": false
     },
@@ -1020,14 +1035,34 @@
         "is_abstract": false
     },
     {
+        "name": "AGXPerfCtrSampler",
+        "parent": "OSObject",
+        "is_abstract": true
+    },
+    {
+        "name": "AGXPerfCtrSamplerGen15",
+        "parent": "AGXPerfCtrSamplerGen11",
+        "is_abstract": false
+    },
+    {
         "name": "AGXPerfCtrSamplerGen11",
         "parent": "AGXPerfCtrSampler",
         "is_abstract": false
     },
     {
-        "name": "AGXPerfCtrSampler",
+        "name": "AGXQOSManager",
         "parent": "OSObject",
-        "is_abstract": true
+        "is_abstract": false
+    },
+    {
+        "name": "AGXQOSQueue",
+        "parent": "AGXHardwareBufferBase",
+        "is_abstract": false
+    },
+    {
+        "name": "AGXRemoteIOPPowerNotificationHandler",
+        "parent": "OSObject",
+        "is_abstract": false
     },
     {
         "name": "AGXRemoteNodeCommandDescriptor",
@@ -1070,8 +1105,8 @@
         "is_abstract": false
     },
     {
-        "name": "AGXSpillMetadataBlock",
-        "parent": "OSObject",
+        "name": "AGXSKSMFlushID",
+        "parent": "AGXHardwareBufferBase",
         "is_abstract": false
     },
     {
@@ -1095,12 +1130,67 @@
         "is_abstract": false
     },
     {
+        "name": "AGXKTelemetry",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
         "name": "AGXTimeStampQueue",
         "parent": "OSObject",
         "is_abstract": false
     },
     {
+        "name": "AGXUAT",
+        "parent": "OSObject",
+        "is_abstract": true
+    },
+    {
         "name": "AGXUATMux",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "AGXUATSingleStage",
+        "parent": "AGXUAT",
+        "is_abstract": false
+    },
+    {
+        "name": "AGXUMAAsyncGrowRequest",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "AGXUSCPrivMemBlock",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "AGXUSCPrivMemFList",
+        "parent": "AGXHardwareBufferBase",
+        "is_abstract": false
+    },
+    {
+        "name": "AGXSoKGrowEngine",
+        "parent": "IAGXUSCPrivMemGrowEngine",
+        "is_abstract": false
+    },
+    {
+        "name": "AGXAsyncGrowEngine",
+        "parent": "IAGXUSCPrivMemGrowEngine",
+        "is_abstract": false
+    },
+    {
+        "name": "AGXUSCPrivMemHWMetrics",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "AGXUSCPrivMemPoolUMA",
+        "parent": "AGXUSCPrivMemPool",
+        "is_abstract": false
+    },
+    {
+        "name": "AGXUMASharedPoolContainer",
         "parent": "OSObject",
         "is_abstract": false
     },
@@ -1130,11 +1220,6 @@
         "is_abstract": false
     },
     {
-        "name": "AGXUnifiedAddressTranslator",
-        "parent": "OSObject",
-        "is_abstract": false
-    },
-    {
         "name": "AKSAnalytics",
         "parent": "IOService",
         "is_abstract": false
@@ -1142,6 +1227,11 @@
     {
         "name": "AKSAnalyticsUserClient",
         "parent": "IOUserClient2022",
+        "is_abstract": false
+    },
+    {
+        "name": "AOPAudioService",
+        "parent": "IOPAudioService",
         "is_abstract": false
     },
     {
@@ -1265,6 +1355,11 @@
         "is_abstract": false
     },
     {
+        "name": "AppleSPUVL628",
+        "parent": "AppleSPUALSColorDriver",
+        "is_abstract": false
+    },
+    {
         "name": "AppleSPUCT709",
         "parent": "AppleSPUALSColorDriver",
         "is_abstract": false
@@ -1287,6 +1382,21 @@
     {
         "name": "AppleSPUVD6286",
         "parent": "AppleSPUALSColorDriver",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleAOP2SystemDriver",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleAOP2KextTightbeamEndpoint",
+        "parent": "AFKTightbeamEndpoint",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleAOP2IOPMService",
+        "parent": "IOService",
         "is_abstract": false
     },
     {
@@ -1447,16 +1557,6 @@
     {
         "name": "AppleAudioSequenceList",
         "parent": "OSObject",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleAOPVoiceTriggerController",
-        "parent": "IOService",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleAOPVoiceTriggerUserClient",
-        "parent": "IOUserClient",
         "is_abstract": false
     },
     {
@@ -1926,7 +2026,7 @@
     },
     {
         "name": "AppleAVE2UserClient",
-        "parent": "IOUserClient",
+        "parent": "IOUserClient2022",
         "is_abstract": false
     },
     {
@@ -2032,6 +2132,11 @@
     {
         "name": "AppleAuthCPHSAID",
         "parent": "AppleAuthCP",
+        "is_abstract": false
+    },
+    {
+        "name": "Area51AuthSMCRelayInterface",
+        "parent": "AppleAuthCPRelayInterface",
         "is_abstract": false
     },
     {
@@ -2390,6 +2495,11 @@
         "is_abstract": false
     },
     {
+        "name": "AppleC26FFBDataStream",
+        "parent": "AppleC26DataStream",
+        "is_abstract": false
+    },
+    {
         "name": "AppleC26TelegramStream",
         "parent": "AppleC26DataStream",
         "is_abstract": false
@@ -2435,6 +2545,11 @@
         "is_abstract": false
     },
     {
+        "name": "AppleC26AuthProtocolWatch",
+        "parent": "IOAccessoryAuthProtocolInterface",
+        "is_abstract": false
+    },
+    {
         "name": "AppleQiAuthProtocol",
         "parent": "IOAccessoryAuthProtocolInterface",
         "is_abstract": false
@@ -2476,6 +2591,11 @@
     },
     {
         "name": "AppleCallistoPacket",
+        "parent": "AppleC26Packet",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleC26FFBPacket",
         "parent": "AppleC26Packet",
         "is_abstract": false
     },
@@ -2546,6 +2666,11 @@
     },
     {
         "name": "AppleConvergedIPCDevice",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleConvergedIPCInterposer",
         "parent": "IOService",
         "is_abstract": false
     },
@@ -2770,6 +2895,161 @@
         "is_abstract": false
     },
     {
+        "name": "AppleT604XATCDPXBAR",
+        "parent": "AppleT602XATCDPXBAR",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT8132DisplayCrossbar",
+        "parent": "AppleT603XDisplayCrossbar",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleATCDPHDMIPort",
+        "parent": "AppleATCDPNativePort",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT600xDisplayCrossbar",
+        "parent": "AppleDisplayCrossbar",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleDisplayCrossbar",
+        "parent": "IODPSwitch",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleATCDPNativePort",
+        "parent": "AppleATCDPPort",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT8112DPTXPort",
+        "parent": "AppleDPTXPort",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleDisplayConnection",
+        "parent": "IOAVDisplayConnection",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleDisplayConnectionManager",
+        "parent": "IOAVDisplayConnectionManager",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleATCDPXBAR",
+        "parent": "IOService",
+        "is_abstract": true
+    },
+    {
+        "name": "AppleT602XATCDPXBAR",
+        "parent": "AppleATCDPXBAR",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleATCDPAltModePort",
+        "parent": "AppleATCDPNativePort",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT8103ATCDPXBAR",
+        "parent": "AppleATCDPXBAR",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT8112ATCDPXBAR",
+        "parent": "AppleT8103ATCDPXBAR",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleATCDPINAdapterPortBase",
+        "parent": "AppleATCDPPort",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT8122DPTXPort",
+        "parent": "AppleT8112DPTXPort",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleATCDPOUTAdapterPortBase",
+        "parent": "IODPRXPort",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT600XATCDPXBAR",
+        "parent": "AppleT8103ATCDPXBAR",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT603XDisplayCrossbar",
+        "parent": "AppleT602XDisplayCrossbar",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT8112DisplayCrossbar",
+        "parent": "AppleDisplayCrossbar",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT602XDisplayCrossbar",
+        "parent": "AppleDisplayCrossbar",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT8142DisplayCrossbar",
+        "parent": "AppleT8132DisplayCrossbar",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT6050DisplayCrossbar",
+        "parent": "AppleT8142DisplayCrossbar",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleATCDPINAdapterPort",
+        "parent": "AppleATCDPINAdapterPortBase",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT6050DPTXPort",
+        "parent": "AppleT8122DPTXPort",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT8142ATCDPXBAR",
+        "parent": "AppleT604XATCDPXBAR",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleATCDPOUTAdapterPort",
+        "parent": "AppleATCDPOUTAdapterPortBase",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleATCDPPort",
+        "parent": "IODPTXPort",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleDPTXPort",
+        "parent": "IODPTXPort",
+        "is_abstract": true
+    },
+    {
+        "name": "AppleT602XDPTXPort",
+        "parent": "AppleT8112DPTXPort",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHDMIPortController",
+        "parent": "IODPHDMIPortController",
+        "is_abstract": false
+    },
+    {
         "name": "AppleDockChannel",
         "parent": "IOService",
         "is_abstract": false
@@ -2925,16 +3205,6 @@
         "is_abstract": false
     },
     {
-        "name": "AppleAD5860",
-        "parent": "AppleEmbeddedExternalAudioObject",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleAOPAD5860",
-        "parent": "AppleAD5860",
-        "is_abstract": false
-    },
-    {
         "name": "AppleAOPEmbeddedAudio",
         "parent": "AppleEmbeddedAudio",
         "is_abstract": true
@@ -2950,88 +3220,48 @@
         "is_abstract": false
     },
     {
-        "name": "AppleCS35L27Amp",
-        "parent": "AppleI2CMultipleAudio",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleCS42L77AudioDSP",
-        "parent": "AppleCS42L7xAudioDSP",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleCS42L7xAudioDSP",
-        "parent": "IOService",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleCS42L77Audio",
-        "parent": "AppleCS42L7xAudio",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleCS42L7xAudio",
-        "parent": "AppleCSSPIv2Audio",
-        "is_abstract": true
-    },
-    {
-        "name": "AppleCS42L7xMikeyBus",
-        "parent": "AppleCSCodecMikeyBusV11",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleCS42L7xASPControlFunction",
+        "name": "CS42L79StreamingRequest",
         "parent": "AppleARMFunction",
         "is_abstract": false
     },
     {
-        "name": "AppleCS42L75TDMClockFunction",
+        "name": "CS42L79FlickerBiasRequest",
         "parent": "AppleARMFunction",
         "is_abstract": false
     },
     {
-        "name": "AppleCS42L75MicBiasFunction",
+        "name": "CS42L79HallRequest",
         "parent": "AppleARMFunction",
         "is_abstract": false
     },
     {
-        "name": "AppleCS42L7xAOPLPMicInRequestARMFunction",
+        "name": "CS42L79ListeningRequest",
         "parent": "AppleARMFunction",
         "is_abstract": false
     },
     {
-        "name": "AppleCS42L7xLdcmBypassRequestARMFunction",
-        "parent": "AppleARMFunction",
+        "name": "AppleCS42L79Audio",
+        "parent": "AppleEmbeddedAudio",
         "is_abstract": false
     },
     {
-        "name": "AppleEmbeddedTemperatureReporter",
-        "parent": "IOHIDEventService",
+        "name": "IOPAudioSpeaker",
+        "parent": "AppleEmbeddedAudio",
         "is_abstract": false
     },
     {
-        "name": "AppleEmbeddedDurationHistogramReporter",
-        "parent": "IOHistogramReporter",
+        "name": "IOPEmbeddedAudio",
+        "parent": "AppleEmbeddedAudio",
         "is_abstract": false
     },
     {
-        "name": "AppleCSCodecMikeyBus",
-        "parent": "IOMikeyBusController",
-        "is_abstract": true
+        "name": "IOPHaptics",
+        "parent": "IOPEmbeddedAudio",
+        "is_abstract": false
     },
     {
-        "name": "AppleCSCodecMikeyBusV11",
-        "parent": "AppleCSCodecMikeyBus",
-        "is_abstract": true
-    },
-    {
-        "name": "AppleCSCodecLineOutMikeyBus",
-        "parent": "AppleCSCodecMikeyBus",
-        "is_abstract": true
-    },
-    {
-        "name": "AppleCSCodecMikeyBusAudio",
-        "parent": "AppleARMIISAudioDevice",
+        "name": "IOPHapticDebug",
+        "parent": "IOPEmbeddedAudio",
         "is_abstract": false
     },
     {
@@ -3190,6 +3420,31 @@
         "is_abstract": false
     },
     {
+        "name": "ApplePCIEMSIController",
+        "parent": "IOPCIMessagedInterruptController",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleEmbeddedPCIEUserClient",
+        "parent": "IOUserClient",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleEmbeddedPCIEBarrier",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "ApplePCIEHostBridge",
+        "parent": "IOPCI2PCIBridge",
+        "is_abstract": false
+    },
+    {
+        "name": "APCIEPortControl",
+        "parent": "AppleEmbeddedPCIEPortControlFunction",
+        "is_abstract": false
+    },
+    {
         "name": "AppleT700XTempSensorUserClient",
         "parent": "AppleTempSensorUserClient",
         "is_abstract": false
@@ -3345,6 +3600,11 @@
         "is_abstract": false
     },
     {
+        "name": "AppleUSBHubIICDevice",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
         "name": "AppleEmbeddedUSBDevice",
         "parent": "IOUSBHostDevice",
         "is_abstract": false
@@ -3367,6 +3627,16 @@
     {
         "name": "AppleUSB20Hub_32789",
         "parent": "AppleUSB20Hub",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleEpochManagerUserClient",
+        "parent": "IOUserClient",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleEpochManager",
+        "parent": "IOService",
         "is_abstract": false
     },
     {
@@ -3395,22 +3665,32 @@
         "is_abstract": false
     },
     {
-        "name": "AFKEPInterfaceEventSourceV2",
-        "parent": "IOEventSource",
-        "is_abstract": false
-    },
-    {
-        "name": "AFKTBTestServer",
+        "name": "AFKEndpointInterfaceRelay",
         "parent": "IOService",
         "is_abstract": false
     },
     {
-        "name": "AFKACIPCMemoryDescriptorManager",
-        "parent": "AFKMemoryDescriptorManagerBase",
+        "name": "AFKiBootSharedMemoryRegion",
+        "parent": "AFKSharedMemoryRegionBase",
         "is_abstract": false
     },
     {
-        "name": "AFKEndpointInterfaceRelay",
+        "name": "AFKSharedMemoryMapServer",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AFKSharedMemoryRegion",
+        "parent": "AFKSharedMemoryRegionBase",
+        "is_abstract": false
+    },
+    {
+        "name": "AFKSharedMemoryRegionBase",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AFKSharedMemoryResource",
         "parent": "IOService",
         "is_abstract": false
     },
@@ -3420,23 +3700,8 @@
         "is_abstract": false
     },
     {
-        "name": "AFKEndpointInterfaceUserClient",
-        "parent": "IOUserClient2022",
-        "is_abstract": false
-    },
-    {
-        "name": "AFKSharedDataQueue",
-        "parent": "IOSharedDataQueue",
-        "is_abstract": false
-    },
-    {
-        "name": "AFKOOBMsgDescriptor",
-        "parent": "IOBufferMemoryDescriptor",
-        "is_abstract": false
-    },
-    {
-        "name": "AFKTBTestClient",
-        "parent": "IOService",
+        "name": "AFKTestSharedMemoryRegion",
+        "parent": "AFKSharedMemoryRegionBase",
         "is_abstract": false
     },
     {
@@ -3445,19 +3710,34 @@
         "is_abstract": false
     },
     {
+        "name": "AFKKext2UserEP",
+        "parent": "AFKEPKextBaseV2",
+        "is_abstract": false
+    },
+    {
         "name": "AFKResource",
         "parent": "IOService",
         "is_abstract": false
     },
     {
-        "name": "AFKEndpointInterface",
-        "parent": "IOService",
-        "is_abstract": true
+        "name": "AFKResourceKext2UserEPUC",
+        "parent": "IOUserClient2022",
+        "is_abstract": false
     },
     {
-        "name": "AFKEndpointInterface_DescriptorBase",
-        "parent": "AFKEndpointInterface",
-        "is_abstract": true
+        "name": "AFKResourceUserClient",
+        "parent": "IOUserClient2022",
+        "is_abstract": false
+    },
+    {
+        "name": "AFKTBTestClient",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AFKTBTestServer",
+        "parent": "IOService",
+        "is_abstract": false
     },
     {
         "name": "AFKEPPacketAction",
@@ -3485,9 +3765,29 @@
         "is_abstract": false
     },
     {
-        "name": "AFKSharedMemoryMapServer",
-        "parent": "IOService",
+        "name": "AFKUCTestEndpointInterface",
+        "parent": "AFKEndpointInterface",
         "is_abstract": false
+    },
+    {
+        "name": "AFKACIPCMemoryDescriptorManager",
+        "parent": "AFKMemoryDescriptorManagerBase",
+        "is_abstract": false
+    },
+    {
+        "name": "AFKAction",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "AFKEndpointInterface",
+        "parent": "IOService",
+        "is_abstract": true
+    },
+    {
+        "name": "AFKEndpointInterface_DescriptorBase",
+        "parent": "AFKEndpointInterface",
+        "is_abstract": true
     },
     {
         "name": "AFKEndpointInterfaceClient",
@@ -3500,48 +3800,18 @@
         "is_abstract": false
     },
     {
-        "name": "AFKSharedMemoryRegion",
-        "parent": "IOService",
-        "is_abstract": false
-    },
-    {
-        "name": "AFKEPInterfaceServiceKextV2",
-        "parent": "IOService",
-        "is_abstract": false
-    },
-    {
-        "name": "AFKMemoryDescriptor",
-        "parent": "OSObject",
-        "is_abstract": false
-    },
-    {
-        "name": "AFKBufferMemoryDescriptor",
-        "parent": "AFKMemoryDescriptor",
-        "is_abstract": false
-    },
-    {
-        "name": "AFKLocalMemoryDescriptorManager",
-        "parent": "AFKMemoryDescriptorManagerBase",
-        "is_abstract": false
-    },
-    {
-        "name": "AFKResourceKext2UserEPUC",
+        "name": "AFKEndpointInterfaceUserClient",
         "parent": "IOUserClient2022",
         "is_abstract": false
     },
     {
-        "name": "AFKKext2UserEP",
-        "parent": "AFKEPKextBaseV2",
+        "name": "AFKSharedDataQueue",
+        "parent": "IOSharedDataQueue",
         "is_abstract": false
     },
     {
-        "name": "AFKMemoryDescriptorManager",
-        "parent": "IOService",
-        "is_abstract": true
-    },
-    {
-        "name": "AFKAction",
-        "parent": "OSObject",
+        "name": "AFKOOBMsgDescriptor",
+        "parent": "IOBufferMemoryDescriptor",
         "is_abstract": false
     },
     {
@@ -3555,6 +3825,21 @@
         "is_abstract": false
     },
     {
+        "name": "AFKEPInterfaceServiceKextV2",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AFKEPInterfaceServiceEvent",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "AFKEPKextBaseV2",
+        "parent": "IOService",
+        "is_abstract": true
+    },
+    {
         "name": "AFKEPKextV2",
         "parent": "AFKEPKextBaseV2",
         "is_abstract": false
@@ -3565,19 +3850,39 @@
         "is_abstract": false
     },
     {
+        "name": "AFKIOServiceClient",
+        "parent": "AFKIOServiceClientBase",
+        "is_abstract": false
+    },
+    {
         "name": "AFKIOServiceClientBase",
         "parent": "IOService",
         "is_abstract": false
     },
     {
-        "name": "AFKWorkloop",
+        "name": "AFKLocalMemoryDescriptorManager",
+        "parent": "AFKMemoryDescriptorManagerBase",
+        "is_abstract": false
+    },
+    {
+        "name": "AFKMemoryDescriptor",
         "parent": "OSObject",
         "is_abstract": false
     },
     {
-        "name": "AFKUCTestEndpointInterface",
-        "parent": "AFKEndpointInterface",
+        "name": "AFKBufferMemoryDescriptor",
+        "parent": "AFKMemoryDescriptor",
         "is_abstract": false
+    },
+    {
+        "name": "AFKMemoryDescriptorManager",
+        "parent": "IOService",
+        "is_abstract": true
+    },
+    {
+        "name": "AFKMemoryDescriptorManagerBase",
+        "parent": "AFKMemoryDescriptorManager",
+        "is_abstract": true
     },
     {
         "name": "AFKMemoryDescriptorManagerUserClient",
@@ -3588,16 +3893,6 @@
         "name": "AFKRemoteSMCClient",
         "parent": "AFKIOServiceClientBase",
         "is_abstract": false
-    },
-    {
-        "name": "AFKFirmwareService",
-        "parent": "RTBuddyFirmwareService",
-        "is_abstract": false
-    },
-    {
-        "name": "AFKEPKextBaseV2",
-        "parent": "IOService",
-        "is_abstract": true
     },
     {
         "name": "SMEvent",
@@ -3620,19 +3915,34 @@
         "is_abstract": false
     },
     {
-        "name": "AFKResourceUserClient",
-        "parent": "IOUserClient2022",
+        "name": "AFKWorkloop",
+        "parent": "OSObject",
         "is_abstract": false
     },
     {
-        "name": "AFKIOServiceClient",
-        "parent": "AFKIOServiceClientBase",
+        "name": "AFKEPInterfaceEventSourceV2",
+        "parent": "IOEventSource",
         "is_abstract": false
     },
     {
-        "name": "AFKMemoryDescriptorManagerBase",
-        "parent": "AFKMemoryDescriptorManager",
-        "is_abstract": true
+        "name": "AFKUserDataPipe",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "OSAction_AFKUserDataPipe__HandleResponse",
+        "parent": "OSAction",
+        "is_abstract": false
+    },
+    {
+        "name": "OSAction_AFKUserDataPipe__HandleCommand",
+        "parent": "OSAction",
+        "is_abstract": false
+    },
+    {
+        "name": "OSAction_AFKUserDataPipe__HandleReport",
+        "parent": "OSAction",
+        "is_abstract": false
     },
     {
         "name": "AFKRTBuddyHelper",
@@ -3695,8 +4005,18 @@
         "is_abstract": false
     },
     {
-        "name": "AppleGCHIDEventDummyService",
+        "name": "AppleGCHIDProviderPropertyMerger",
+        "parent": "IOProviderPropertyMerger",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleGCHIDUserEventDriver",
         "parent": "IOHIDEventService",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleGCIOHIDEventDriverPropertyMerger",
+        "parent": "AppleGCHIDProviderPropertyMerger",
         "is_abstract": false
     },
     {
@@ -3707,6 +4027,11 @@
     {
         "name": "AppleGenericMultitouchHIDDeviceBase",
         "parent": "IOHIDDevice",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleGenericMultitouchDeciderHelper",
+        "parent": "OSObject",
         "is_abstract": false
     },
     {
@@ -3805,33 +4130,8 @@
         "is_abstract": true
     },
     {
-        "name": "ANERequest",
-        "parent": "OSObject",
-        "is_abstract": false
-    },
-    {
-        "name": "ANEProgramLegacyResource",
-        "parent": "ANEProgramResource",
-        "is_abstract": false
-    },
-    {
-        "name": "ANEProgramResource",
-        "parent": "OSObject",
-        "is_abstract": true
-    },
-    {
-        "name": "ANEProgramRTResource",
-        "parent": "ANEProgramResource",
-        "is_abstract": false
-    },
-    {
         "name": "ANEDriver",
-        "parent": "ANECoreInterface",
-        "is_abstract": false
-    },
-    {
-        "name": "ANEDriverEventSource",
-        "parent": "IOEventSource",
+        "parent": "IOService",
         "is_abstract": false
     },
     {
@@ -3840,38 +4140,13 @@
         "is_abstract": false
     },
     {
-        "name": "ANEProcess",
-        "parent": "OSObject",
-        "is_abstract": false
-    },
-    {
         "name": "ANEScheduler",
         "parent": "OSObject",
         "is_abstract": false
     },
     {
-        "name": "ANECoreInterface",
-        "parent": "IOService",
-        "is_abstract": false
-    },
-    {
-        "name": "ANEClientHints",
-        "parent": "IOService",
-        "is_abstract": false
-    },
-    {
-        "name": "ANEClientHintsUserClient",
-        "parent": "IOUserClient",
-        "is_abstract": false
-    },
-    {
         "name": "ANEHWDevice",
-        "parent": "ANECoreInterface",
-        "is_abstract": false
-    },
-    {
-        "name": "RequestTimeOutInfo",
-        "parent": "OSObject",
+        "parent": "ANEDeviceInterface",
         "is_abstract": false
     },
     {
@@ -3880,27 +4155,7 @@
         "is_abstract": false
     },
     {
-        "name": "ANEMessage",
-        "parent": "OSObject",
-        "is_abstract": false
-    },
-    {
-        "name": "ANEPowerOnMsg",
-        "parent": "ANEMessage",
-        "is_abstract": false
-    },
-    {
-        "name": "ANENotificationMsg",
-        "parent": "ANEMessage",
-        "is_abstract": false
-    },
-    {
-        "name": "ANERequestCompletionMsg",
-        "parent": "ANEMessage",
-        "is_abstract": false
-    },
-    {
-        "name": "ANEClientDevice",
+        "name": "ANEClientDeviceWrapper",
         "parent": "OSObject",
         "is_abstract": false
     },
@@ -3935,8 +4190,13 @@
         "is_abstract": false
     },
     {
-        "name": "ANEDartAllocationInfo",
-        "parent": "OSObject",
+        "name": "ANEExclaveProxy",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "FWSharedMemoryRequest",
+        "parent": "ANEMessage",
         "is_abstract": false
     },
     {
@@ -3975,8 +4235,98 @@
         "is_abstract": false
     },
     {
-        "name": "ANEWorkLoop",
-        "parent": "IOWorkLoop",
+        "name": "ANEMessage",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "ANEPowerOnMsg",
+        "parent": "ANEMessage",
+        "is_abstract": false
+    },
+    {
+        "name": "ANENotificationMsg",
+        "parent": "ANEMessage",
+        "is_abstract": false
+    },
+    {
+        "name": "ANERequestCompletionMsg",
+        "parent": "ANEMessage",
+        "is_abstract": false
+    },
+    {
+        "name": "ANEProgramEventMsg",
+        "parent": "ANEMessage",
+        "is_abstract": false
+    },
+    {
+        "name": "ANEDebugEventMsg",
+        "parent": "ANEMessage",
+        "is_abstract": false
+    },
+    {
+        "name": "ANEPowerMsg",
+        "parent": "ANEMessage",
+        "is_abstract": false
+    },
+    {
+        "name": "ANEFwToFwSignalMsg",
+        "parent": "ANEMessage",
+        "is_abstract": false
+    },
+    {
+        "name": "ANERequestTimeoutMsg",
+        "parent": "ANEMessage",
+        "is_abstract": false
+    },
+    {
+        "name": "ANEHWDeviceTimeoutMsg",
+        "parent": "ANEMessage",
+        "is_abstract": false
+    },
+    {
+        "name": "ANEFirmwareClientLoggingMsg",
+        "parent": "ANEMessage",
+        "is_abstract": false
+    },
+    {
+        "name": "ANEFWRpcMsg",
+        "parent": "ANEMessage",
+        "is_abstract": false
+    },
+    {
+        "name": "ANEWakeNotificationMsg",
+        "parent": "ANEMessage",
+        "is_abstract": false
+    },
+    {
+        "name": "ANEIspIPCEPMsg",
+        "parent": "ANEMessage",
+        "is_abstract": false
+    },
+    {
+        "name": "ANEThrottleUpdateMsg",
+        "parent": "ANEMessage",
+        "is_abstract": false
+    },
+    {
+        "name": "ANEExclaveMemoryWiringMsg",
+        "parent": "ANEMessage",
+        "is_abstract": false
+    },
+    {
+        "name": "ANEHWDeviceClientNotificationMsg",
+        "parent": "ANEMessage",
+        "is_abstract": false
+    },
+    {
+        "name": "ANEDriverDebugClient",
+        "parent": "IOUserClient2022",
+        "is_abstract": false
+    },
+    {
+        "name": "ANEDeviceInterface",
+        "parent": "IOService",
         "is_abstract": false
     },
     {
@@ -3990,58 +4340,43 @@
         "is_abstract": false
     },
     {
-        "name": "ANEPatchedWeightInfo",
-        "parent": "OSObject",
-        "is_abstract": false
-    },
-    {
-        "name": "ISPCoredump",
-        "parent": "OSObject",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleH13CamInFrameMetadata",
-        "parent": "OSObject",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleH13CamInFrameReceiver",
-        "parent": "OSObject",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleH13CamInFrameReceiverBuffer",
-        "parent": "OSObject",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleH13CamInFrameReceiverBufferPool",
-        "parent": "OSObject",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleH13PearlCamUserClient",
-        "parent": "IOUserClient",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleH13PearlCam",
-        "parent": "AppleH10PearlCamInterface",
-        "is_abstract": false
-    },
-    {
-        "name": "PearlCamEventSource",
-        "parent": "IOEventSource",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleH13CamInWorkLoop",
+        "name": "ANEWorkLoop",
         "parent": "IOWorkLoop",
         "is_abstract": false
     },
     {
-        "name": "AppleH13CamIn",
+        "name": "ANEClientHints",
         "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "ANEClientHintsUserClient",
+        "parent": "IOUserClient",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleExclaveCameraProxy",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleH16CamInWorkLoop",
+        "parent": "IOWorkLoop",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleH16CamIn",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleMPMMapMemoryFunction",
+        "parent": "AppleARMFunction",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleMPMUnmapMemoryFunction",
+        "parent": "AppleARMFunction",
         "is_abstract": false
     },
     {
@@ -4050,12 +4385,27 @@
         "is_abstract": false
     },
     {
-        "name": "H13ISPLoggerEventSource",
+        "name": "AppleDisplayPseudoStandbyFunction",
+        "parent": "AppleARMFunction",
+        "is_abstract": false
+    },
+    {
+        "name": "H16ISPLoggerEventSource",
         "parent": "IOEventSource",
         "is_abstract": false
     },
     {
-        "name": "H13ISPSharedClientBufferArgs",
+        "name": "H16ISPExclaveEventSource",
+        "parent": "IOEventSource",
+        "is_abstract": false
+    },
+    {
+        "name": "H16ISPErrorEventSource",
+        "parent": "IOEventSource",
+        "is_abstract": false
+    },
+    {
+        "name": "H16ISPSharedClientBufferArgs",
         "parent": "OSObject",
         "is_abstract": false
     },
@@ -4065,23 +4415,98 @@
         "is_abstract": false
     },
     {
-        "name": "H13ISPClientMappedSurface",
+        "name": "H16ISPClientMappedSurface",
         "parent": "OSObject",
         "is_abstract": false
     },
     {
-        "name": "H13ISPSharedMemorySurfaceParams",
+        "name": "H16ISPClientMappedSurfaceArray",
+        "parent": "OSArray",
+        "is_abstract": false
+    },
+    {
+        "name": "H16ISPSharedMemorySurfaceParams",
         "parent": "OSObject",
         "is_abstract": false
     },
     {
-        "name": "ISPErrorEventSource",
+        "name": "H16ISPSharedMemorySurfaceParamArray",
+        "parent": "OSArray",
+        "is_abstract": false
+    },
+    {
+        "name": "H16ISPMPMMemoryParams",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "H16ISPMPMMemoryParamArray",
+        "parent": "OSArray",
+        "is_abstract": false
+    },
+    {
+        "name": "ISPCoredump",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleH16CamInUserClient",
+        "parent": "IOUserClient",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleH16CamInFrameReceiverBuffer",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleH16CamInFrameReceiverBufferPool",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleH16PearlCamUserClient",
+        "parent": "IOUserClient",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleH16CamInVMAllocator",
+        "parent": "IODARTVMAllocatorGeneric",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleH16PearlCam",
+        "parent": "AppleH10PearlCamInterface",
+        "is_abstract": false
+    },
+    {
+        "name": "PearlCamEventSource",
         "parent": "IOEventSource",
         "is_abstract": false
     },
     {
-        "name": "AppleH13CamInUserClient",
+        "name": "AppleH16CamInFrameMetadata",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleH16CamInFrameReceiver",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleH16PhotonDetector",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleH16PhotonDetectorUserClient",
         "parent": "IOUserClient",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleUSBALSService",
+        "parent": "IOService",
         "is_abstract": false
     },
     {
@@ -4310,6 +4735,201 @@
         "is_abstract": false
     },
     {
+        "name": "AppleHPMARMSPMI",
+        "parent": "AppleHPMARM",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHPMLDCMType3",
+        "parent": "AppleHPMLDCM",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHPMLDCM",
+        "parent": "IOPortFeatureLDCM",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleTCControllerType14",
+        "parent": "AppleTCControllerType10",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHPMARM",
+        "parent": "AppleHPMEmbedded",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHPMCommandGate",
+        "parent": "IOCommandGate",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHPMInterface",
+        "parent": "AppleTCController",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHPMInterfaceType15",
+        "parent": "AppleHPMInterfaceType10",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHPMInterfaceType14",
+        "parent": "AppleHPMInterfaceType10",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHPMLDCMType2",
+        "parent": "AppleHPMLDCM",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHPMInterfaceType3",
+        "parent": "AppleHPMInterfaceType1",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHPMInterfaceType10",
+        "parent": "AppleHPMInterface",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHPMBusDevice",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHPMDeviceHALType2",
+        "parent": "AppleHPMDeviceHAL",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHPMBusController",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHPMAsyncEventSource",
+        "parent": "IOEventSource",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleTCControllerSingleTransport",
+        "parent": "AppleTCController",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHPMDeviceHAL",
+        "parent": "AppleHPMDevice",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHPMDeviceHALType3",
+        "parent": "AppleHPMDeviceHAL",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHPMInterfaceType17",
+        "parent": "AppleHPMInterfaceType10",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleTCControllerType12",
+        "parent": "AppleTCControllerType10",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleTCControllerType10",
+        "parent": "AppleTCController",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHPMDevice",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleTCControllerTypeSim",
+        "parent": "AppleTCController",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHPMAIDType1",
+        "parent": "IOPortAIDController",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHPMSMCBridge",
+        "parent": "AppleHPMEmbedded",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleTCController",
+        "parent": "IOAccessoryManagerUSBC",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHPMInterfaceType11",
+        "parent": "AppleHPMInterface",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHPMInterfaceType16",
+        "parent": "AppleHPMInterfaceType10",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHPMUserClient",
+        "parent": "IOUserClient",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHPMDeviceHALType4",
+        "parent": "AppleHPMDeviceHAL",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHPMDeviceHALType5",
+        "parent": "AppleHPMDeviceHALType3",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleTCControllerType1",
+        "parent": "AppleTCController",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHPMARMI2C",
+        "parent": "AppleHPMARM",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHPM",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHPMEmbedded",
+        "parent": "AppleHPM",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleTCControllerAssignableTransport",
+        "parent": "AppleTCController",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHPMInterfaceType1",
+        "parent": "AppleHPMInterface",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleUSBCController",
+        "parent": "IOAccessoryManager",
+        "is_abstract": false
+    },
+    {
         "name": "AHSFirmwareReadyNotifier",
         "parent": "IOService",
         "is_abstract": false
@@ -4322,6 +4942,11 @@
     {
         "name": "AHSSessionEvent",
         "parent": "AHSEvent",
+        "is_abstract": false
+    },
+    {
+        "name": "AHSTemperaturePowerSMCReporter",
+        "parent": "AHSTemperatureReporter",
         "is_abstract": false
     },
     {
@@ -4545,6 +5170,26 @@
         "is_abstract": true
     },
     {
+        "name": "AppleIASMCA",
+        "parent": "AppleARMIISController",
+        "is_abstract": true
+    },
+    {
+        "name": "AppleIOPADMAStream",
+        "parent": "AppleIASMCA",
+        "is_abstract": false
+    },
+    {
+        "name": "IASClientManager",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IASDMAChannelManager",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
         "name": "AppleIPDormancyHandler",
         "parent": "OSObject",
         "is_abstract": false
@@ -4625,6 +5270,11 @@
         "is_abstract": false
     },
     {
+        "name": "AIDFirmwareUpdateUserClient",
+        "parent": "IOUserClient",
+        "is_abstract": false
+    },
+    {
         "name": "AIDEventLogger",
         "parent": "OSObject",
         "is_abstract": false
@@ -4660,13 +5310,18 @@
         "is_abstract": false
     },
     {
+        "name": "AIDFirmwareUpdateService",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
         "name": "AIDReporter",
         "parent": "OSObject",
         "is_abstract": true
     },
     {
         "name": "AIDImageDownloader",
-        "parent": "AppleFirmwareUpdateKext",
+        "parent": "AIDFirmwareUpdateService",
         "is_abstract": false
     },
     {
@@ -4675,7 +5330,12 @@
         "is_abstract": false
     },
     {
-        "name": "AppleInterruptControllerV2",
+        "name": "AppleInterruptControllerUserClient",
+        "parent": "IOUserClient2022",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleInterruptControllerV3",
         "parent": "IOInterruptController",
         "is_abstract": false
     },
@@ -4721,6 +5381,16 @@
     },
     {
         "name": "BorageFunctions",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "DandelionFunctions",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "NerineFunctions",
         "parent": "OSObject",
         "is_abstract": false
     },
@@ -4817,6 +5487,11 @@
     {
         "name": "IosaFirmwareControlMSR23Dv",
         "parent": "IosaFirmwareControlMSR23",
+        "is_abstract": false
+    },
+    {
+        "name": "IosaPowerManagerMSR26",
+        "parent": "IosaPowerManagerMSR23",
         "is_abstract": false
     },
     {
@@ -4930,8 +5605,18 @@
         "is_abstract": false
     },
     {
+        "name": "IosaFirmwareControlMSR26Rtk",
+        "parent": "IosaFirmwareControlMSR23Rtk",
+        "is_abstract": false
+    },
+    {
         "name": "IosaInternalPipeMSR8",
         "parent": "IosaInternalPipeMSR7",
+        "is_abstract": false
+    },
+    {
+        "name": "IosaDPEControlMSR26",
+        "parent": "IosaDPEControlMSR22",
         "is_abstract": false
     },
     {
@@ -4975,6 +5660,11 @@
         "is_abstract": false
     },
     {
+        "name": "IosaPowerManagerMSR27",
+        "parent": "IosaPowerManagerMSR23",
+        "is_abstract": false
+    },
+    {
         "name": "IosaDPEControlMSR20",
         "parent": "IosaDPEControlMSR16",
         "is_abstract": false
@@ -4987,6 +5677,11 @@
     {
         "name": "IosaRdmaControlMSR8",
         "parent": "IosaRdmaControlMSR6",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleM2ScalerCSCHalMSR27",
+        "parent": "AppleM2ScalerCSCHalMSR25",
         "is_abstract": false
     },
     {
@@ -5030,8 +5725,23 @@
         "is_abstract": false
     },
     {
+        "name": "IosaColorManagerMSR28",
+        "parent": "IosaColorManagerMSR23",
+        "is_abstract": false
+    },
+    {
+        "name": "IosaTunableControlMSR26",
+        "parent": "IosaTunableControlMSR23",
+        "is_abstract": false
+    },
+    {
         "name": "M2ScalerCSCColorConversionControlMSR8",
         "parent": "M2ScalerCSCColorConversionControlMSR7",
+        "is_abstract": false
+    },
+    {
+        "name": "FrameDescriptorRingMSR28",
+        "parent": "FrameDescriptorRingMSR23",
         "is_abstract": false
     },
     {
@@ -5120,6 +5830,11 @@
         "is_abstract": false
     },
     {
+        "name": "MailBoxMSR26",
+        "parent": "MailBox",
+        "is_abstract": false
+    },
+    {
         "name": "IosaWdmaControlMSR25",
         "parent": "IosaWdmaControlMSR23",
         "is_abstract": false
@@ -5205,8 +5920,18 @@
         "is_abstract": false
     },
     {
+        "name": "IosaFirmwareControlMSR28Rtk",
+        "parent": "IosaFirmwareControlMSR23Rtk",
+        "is_abstract": false
+    },
+    {
         "name": "IosaTiledCompressedMem",
         "parent": "AppleM2ScalerCSCHalControl",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleM2ScalerCSCHalMSR29",
+        "parent": "AppleM2ScalerCSCHalMSR26",
         "is_abstract": false
     },
     {
@@ -5217,6 +5942,11 @@
     {
         "name": "M2ScalerSrcDestCfgControlMSR6",
         "parent": "M2ScalerSrcDestCfgControlMSR5",
+        "is_abstract": false
+    },
+    {
+        "name": "IosaFirmwareControlMSR29Rtk",
+        "parent": "IosaFirmwareControlMSR23Rtk",
         "is_abstract": false
     },
     {
@@ -5242,6 +5972,11 @@
     {
         "name": "BlockDescriptorRegStreamMSR23",
         "parent": "BlockDescriptorRegStream",
+        "is_abstract": false
+    },
+    {
+        "name": "IosaDPEControlMSR27",
+        "parent": "IosaDPEControlMSR23",
         "is_abstract": false
     },
     {
@@ -5307,6 +6042,11 @@
     {
         "name": "IosaFirmwareControlMSR23Rtk",
         "parent": "IosaFirmwareControlMSR23",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleM2ScalerCSCHalMSR30",
+        "parent": "AppleM2ScalerCSCHalMSR29",
         "is_abstract": false
     },
     {
@@ -5550,6 +6290,11 @@
         "is_abstract": false
     },
     {
+        "name": "M2ScalerScalingASEControlMSR29",
+        "parent": "M2ScalerScalingASEControlMSR23",
+        "is_abstract": false
+    },
+    {
         "name": "IosaFilmGrainControlMSR23",
         "parent": "IosaFilmGrainControlMSR16",
         "is_abstract": false
@@ -5595,6 +6340,11 @@
         "is_abstract": true
     },
     {
+        "name": "IosaFirmwareControlMSR30Rtk",
+        "parent": "IosaFirmwareControlMSR29Rtk",
+        "is_abstract": false
+    },
+    {
         "name": "M2ScalerCSCColorConversionControlMSR10j",
         "parent": "M2ScalerCSCColorConversionControlMSR10",
         "is_abstract": false
@@ -5602,6 +6352,16 @@
     {
         "name": "M2ScalerSrcDestCfgControlMSR10",
         "parent": "M2ScalerSrcDestCfgControlMSR8",
+        "is_abstract": false
+    },
+    {
+        "name": "IosaFirmwareControlMSR27Rtk",
+        "parent": "IosaFirmwareControlMSR23Rtk",
+        "is_abstract": false
+    },
+    {
+        "name": "IosaTunableControlMSR27",
+        "parent": "IosaTunableControlMSR23",
         "is_abstract": false
     },
     {
@@ -5623,6 +6383,11 @@
         "name": "StatusDescriptorRing",
         "parent": "RingBuffer",
         "is_abstract": true
+    },
+    {
+        "name": "IosaRemoteIOPPowerNotificationHandler",
+        "parent": "OSObject",
+        "is_abstract": false
     },
     {
         "name": "IosaTunableControlMSR24d",
@@ -5655,6 +6420,11 @@
         "is_abstract": false
     },
     {
+        "name": "IosaTunableControlMSR29",
+        "parent": "IosaTunableControlMSR23",
+        "is_abstract": false
+    },
+    {
         "name": "IosaTiledCompressedMemMSR7",
         "parent": "IosaTiledCompressedMem",
         "is_abstract": false
@@ -5662,6 +6432,11 @@
     {
         "name": "IosaDPEControlMSR21",
         "parent": "IosaDPEControlMSR20",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleM2ScalerCSCHalMSR26",
+        "parent": "AppleM2ScalerCSCHalMSR25",
         "is_abstract": false
     },
     {
@@ -5720,6 +6495,11 @@
         "is_abstract": false
     },
     {
+        "name": "IosaRdmaControlMSR27",
+        "parent": "IosaRdmaControlMSR25",
+        "is_abstract": false
+    },
+    {
         "name": "M2ScalerCSCRequest",
         "parent": "OSObject",
         "is_abstract": false
@@ -5742,6 +6522,11 @@
     {
         "name": "IosaColorManagerMSR16",
         "parent": "IosaColorManagerMSR15",
+        "is_abstract": false
+    },
+    {
+        "name": "StatusDescriptorRingMSR29",
+        "parent": "StatusDescriptorRingMSR23",
         "is_abstract": false
     },
     {
@@ -5780,6 +6565,11 @@
         "is_abstract": false
     },
     {
+        "name": "AppleM2ScalerCSCHalMSR28",
+        "parent": "AppleM2ScalerCSCHalMSR25",
+        "is_abstract": false
+    },
+    {
         "name": "M2ScalerSrcDestCfgControlMSR",
         "parent": "M2ScalerSrcDestCfgControl",
         "is_abstract": false
@@ -5792,6 +6582,11 @@
     {
         "name": "M2ScalerSrcDestCfgControlMSR4",
         "parent": "M2ScalerSrcDestCfgControlMSR",
+        "is_abstract": false
+    },
+    {
+        "name": "IosaTunableControlMSR28",
+        "parent": "IosaTunableControlMSR23",
         "is_abstract": false
     },
     {
@@ -5812,6 +6607,11 @@
     {
         "name": "IosaPowerManagerMSR23",
         "parent": "IosaPowerManagerMSR20",
+        "is_abstract": false
+    },
+    {
+        "name": "FrameDescriptorRingMSR29",
+        "parent": "FrameDescriptorRingMSR23",
         "is_abstract": false
     },
     {
@@ -5860,6 +6660,11 @@
         "is_abstract": false
     },
     {
+        "name": "IosaTunableControlMSR30",
+        "parent": "IosaTunableControlMSR23",
+        "is_abstract": false
+    },
+    {
         "name": "IosaDPEControlMSR10j",
         "parent": "IosaDPEControlMSR10",
         "is_abstract": false
@@ -5882,201 +6687,6 @@
     {
         "name": "AppleButtonsDispatchFunction",
         "parent": "AppleARMFunction",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleLEAPController",
-        "parent": "AppleMCA",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleLEAPController_T8120",
-        "parent": "AppleLEAPController",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA",
-        "parent": "AppleARMIISController",
-        "is_abstract": true
-    },
-    {
-        "name": "AppleMCA2Cluster",
-        "parent": "IOService",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2Controller",
-        "parent": "AppleMCA",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2Cluster_T8120",
-        "parent": "AppleMCA2Cluster",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2Controller_T8120",
-        "parent": "AppleMCA2Controller",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2Fifo",
-        "parent": "OSObject",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2SerDes",
-        "parent": "OSObject",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2Tx",
-        "parent": "AppleMCA2SerDes",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2Rx",
-        "parent": "AppleMCA2SerDes",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2Regs",
-        "parent": "OSObject",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2Switch_Reginfo",
-        "parent": "OSObject",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2Switch_Selector",
-        "parent": "AppleMCA2Switch_Reginfo",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2Switch_ClockGenSel",
-        "parent": "AppleMCA2Switch_Selector",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2Switch_SyncGenSel",
-        "parent": "AppleMCA2Switch_Selector",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2Switch_RxSel",
-        "parent": "AppleMCA2Switch_Selector",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2Switch_TxSel",
-        "parent": "AppleMCA2Switch_Selector",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2Switch_i2sSel",
-        "parent": "AppleMCA2Switch_Selector",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2Switch_Configurator",
-        "parent": "AppleMCA2Switch_Reginfo",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2Switch_ClockGenCfg",
-        "parent": "AppleMCA2Switch_Configurator",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2Switch_SyncGenCfg",
-        "parent": "AppleMCA2Switch_Configurator",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2Switch_SerDesCfg",
-        "parent": "AppleMCA2Switch_Configurator",
-        "is_abstract": true
-    },
-    {
-        "name": "AppleMCA2Switch_TxCfg",
-        "parent": "AppleMCA2Switch_SerDesCfg",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2Switch_RxCfg",
-        "parent": "AppleMCA2Switch_SerDesCfg",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2Switch_i2sCfg",
-        "parent": "AppleMCA2Switch_Configurator",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2Switch_Control",
-        "parent": "AppleMCA2Switch_Reginfo",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2Switch_ClockGenCtl",
-        "parent": "AppleMCA2Switch_Control",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2Switch_SyncGenCtl",
-        "parent": "AppleMCA2Switch_Control",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2Switch_TxCtl",
-        "parent": "AppleMCA2Switch_Control",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2Switch_RxCtl",
-        "parent": "AppleMCA2Switch_Control",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleARMFunctionMCA2Config",
-        "parent": "AppleARMFunction",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2Switch_MCAConfig",
-        "parent": "OSObject",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2SwitchRegs",
-        "parent": "OSObject",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2DeviceClock",
-        "parent": "OSObject",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2MCLK",
-        "parent": "OSObject",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2MCLKPin",
-        "parent": "OSObject",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2NCO",
-        "parent": "OSObject",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleMCA2Switch",
-        "parent": "AppleARMIISSwitch",
         "is_abstract": false
     },
     {
@@ -6142,6 +6752,16 @@
     {
         "name": "AppleMobileFileIntegrity",
         "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "OSDetachedCertificates",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "OSEntitlements",
+        "parent": "OSObject",
         "is_abstract": false
     },
     {
@@ -6660,6 +7280,11 @@
         "is_abstract": true
     },
     {
+        "name": "ApplePPMPolicyCPMSPowerServoLowerLayerBudgets",
+        "parent": "ApplePPMPolicyCPMS",
+        "is_abstract": false
+    },
+    {
         "name": "ApplePPM",
         "parent": "IOService",
         "is_abstract": true
@@ -6667,6 +7292,11 @@
     {
         "name": "ApplePPMARMFunction",
         "parent": "AppleARMFunction",
+        "is_abstract": false
+    },
+    {
+        "name": "ApplePPMAONPTDAdapter",
+        "parent": "ApplePPMPTDManagerBase",
         "is_abstract": false
     },
     {
@@ -6680,13 +7310,8 @@
         "is_abstract": false
     },
     {
-        "name": "ApplePPMEntityBaseband",
-        "parent": "ApplePPMEntity",
-        "is_abstract": true
-    },
-    {
-        "name": "ApplePPMEntityCLPC",
-        "parent": "ApplePPMEntity",
+        "name": "ApplePPMCPMSPeakPowerEnvelope",
+        "parent": "OSObject",
         "is_abstract": false
     },
     {
@@ -6750,18 +7375,43 @@
         "is_abstract": false
     },
     {
-        "name": "ApplePPMPTDManager",
+        "name": "ApplePPMPTDManagerBase",
         "parent": "OSObject",
-        "is_abstract": false
-    },
-    {
-        "name": "ApplePPMPolicy",
-        "parent": "OSObject",
-        "is_abstract": false
+        "is_abstract": true
     },
     {
         "name": "ApplePPMNormalizedResidencyReporter",
         "parent": "IOStateReporter",
+        "is_abstract": false
+    },
+    {
+        "name": "ApplePPMPmgrAdapter",
+        "parent": "ApplePPMPTDManagerBase",
+        "is_abstract": false
+    },
+    {
+        "name": "ApplePTD",
+        "parent": "IOInterruptController",
+        "is_abstract": false
+    },
+    {
+        "name": "ApplePTDFunctionCmd",
+        "parent": "AppleARMFunction",
+        "is_abstract": false
+    },
+    {
+        "name": "ApplePTDFunctionMultiCmd",
+        "parent": "AppleARMFunction",
+        "is_abstract": false
+    },
+    {
+        "name": "ApplePTDUserClient",
+        "parent": "IOUserClient",
+        "is_abstract": false
+    },
+    {
+        "name": "ApplePTDCommon",
+        "parent": "OSObject",
         "is_abstract": false
     },
     {
@@ -6795,8 +7445,13 @@
         "is_abstract": true
     },
     {
-        "name": "IOPearlCameraFrame",
+        "name": "IOPearlCameraFrameInterface",
         "parent": "IOPearlFrame",
+        "is_abstract": true
+    },
+    {
+        "name": "IOPearlCameraFrame",
+        "parent": "IOPearlCameraFrameInterface",
         "is_abstract": false
     },
     {
@@ -6812,6 +7467,11 @@
     {
         "name": "IOPearlSharedMemoryTransferQueue",
         "parent": "IOBioSharedMemoryTransferQueue",
+        "is_abstract": false
+    },
+    {
+        "name": "IOPearlLogging",
+        "parent": "OSObject",
         "is_abstract": false
     },
     {
@@ -6976,7 +7636,137 @@
     },
     {
         "name": "AppleProResUserClient",
-        "parent": "IOUserClient",
+        "parent": "IOUserClient2022",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleProcessorTraceT8150",
+        "parent": "AppleProcessorTrace",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleProcessorTraceT6040",
+        "parent": "AppleProcessorTrace",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleProcessorTraceT8132",
+        "parent": "AppleProcessorTrace",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleProcessorTraceNub",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleProcessorTraceT6000",
+        "parent": "AppleProcessorTrace",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleProcessorTraceT8142",
+        "parent": "AppleProcessorTrace",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleProcessorTraceT8110",
+        "parent": "AppleProcessorTrace",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleProcessorTrace",
+        "parent": "IOService",
+        "is_abstract": true
+    },
+    {
+        "name": "AppleProcessorTraceVirtualBufferMemoryDescriptor",
+        "parent": "IOGeneralMemoryDescriptor",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleProcessorTraceT6031",
+        "parent": "AppleProcessorTrace",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleProcessorTraceT6020",
+        "parent": "AppleProcessorTrace",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleProcessorTraceEventSource",
+        "parent": "IOEventSource",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleProcessorTraceT8120",
+        "parent": "AppleProcessorTrace",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleProcessorTraceFracturedMemoryMap",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleProcessorTraceT6030",
+        "parent": "AppleProcessorTrace",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleProcessorTraceSession",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleProcessorTraceT8122",
+        "parent": "AppleProcessorTrace",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleProcessorTraceT6050",
+        "parent": "AppleProcessorTrace",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleProcessorTraceUserClient",
+        "parent": "IOUserClient2022",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleProcessorTraceT8140",
+        "parent": "AppleProcessorTrace",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleProcessorTraceT8310",
+        "parent": "AppleProcessorTrace",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleProcessorTraceT8112",
+        "parent": "AppleProcessorTrace",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleProcessorTraceT8130",
+        "parent": "AppleProcessorTrace",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleProcessorTraceBringUp",
+        "parent": "AppleProcessorTrace",
+        "is_abstract": true
+    },
+    {
+        "name": "AppleProcessorTraceT8103",
+        "parent": "AppleProcessorTrace",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleProcessorTraceT8101",
+        "parent": "AppleProcessorTrace",
         "is_abstract": false
     },
     {
@@ -7055,6 +7845,176 @@
         "is_abstract": false
     },
     {
+        "name": "AppleSARInterface",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHSARSingleRadio",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "PTDInterruptHandler",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "PTDInterruptInfo",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "PTDClientRegistry",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "PTDDataOperations",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleSARServiceUserClient",
+        "parent": "IOUserClient",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleSARSPMI",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleRFSensingINT",
+        "parent": "AppleRFSensing",
+        "is_abstract": false
+    },
+    {
+        "name": "KernelLog",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleE85Mitigation",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleSARSPMIIDC",
+        "parent": "AppleSARSPMI",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleBasebandPTDUnitTest",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "PTDUnitTestClient",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "ApplePTDClientInterface",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleSARInterfaceSPMIIDC",
+        "parent": "AppleSARInterface",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleSARConnectivityCellBoost",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "SARSPMIInterruptBufferHelper",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "SARCallbackWrapper",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleSARTimer",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleBasebandPTD",
+        "parent": "IOService",
+        "is_abstract": true
+    },
+    {
+        "name": "AppleBasebandSARPTD",
+        "parent": "AppleBasebandPTD",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleSARService",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "ABSUserClient",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleSARFusion",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleSARSPMIHEB",
+        "parent": "AppleSARSPMI",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleRFSensing",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleSARSPMIIDCWLAN",
+        "parent": "AppleSARSPMI",
+        "is_abstract": false
+    },
+    {
+        "name": "PTDDriverCircularBufferWrapper",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "PTDDriverBuffer",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleSARInterfaceSPMIWLANIDC",
+        "parent": "AppleSARInterface",
+        "is_abstract": false
+    },
+    {
+        "name": "PTDInternalRegistrationData",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "DebugInfo",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHSARMultipleRadio",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
         "name": "IOCoastGuardSARTMapper",
         "parent": "IOMapper",
         "is_abstract": false
@@ -7110,6 +8070,11 @@
         "is_abstract": false
     },
     {
+        "name": "ACMAnalyticsKernelService",
+        "parent": "ACMKernelService",
+        "is_abstract": false
+    },
+    {
         "name": "AppleCredentialManagerUserClient",
         "parent": "IOUserClient",
         "is_abstract": false
@@ -7137,6 +8102,26 @@
     {
         "name": "GTCondition",
         "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHDCPManager",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleHDCPInterface",
+        "parent": "IOHDCPInterface",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleSEPHDCPManager",
+        "parent": "AppleHDCPManager",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleSEPHDCPEndpoint",
+        "parent": "AppleSEPEndpoint",
         "is_abstract": false
     },
     {
@@ -7495,6 +8480,11 @@
         "is_abstract": false
     },
     {
+        "name": "AppleC26FWLogChannel",
+        "parent": "RTBuddyBinaryLogEntryHandler",
+        "is_abstract": false
+    },
+    {
         "name": "AppleSPIMCController",
         "parent": "AppleARMSPIController",
         "is_abstract": false
@@ -7522,6 +8512,16 @@
     {
         "name": "AppleDialogSPMIPMURTC",
         "parent": "AppleARMRTC",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleDialogSPMIPMUNub",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleSPUHIDEventDriver",
+        "parent": "IOHIDEventDriver",
         "is_abstract": false
     },
     {
@@ -7945,12 +8945,32 @@
         "is_abstract": false
     },
     {
+        "name": "AppleGasGaugeBeadsUpdate",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
         "name": "AppleGasGaugeUpdateUserClient",
         "parent": "IOUserClient2022",
         "is_abstract": false
     },
     {
+        "name": "AppleSmartBatteryPack",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleGasGaugeBeadsUpdateUserClient",
+        "parent": "IOUserClient2022",
+        "is_abstract": false
+    },
+    {
         "name": "AppleBatteryAuth",
+        "parent": "AppleAuthCPRelayInterface",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleBeadsBatteryAuth",
         "parent": "AppleAuthCPRelayInterface",
         "is_abstract": false
     },
@@ -7972,6 +8992,21 @@
     {
         "name": "AppleSmartBatteryUserClient",
         "parent": "IOUserClient2022",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleSmartBatteryBank",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleSmartBatteryCell",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleChargerData",
+        "parent": "IOService",
         "is_abstract": false
     },
     {
@@ -8040,11 +9075,6 @@
         "is_abstract": false
     },
     {
-        "name": "AppleStockholmSPMINotification",
-        "parent": "IOService",
-        "is_abstract": false
-    },
-    {
         "name": "AppleStockholmSPMI",
         "parent": "IOService",
         "is_abstract": false
@@ -8110,6 +9140,16 @@
         "is_abstract": false
     },
     {
+        "name": "AppleT6020PCIePIODMA",
+        "parent": "ApplePCIePIODMA",
+        "is_abstract": false
+    },
+    {
+        "name": "ApplePCIePIODMA",
+        "parent": "ApplePIODMA",
+        "is_abstract": false
+    },
+    {
         "name": "AppleSOCTuner",
         "parent": "IOService",
         "is_abstract": true
@@ -8125,38 +9165,18 @@
         "is_abstract": false
     },
     {
-        "name": "AppleT812xIO",
+        "name": "AppleH17PPlatformIO",
         "parent": "AppleARMIO",
         "is_abstract": false
     },
     {
-        "name": "AppleT8120PlatformErrorHandler",
+        "name": "AppleH17PPlatformErrorHandler",
         "parent": "IOService",
         "is_abstract": false
     },
     {
-        "name": "AppleT8120MemCacheController",
-        "parent": "AppleMemCacheController",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleT8120MemCacheModeFunction",
-        "parent": "AppleARMFunction",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleT8120MemCachePanicFunction",
-        "parent": "AppleARMFunction",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleT8120MemCacheFlushFunction",
-        "parent": "AppleARMFunction",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleT8120AMCPerfFunction",
-        "parent": "AppleARMFunction",
+        "name": "AppleT8140ANEHAL",
+        "parent": "IOService",
         "is_abstract": false
     },
     {
@@ -8175,7 +9195,87 @@
         "is_abstract": false
     },
     {
-        "name": "AppleT8120PMGR",
+        "name": "MemCacheEvent",
+        "parent": "IOCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleMemCacheControllerV2",
+        "parent": "IOService",
+        "is_abstract": true
+    },
+    {
+        "name": "MemCacheCommand",
+        "parent": "IOCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "MemCacheCommandQueue",
+        "parent": "IOEventSource",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleMemCacheDataSetsFunctionV2",
+        "parent": "AppleARMFunction",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT8140MemCacheController",
+        "parent": "MemCacheCIP",
+        "is_abstract": false
+    },
+    {
+        "name": "MemCacheCIP",
+        "parent": "AppleMemCacheControllerV2",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleMemCacheModeFunction",
+        "parent": "AppleARMFunction",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleMemCachePanicFunction",
+        "parent": "AppleARMFunction",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleMemCacheFlushFunction",
+        "parent": "AppleARMFunction",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleAMCPerfFunction",
+        "parent": "AppleARMFunction",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleMCCUserClientV2",
+        "parent": "IOUserClient",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT8132PCIe",
+        "parent": "AppleEmbeddedPCIE",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT8132PCIePort",
+        "parent": "AppleEmbeddedPCIEPort",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT8140PCIe",
+        "parent": "AppleT8132PCIe",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT8140PCIePort",
+        "parent": "AppleEmbeddedPCIEPort",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT8140PMGR",
         "parent": "ApplePMGR",
         "is_abstract": false
     },
@@ -8228,6 +9328,341 @@
         "name": "AppleTemperatureService",
         "parent": "IOService",
         "is_abstract": true
+    },
+    {
+        "name": "AppleThunderboltDPAdapterFamily",
+        "parent": "IOThunderboltTunnelDriver",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltDPAdapterFamilyBase",
+        "parent": "IOThunderboltTunnelDriver",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltDPPathManager",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltDPPathManagerOS",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltDPConnectionManager",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltDPInAdapter",
+        "parent": "AppleThunderboltDPAdapterFamily",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltDPInAdapterBase",
+        "parent": "AppleThunderboltDPAdapterFamilyBase",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltDPInAdapterCM",
+        "parent": "AppleThunderboltDPInAdapterBase",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltDPInAdapterOS",
+        "parent": "AppleThunderboltDPInAdapterCM",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltDPInAdapterOS2",
+        "parent": "AppleThunderboltDPInAdapterOS",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltDPOutAdapter",
+        "parent": "AppleThunderboltDPAdapterFamily",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltDPOutAdapterBase",
+        "parent": "AppleThunderboltDPAdapterFamilyBase",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltDPOutAdapterCM",
+        "parent": "AppleThunderboltDPOutAdapterBase",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltDPOutAdapterOS",
+        "parent": "AppleThunderboltDPOutAdapterCM",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltDPOutAdapterOS2",
+        "parent": "AppleThunderboltDPOutAdapterOS",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltDPOutAdapterDelegate",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltDPOutAdapterDelegateLegacy",
+        "parent": "AppleThunderboltDPOutAdapterDelegate",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltDPOutAdapterDelegateNonLegacy",
+        "parent": "AppleThunderboltDPOutAdapterDelegate",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltDPOutAdapterUserClient",
+        "parent": "IOUserClient",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltEDMRequestCommand",
+        "parent": "IOThunderboltConfigXDomainRequestCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltEDMSource",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltEDMSourceUserClient",
+        "parent": "IOUserClient",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltEDMSourceGFXPolicy2",
+        "parent": "AppleThunderboltEDMSource",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltEDMSourceGFXPolicy1",
+        "parent": "AppleThunderboltEDMSource",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltIPService",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltIPMSMInterface",
+        "parent": "IOEthernetInterface",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltIPTransmitter",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltIPTransmitCommand",
+        "parent": "IOThunderboltTransmitCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltIPReceiveCommand",
+        "parent": "IOThunderboltReceiveCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltIPControlCommand",
+        "parent": "IOThunderboltConfigXDomainResponseCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltIPPort",
+        "parent": "IOEthernetController",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltIPConnection",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltNHITransmitRingType7",
+        "parent": "AppleThunderboltNHITransmitRingGenericACIO",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltNHIReceiveRingType7",
+        "parent": "AppleThunderboltNHIReceiveRingGenericACIO",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltNHITransmitRingType5",
+        "parent": "AppleThunderboltNHITransmitRingGenericACIO",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltNHIGenericACIO",
+        "parent": "AppleThunderboltNHI",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltGenericHAL",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltNHI",
+        "parent": "IOThunderboltNHI",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltHALGenericACIO",
+        "parent": "AppleThunderboltGenericHAL",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltNHITransmitRing",
+        "parent": "IOThunderboltNHITransmitRing",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltNHISubMemoryBlock",
+        "parent": "AppleThunderboltNHIMemoryBlock",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltNHITransmitRingManager",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltNHIReceiveRingManagerType7",
+        "parent": "AppleThunderboltNHIReceiveRingManagerGenericACIO",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltNHIType5",
+        "parent": "AppleThunderboltNHIGenericACIO",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltHALType5",
+        "parent": "AppleThunderboltHALGenericACIO",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltNHIBufferMemoryBlock",
+        "parent": "AppleThunderboltNHIMemoryBlock",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltNHIReceiveRingManagerType5",
+        "parent": "AppleThunderboltNHIReceiveRingManagerGenericACIO",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltNHIMemoryBlock",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltNHIReceiveRingManager",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltNHIReceiveRing",
+        "parent": "IOThunderboltNHIReceiveRing",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltNHITransmitRingManagerGenericACIO",
+        "parent": "AppleThunderboltNHITransmitRingManager",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltNHITransmitRingGenericACIO",
+        "parent": "AppleThunderboltNHITransmitRing",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltNHIReceiveRingManagerGenericACIO",
+        "parent": "AppleThunderboltNHIReceiveRingManager",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltNHIReceiveRingGenericACIO",
+        "parent": "AppleThunderboltNHIReceiveRing",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltNHIDARTVMAllocator",
+        "parent": "IODARTVMAllocatorGeneric",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltNHIType7",
+        "parent": "AppleThunderboltNHIGenericACIO",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltNHITransmitRingManagerType7",
+        "parent": "AppleThunderboltNHITransmitRingManagerGenericACIO",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltHALType7",
+        "parent": "AppleThunderboltHALGenericACIO",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltNHIReceiveRingType5",
+        "parent": "AppleThunderboltNHIReceiveRingGenericACIO",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltNHITransmitRingManagerType5",
+        "parent": "AppleThunderboltNHITransmitRingManagerGenericACIO",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltPCIDownAdapter",
+        "parent": "IOThunderboltTunnelDriver",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltPCIDownAdapterType5",
+        "parent": "AppleThunderboltPCIDownAdapter",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltPCIUpAdapter",
+        "parent": "IOThunderboltTunnelDriver",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltUSBDownAdapter",
+        "parent": "IOThunderboltTunnelDriver",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltUSBType2DownAdapter",
+        "parent": "IOThunderboltTunnelDriverType2",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltUSBType2UpAdapter",
+        "parent": "IOThunderboltTunnelDriverType2",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleThunderboltUSBUpAdapter",
+        "parent": "IOThunderboltTunnelDriver",
+        "is_abstract": false
     },
     {
         "name": "AppleDeviceManagementHIDEventService",
@@ -8345,7 +9780,22 @@
         "is_abstract": false
     },
     {
-        "name": "AppleT8101TypeCPhy",
+        "name": "AppleT8103TypeCPhy",
+        "parent": "AppleTypeCPhy",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT8310TypeCPhy",
+        "parent": "AppleTypeCPhy",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT8130TypeCPhy",
+        "parent": "AppleTypeCPhy",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleTypeCPhyAUSBC",
         "parent": "AppleTypeCPhy",
         "is_abstract": false
     },
@@ -8490,6 +9940,11 @@
         "is_abstract": false
     },
     {
+        "name": "AppleUSBAudioControlNub",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
         "name": "AppleUSBAudioControlInterface",
         "parent": "OSObject",
         "is_abstract": false
@@ -8620,6 +10075,16 @@
         "is_abstract": false
     },
     {
+        "name": "AppleUSBDeviceNCM11Data",
+        "parent": "AppleUSBDeviceNCMData",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleUSBDeviceNCM11Control",
+        "parent": "AppleUSBDeviceNCMControl",
+        "is_abstract": false
+    },
+    {
         "name": "AppleUSBECMData",
         "parent": "IOEthernetController",
         "is_abstract": false
@@ -8685,6 +10150,16 @@
         "is_abstract": false
     },
     {
+        "name": "AppleUSBLightningAdapter",
+        "parent": "IOAccessoryManager",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleUSBLightningAdapterBOS",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
         "name": "AppleUSBMike",
         "parent": "IOAudio2Device",
         "is_abstract": false
@@ -8695,6 +10170,21 @@
         "is_abstract": false
     },
     {
+        "name": "AppleUSBNCM11Data",
+        "parent": "AppleUSBNCMData",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleUSBNCMDataPoller",
+        "parent": "IOEventSource",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleUSBHostNCMRestrictedEthernetInterface",
+        "parent": "IOEthernetInterface",
+        "is_abstract": false
+    },
+    {
         "name": "AppleUSBNCMData",
         "parent": "IOEthernetController",
         "is_abstract": false
@@ -8702,6 +10192,11 @@
     {
         "name": "AppleUSBNCMControl",
         "parent": "AppleUSBCDCControl",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleUSBNCM11Control",
+        "parent": "AppleUSBNCMControl",
         "is_abstract": false
     },
     {
@@ -8720,13 +10215,43 @@
         "is_abstract": false
     },
     {
-        "name": "AudioDMAChannelStateMachine",
+        "name": "AppleUVDMUserClient",
+        "parent": "IOUserClient2022",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleUVDMEndpointInterface",
+        "parent": "IOService",
+        "is_abstract": true
+    },
+    {
+        "name": "AppleUVDMEndpoint",
+        "parent": "AppleUVDMEndpointInterface",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleUVDMAceInterface",
+        "parent": "AppleUVDMPDControllerInterface",
+        "is_abstract": false
+    },
+    {
+        "name": "IOPortTransportProtocolAppleUVDM",
+        "parent": "IOPortTransportProtocol",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleUVDMPDControllerInterface",
+        "parent": "OSObject",
+        "is_abstract": true
+    },
+    {
+        "name": "ADMACCEDInterface",
         "parent": "IOService",
         "is_abstract": false
     },
     {
         "name": "AudioDMAChannel",
-        "parent": "AudioDMAChannelStateMachine",
+        "parent": "ADMAChannel",
         "is_abstract": false
     },
     {
@@ -8750,22 +10275,12 @@
         "is_abstract": false
     },
     {
-        "name": "CoreAnalyticsUserClient",
-        "parent": "IOUserClient",
-        "is_abstract": false
+        "name": "ADMAChannel",
+        "parent": "IOService",
+        "is_abstract": true
     },
     {
-        "name": "CoreAnalyticsTestUserClient",
-        "parent": "IOUserClient",
-        "is_abstract": false
-    },
-    {
-        "name": "CoreAnalyticsPipe",
-        "parent": "IOEventSource",
-        "is_abstract": false
-    },
-    {
-        "name": "CoreAnalyticsMessenger",
+        "name": "ADMAChannelInterface",
         "parent": "IOService",
         "is_abstract": false
     },
@@ -8777,6 +10292,26 @@
     {
         "name": "CoreAnalyticsHub",
         "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "CoreAnalyticsMessenger",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "CoreAnalyticsPipe",
+        "parent": "IOEventSource",
+        "is_abstract": false
+    },
+    {
+        "name": "CoreAnalyticsTestUserClient",
+        "parent": "IOUserClient",
+        "is_abstract": false
+    },
+    {
+        "name": "CoreAnalyticsUserClient",
+        "parent": "IOUserClient",
         "is_abstract": false
     },
     {
@@ -8915,9 +10450,89 @@
         "is_abstract": false
     },
     {
+        "name": "DMAChannelECProxyInterface",
+        "parent": "IOService",
+        "is_abstract": true
+    },
+    {
+        "name": "DMAChannelProxy",
+        "parent": "DMAChannelECProxyInterface",
+        "is_abstract": false
+    },
+    {
         "name": "EXBrightCalibrationConsumer",
         "parent": "OSObject",
         "is_abstract": false
+    },
+    {
+        "name": "HealthCounters",
+        "parent": "TelemetryDataI",
+        "is_abstract": false
+    },
+    {
+        "name": "TelemetryDataI",
+        "parent": "OSObject",
+        "is_abstract": true
+    },
+    {
+        "name": "TelemetryManager",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "BoundaryStats",
+        "parent": "TelemetryDataI",
+        "is_abstract": false
+    },
+    {
+        "name": "EXBrightCalibrationLoader",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "EXBrightKextUserClient",
+        "parent": "IOUserClient",
+        "is_abstract": false
+    },
+    {
+        "name": "EXBrightKext",
+        "parent": "IOHIDEventService",
+        "is_abstract": false
+    },
+    {
+        "name": "EXDisplayPipe",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "EXDisplayPipeUserClient",
+        "parent": "IOUserClient",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleExclaveExampleKext",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleExclaveExampleKextUserClient",
+        "parent": "IOUserClient2022",
+        "is_abstract": false
+    },
+    {
+        "name": "ExclaveSEPManagerProxy",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "ExclavesAudioProxyOutputStreamDebugTightbeam",
+        "parent": "ExclavesAudioProxyOutputStreamDebugInterface",
+        "is_abstract": false
+    },
+    {
+        "name": "ExclavesAudioProxyOutputStreamDebugInterface",
+        "parent": "OSObject",
+        "is_abstract": true
     },
     {
         "name": "ExclavesAudioProxyDebugTightbeam",
@@ -8945,6 +10560,16 @@
         "is_abstract": false
     },
     {
+        "name": "ExclavesAudioProxyOutputStreamDriverInterface",
+        "parent": "OSObject",
+        "is_abstract": true
+    },
+    {
+        "name": "ExclavesAudioProxyOutputStreamDriverTightbeam",
+        "parent": "ExclavesAudioProxyOutputStreamDriverInterface",
+        "is_abstract": false
+    },
+    {
         "name": "FPMemoryDescriptor",
         "parent": "OSObject",
         "is_abstract": false
@@ -8960,12 +10585,12 @@
         "is_abstract": false
     },
     {
-        "name": "com_apple_filesystems_hfs",
+        "name": "IISAudioIsolatedStreamECProxy",
         "parent": "IOService",
         "is_abstract": false
     },
     {
-        "name": "IISAudioIsolatedStreamECProxy",
+        "name": "IISAudioIsolatedOutputStreamECProxy",
         "parent": "IOService",
         "is_abstract": false
     },
@@ -9457,6 +11082,11 @@
     {
         "name": "IOPortTransportStateSD",
         "parent": "IOPortTransportState",
+        "is_abstract": false
+    },
+    {
+        "name": "IOPortFeatureLDCMDataQueue",
+        "parent": "IOSharedDataQueue",
         "is_abstract": false
     },
     {
@@ -10590,8 +12220,18 @@
         "is_abstract": false
     },
     {
+        "name": "IOGCDynamicDeviceProbe",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
         "name": "IOGCCommandQueue",
         "parent": "IOEventSource",
+        "is_abstract": false
+    },
+    {
+        "name": "IOGCDynamicDeviceProbeUserClient",
+        "parent": "IOUserClient2022",
         "is_abstract": false
     },
     {
@@ -11160,9 +12800,19 @@
         "is_abstract": true
     },
     {
+        "name": "IOMFBTTRReport",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
         "name": "AppleDCPLinkService",
         "parent": "IOService",
         "is_abstract": true
+    },
+    {
+        "name": "SharedEventResourceManager",
+        "parent": "OSObject",
+        "is_abstract": false
     },
     {
         "name": "DCPLink",
@@ -11180,13 +12830,18 @@
         "is_abstract": false
     },
     {
+        "name": "AppleARMParamFIFO",
+        "parent": "IOService",
+        "is_abstract": true
+    },
+    {
         "name": "IOMFBEvtMonTrampoline",
         "parent": "OSObject",
         "is_abstract": false
     },
     {
         "name": "IOMobileFramebufferUserClient",
-        "parent": "IOUserClient",
+        "parent": "IOUserClient2022",
         "is_abstract": false
     },
     {
@@ -11220,11 +12875,6 @@
         "is_abstract": false
     },
     {
-        "name": "AppleARMParamFIFO",
-        "parent": "IOService",
-        "is_abstract": true
-    },
-    {
         "name": "UPAsynchronousScheduler",
         "parent": "OSObject",
         "is_abstract": false
@@ -11233,6 +12883,11 @@
         "name": "IOMobileFramebufferLegacy",
         "parent": "IOMobileFramebufferService",
         "is_abstract": true
+    },
+    {
+        "name": "AppleANS2DARTNVMeController",
+        "parent": "AppleANS2NVMeController",
+        "is_abstract": false
     },
     {
         "name": "AppleNVMeRequestPoolTagReserve",
@@ -11267,6 +12922,11 @@
     {
         "name": "AppleANS2NVMeController",
         "parent": "AppleEmbeddedNVMeController",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleNVMeUserClient",
+        "parent": "IOUserClient",
         "is_abstract": false
     },
     {
@@ -11497,6 +13157,126 @@
     {
         "name": "IOPacketQueue",
         "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOPAudioAssetManagerDevice",
+        "parent": "IOPAudioDevice",
+        "is_abstract": true
+    },
+    {
+        "name": "IOPAudioClientManagerDevice",
+        "parent": "IOPAudioDevice",
+        "is_abstract": false
+    },
+    {
+        "name": "IOPAudioClientManagerDeviceUserClient",
+        "parent": "IOUserClient2022",
+        "is_abstract": false
+    },
+    {
+        "name": "IOPAudioController",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "IOPAudioNodeManager",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOPAudioAggregateMessageDispatcher",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOPAudioMessageDispatcher",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOPAudioDeviceExternalServiceManager",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOPAudioDevice",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "IOPAudioNode",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "IOPAudioService",
+        "parent": "IOService",
+        "is_abstract": true
+    },
+    {
+        "name": "IOPAudioHapticsLEAPControlDevice",
+        "parent": "IOPAudioLEAPControlDevice",
+        "is_abstract": false
+    },
+    {
+        "name": "IOPAudioIOBufferDevice",
+        "parent": "IOPAudioDevice",
+        "is_abstract": false
+    },
+    {
+        "name": "IOPAudioIOBufferDeviceUserClient",
+        "parent": "IOUserClient",
+        "is_abstract": false
+    },
+    {
+        "name": "IOPAudioIsolatedIOBufferDeviceUserClient",
+        "parent": "IOUserClient2022",
+        "is_abstract": false
+    },
+    {
+        "name": "IOPAudioIsolatedIOBufferDevice",
+        "parent": "IOPAudioDevice",
+        "is_abstract": false
+    },
+    {
+        "name": "IOPAudioLEAPControlDevice",
+        "parent": "IOPAudioDevice",
+        "is_abstract": false
+    },
+    {
+        "name": "IOPAudioLPMicDevice",
+        "parent": "IOPAudioClientManagerDevice",
+        "is_abstract": false
+    },
+    {
+        "name": "IOPAudioLPMicDeviceUserClient",
+        "parent": "IOUserClient2022",
+        "is_abstract": false
+    },
+    {
+        "name": "IOPAudioPCMAssetManagerDeviceUserClient",
+        "parent": "IOUserClient2022",
+        "is_abstract": false
+    },
+    {
+        "name": "IOPAudioPCMAssetManagerDevice",
+        "parent": "IOPAudioAssetManagerDevice",
+        "is_abstract": false
+    },
+    {
+        "name": "IOPAudioVoiceTriggerDevice",
+        "parent": "IOPAudioDevice",
+        "is_abstract": false
+    },
+    {
+        "name": "IOPAudioVoiceTriggerDeviceUserClient",
+        "parent": "IOUserClient2022",
+        "is_abstract": false
+    },
+    {
+        "name": "IOPAudioIsolatedVoiceTriggerDevice",
+        "parent": "IOPAudioVoiceTriggerDevice",
         "is_abstract": false
     },
     {
@@ -12035,6 +13815,11 @@
         "is_abstract": false
     },
     {
+        "name": "IOSurface",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
         "name": "IOSurfaceClient",
         "parent": "OSObject",
         "is_abstract": false
@@ -12051,6 +13836,11 @@
     },
     {
         "name": "IOSurfaceDescriptor",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOSurfaceMemoryCallback",
         "parent": "OSObject",
         "is_abstract": false
     },
@@ -12120,6 +13910,11 @@
         "is_abstract": false
     },
     {
+        "name": "IOSurfaceSmaMemoryRegion",
+        "parent": "IOSurfaceMemoryRegion",
+        "is_abstract": false
+    },
+    {
         "name": "IOSurfaceTransaction",
         "parent": "OSObject",
         "is_abstract": false
@@ -12142,6 +13937,701 @@
     {
         "name": "AppleFairplayTextCrypterSession",
         "parent": "TextCrypterSession",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltXDomainReceivePath",
+        "parent": "IOThunderboltXDomainPath",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltController",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltFamilyUserClient",
+        "parent": "IOUserClient",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltNHI",
+        "parent": "IOService",
+        "is_abstract": true
+    },
+    {
+        "name": "IOThunderboltString",
+        "parent": "OSString",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltControllerType5",
+        "parent": "IOThunderboltControllerGenericACIO",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltControllerType7",
+        "parent": "IOThunderboltControllerGenericACIO",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltCommand",
+        "parent": "IOCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltSwitchType5",
+        "parent": "IOThunderboltSwitchUSB4",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltCommandQueue",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltFrameList",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltSwitchType7",
+        "parent": "IOThunderboltSwitchOS2",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltArray",
+        "parent": "OSArray",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltConfigXDomainPathControlRequestCommand",
+        "parent": "IOThunderboltConfigXDomainPathRequestCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltSwitchType6",
+        "parent": "IOThunderboltSwitchUSB4",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltDictionary",
+        "parent": "OSDictionary",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltTransmitQueue",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOTBTTunnelDriverInterface",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltSRAMLog",
+        "parent": "IOThunderboltDebugBlock",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltTransmitCommand",
+        "parent": "IOThunderboltCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOTBTTunnelDriverInterfaceType3",
+        "parent": "IOTBTTunnelDriverInterface",
+        "is_abstract": false
+    },
+    {
+        "name": "IOTBTTunnelUSBType2ClientInterface",
+        "parent": "IOTBTTunnelClientInterface",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltWorkLoop",
+        "parent": "IOWorkLoop",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltCommandGate",
+        "parent": "IOCommandGate",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltNHITransmitRing",
+        "parent": "OSObject",
+        "is_abstract": true
+    },
+    {
+        "name": "IOThunderboltControllerGenericACIO",
+        "parent": "IOThunderboltController",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltSideband",
+        "parent": "IOThunderboltAbstractMicro",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltXDomainServiceClient",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltUserObjectExporter",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltJTAG",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltNumber",
+        "parent": "OSNumber",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltReceiveCommand",
+        "parent": "IOThunderboltCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltReceiveQueue",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltNHIReceiveRing",
+        "parent": "OSObject",
+        "is_abstract": true
+    },
+    {
+        "name": "IOThunderboltIECSNub",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltVSA",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltConnectionManager",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltControlPath",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltConfigReadCommand",
+        "parent": "IOThunderboltConfigCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltConfigCommand",
+        "parent": "IOThunderboltCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltSwitchOS2",
+        "parent": "IOThunderboltSwitchOS",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltConfigMultiReadCommand",
+        "parent": "IOThunderboltConfigReadCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltConfigWriteCommand",
+        "parent": "IOThunderboltConfigCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltConfigXDomainCommand",
+        "parent": "IOThunderboltConfigCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltDeficitCommandQueue",
+        "parent": "IOThunderboltCommandQueue",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltDispatchContextBlock",
+        "parent": "IOThunderboltDispatchContextAbstract",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltAbstractMicro",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOTBTTunnelClientInterface",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltSwitch",
+        "parent": "IOThunderboltNub",
+        "is_abstract": true
+    },
+    {
+        "name": "IOTBTTunnelDPClientInterface",
+        "parent": "IOTBTTunnelClientInterface",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltPort",
+        "parent": "IOThunderboltNub",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltTimerCommand",
+        "parent": "IOCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltTimerCommandQueue",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltPath",
+        "parent": "IOThunderboltAbstractPath",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltHopSet",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltNub",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltSwitchOS",
+        "parent": "IOThunderboltSwitch",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltConfigResetCommand",
+        "parent": "IOThunderboltConfigCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltControlPathListener",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltConfigNotifyAckCommand",
+        "parent": "IOThunderboltConfigCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltConfigCMOverrideCommand",
+        "parent": "IOThunderboltConfigCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltConfigCompareSwapCommand",
+        "parent": "IOThunderboltConfigCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltXDomainLink",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltVSAService",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltConnectionManagerType5",
+        "parent": "IOThunderboltConnectionManager",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltLocalNode",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltXDomainService",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltConfigXDomainRequestCommand",
+        "parent": "IOThunderboltConfigXDomainCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltConfigXDomainResponseCommand",
+        "parent": "IOThunderboltConfigXDomainCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltData",
+        "parent": "OSData",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltTunnelDriverType2",
+        "parent": "IOThunderboltTunnelDriver",
+        "is_abstract": true
+    },
+    {
+        "name": "IOThunderboltPacketLoggerNub",
+        "parent": "IOService",
+        "is_abstract": true
+    },
+    {
+        "name": "IOThunderboltConfigXDomainUUIDRequestCommand",
+        "parent": "IOThunderboltConfigXDomainCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltSwitchLC",
+        "parent": "IOThunderboltSwitchLegacy",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltConfigXDomainROMReadRequestCommand",
+        "parent": "IOThunderboltConfigXDomainCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltConfigXDomainROMChangedRequestCommand",
+        "parent": "IOThunderboltConfigXDomainCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltXDPropertiesCache",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltXDPropertiesDirectory",
+        "parent": "IOThunderboltDictionary",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltSwitchIntelJHL9580",
+        "parent": "IOThunderboltSwitchOS2",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltXDPropertiesEntry",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltXDPropertiesImmediateValue",
+        "parent": "IOThunderboltNumber",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltSwitchI2CCommandQueue",
+        "parent": "IOThunderboltI2CCommandQueue",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltXDPropertiesLeafData",
+        "parent": "IOThunderboltData",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltXDPropertiesLeafText",
+        "parent": "IOThunderboltString",
+        "is_abstract": false
+    },
+    {
+        "name": "IOTBTTunnelActivationState",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltXDLocalPropertiesCache",
+        "parent": "IOThunderboltXDPropertiesCache",
+        "is_abstract": false
+    },
+    {
+        "name": "IOTBTTunnelUSBClientInterface",
+        "parent": "IOTBTTunnelClientInterface",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltXDomainServiceClientManagerMergeProperties",
+        "parent": "IOProviderPropertyMerger",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltXDomainPath",
+        "parent": "IOThunderboltAbstractPath",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltFindCapabilityCommand",
+        "parent": "IOThunderboltCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOTBTTunnelDriverInterfaceType2",
+        "parent": "IOTBTTunnelDriverInterface",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltTRMPolicy",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltConfigXDomainPathSetupRequestCommand",
+        "parent": "IOThunderboltConfigXDomainPathRequestCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltConfigXDomainPathRequestCommand",
+        "parent": "IOThunderboltConfigXDomainCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltXDDirectory",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltConfigXDomainPathSetupCompleteRequestCommand",
+        "parent": "IOThunderboltConfigXDomainPathRequestCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltConfigXDomainPathTeardownRequestCommand",
+        "parent": "IOThunderboltConfigXDomainPathRequestCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltSwitchDelegate",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltAbstractPath",
+        "parent": "OSObject",
+        "is_abstract": true
+    },
+    {
+        "name": "IOTBTTunnelClientInterfaceManager",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltMultiMapper",
+        "parent": "IOMapper",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltTunnelDriver",
+        "parent": "IOService",
+        "is_abstract": true
+    },
+    {
+        "name": "IOThunderboltI2CCommandQueue",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltI2CCommand",
+        "parent": "IOThunderboltCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltConfigXDomainPathCapabilitiesRequestCommand",
+        "parent": "IOThunderboltConfigXDomainPathRequestCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltSwitchIntelJHL8440",
+        "parent": "IOThunderboltSwitchUSB4",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltConfigModifyQuadletCommand",
+        "parent": "IOThunderboltConfigCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltConfigPollQuadletCommand",
+        "parent": "IOThunderboltConfigCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltConfigReadQuadletCommand",
+        "parent": "IOThunderboltConfigCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltSwitchLegacy",
+        "parent": "IOThunderboltSwitch",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltEEPROM",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltConfigWriteQuadletCommand",
+        "parent": "IOThunderboltConfigCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltConfigErrorCommand",
+        "parent": "IOThunderboltConfigCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltTRMPolicyRoot",
+        "parent": "IOThunderboltTRMPolicy",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltCallbackEventSource",
+        "parent": "IOEventSource",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltCableState",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltConfigPrepareToSleepCommand",
+        "parent": "IOThunderboltConfigCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltSwitchUSB4",
+        "parent": "IOThunderboltSwitchOS",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltProtocolListener",
+        "parent": "IOThunderboltControlPathListener",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltDebugBlock",
+        "parent": "OSObject",
+        "is_abstract": true
+    },
+    {
+        "name": "IOThunderboltSwitchType3",
+        "parent": "IOThunderboltSwitchLC",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltSwitchType2",
+        "parent": "IOThunderboltSwitchLC",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltDispatchContextAbstract",
+        "parent": "IOCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltIECSCommand",
+        "parent": "IOThunderboltCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltXDomainTransmitPath",
+        "parent": "IOThunderboltXDomainPath",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltTracebuffer",
+        "parent": "IOThunderboltDebugBlock",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltIECSCommandQueue",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltSwitchType1",
+        "parent": "IOThunderboltSwitchLegacy",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltSet",
+        "parent": "OSSet",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltLinkController",
+        "parent": "IOThunderboltAbstractMicro",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltPortMicro",
+        "parent": "IOThunderboltAbstractMicro",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltStatistics",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltConfigXDomainLinkStatusRequestCommand",
+        "parent": "IOThunderboltConfigCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltDispatchContext",
+        "parent": "IOThunderboltDispatchContextAbstract",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltXDomainServiceClientManager",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltDispatchQueue",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltConfigXDomainLinkChangeRequestCommand",
+        "parent": "IOThunderboltConfigCommand",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltSwitchDelegateACIO",
+        "parent": "IOThunderboltSwitchDelegate",
+        "is_abstract": false
+    },
+    {
+        "name": "IOThunderboltDispatchCallback",
+        "parent": "OSObject",
         "is_abstract": false
     },
     {
@@ -12560,6 +15050,16 @@
         "is_abstract": false
     },
     {
+        "name": "AppleUSBHostBufferMemoryDescriptor",
+        "parent": "IOBufferMemoryDescriptor",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleUSBHostClientBufferMemoryDescriptor",
+        "parent": "AppleUSBHostBufferMemoryDescriptor",
+        "is_abstract": false
+    },
+    {
         "name": "IOUSBHostIOSource",
         "parent": "OSObject",
         "is_abstract": false
@@ -12590,17 +15090,7 @@
         "is_abstract": false
     },
     {
-        "name": "AppleUSBHostDMACommandPool",
-        "parent": "IOCommandPool",
-        "is_abstract": false
-    },
-    {
         "name": "AppleUSBHostDMACommand",
-        "parent": "IODMACommand",
-        "is_abstract": false
-    },
-    {
-        "name": "AppleUSBHostBouncedDMACommand",
         "parent": "IODMACommand",
         "is_abstract": false
     },
@@ -12630,13 +15120,18 @@
         "is_abstract": false
     },
     {
-        "name": "AppleUSBHostIORequestPool",
+        "name": "AppleUSBHostRequestPool",
         "parent": "AppleUSBRequestPool",
-        "is_abstract": false
+        "is_abstract": true
     },
     {
         "name": "AppleUSBHostRequest",
         "parent": "AppleUSBRequest",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleUSBHostIORequestPool",
+        "parent": "AppleUSBRequestPool",
         "is_abstract": false
     },
     {
@@ -12703,6 +15198,76 @@
         "name": "AppleUSBHostUserClient",
         "parent": "IOUSBInterfaceUserClientV3",
         "is_abstract": true
+    },
+    {
+        "name": "AppleUSBHostControllerDMACommand",
+        "parent": "IODMACommand",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT6000USBXHCI",
+        "parent": "AppleT8103USBXHCI",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT8142USBXHCI",
+        "parent": "AppleUSBXHCIARM",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT8103USBXHCICommandRing",
+        "parent": "AppleSynopsysDRDUSBXHCICommandRing",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT8142USBXHCICommandRing",
+        "parent": "AppleUSBXHCICommandRing",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT8132USBXHCI",
+        "parent": "AppleUSBXHCIARM",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT8132USBXHCICommandRing",
+        "parent": "AppleUSBXHCICommandRing",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT8122USBXHCI",
+        "parent": "AppleUSBXHCIARM",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT8103USB30XHCIPort",
+        "parent": "AppleUSB30XHCIARMPort",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT6000USBXHCICommandRing",
+        "parent": "AppleSynopsysDRDUSBXHCICommandRing",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT8122USBXHCICommandRing",
+        "parent": "AppleUSBXHCICommandRing",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT8112USBXHCICommandRing",
+        "parent": "AppleUSBXHCICommandRing",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT8112USBXHCI",
+        "parent": "AppleUSBXHCIARM",
+        "is_abstract": false
+    },
+    {
+        "name": "AppleT8103USBXHCI",
+        "parent": "AppleSynopsysDRDUSBXHCI",
+        "is_abstract": false
     },
     {
         "name": "AppleUSB20XHCIARMPort",
@@ -12790,6 +15355,11 @@
         "is_abstract": false
     },
     {
+        "name": "AppleUSBHostBillboardDevice",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
         "name": "AppleUSBHostCompositeDevice",
         "parent": "IOService",
         "is_abstract": false
@@ -12866,12 +15436,12 @@
     },
     {
         "name": "AppleUSBXHCIRequestPool",
-        "parent": "AppleUSBRequestPool",
+        "parent": "AppleUSBHostRequestPool",
         "is_abstract": false
     },
     {
         "name": "AppleUSBXHCIRequest",
-        "parent": "AppleUSBHostRequest",
+        "parent": "AppleUSBIORequest",
         "is_abstract": false
     },
     {
@@ -13075,11 +15645,6 @@
         "is_abstract": false
     },
     {
-        "name": "IOTimeSyncEthernetSoftDMAInterfaceAdapter",
-        "parent": "IOTimeSyncEthernetModernInterfaceAdapter",
-        "is_abstract": false
-    },
-    {
         "name": "IOTimeSyncUnicastUDPv4PtPPort",
         "parent": "IOTimeSyncFDPtPPort",
         "is_abstract": false
@@ -13245,6 +15810,16 @@
         "is_abstract": false
     },
     {
+        "name": "Image4",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "Image4UserClient",
+        "parent": "IOUserClient",
+        "is_abstract": false
+    },
+    {
         "name": "RTBuddyOSLogEndpoint",
         "parent": "RTBuddyEndpoint",
         "is_abstract": false
@@ -13345,6 +15920,11 @@
         "is_abstract": false
     },
     {
+        "name": "RTBuddySymbolsDecoder",
+        "parent": "RTBuddyCrashlogSectionDecoder",
+        "is_abstract": false
+    },
+    {
         "name": "RTBuddyCoredumpMap",
         "parent": "OSObject",
         "is_abstract": false
@@ -13366,6 +15946,11 @@
     },
     {
         "name": "RTBuddy64",
+        "parent": "RTBuddy",
+        "is_abstract": false
+    },
+    {
+        "name": "RTBuddyARG",
         "parent": "RTBuddy",
         "is_abstract": false
     },
@@ -13580,6 +16165,11 @@
         "is_abstract": false
     },
     {
+        "name": "RTBuddyBinaryLogEntryHandlerMetric",
+        "parent": "RTBuddyBinaryLogEntryHandler",
+        "is_abstract": false
+    },
+    {
         "name": "RTBuddyTraceKitEndpoint",
         "parent": "RTBuddyBuiltinEndpoint",
         "is_abstract": false
@@ -13590,21 +16180,6 @@
         "is_abstract": false
     },
     {
-        "name": "RTBuddyTraceChunkEncoder",
-        "parent": "OSObject",
-        "is_abstract": false
-    },
-    {
-        "name": "RTBuddyTraceDataEncoder",
-        "parent": "OSObject",
-        "is_abstract": true
-    },
-    {
-        "name": "RTBuddyTraceKitMessageEncoder",
-        "parent": "RTBuddyTraceDataEncoder",
-        "is_abstract": false
-    },
-    {
         "name": "RTBuddyBuiltinEndpoint",
         "parent": "IOService",
         "is_abstract": false
@@ -13612,6 +16187,56 @@
     {
         "name": "RTBuddyEntropyEndpoint",
         "parent": "RTBuddyBuiltinEndpoint",
+        "is_abstract": false
+    },
+    {
+        "name": "SecureRTBuddyProxyEndpoint",
+        "parent": "IOEventSource",
+        "is_abstract": false
+    },
+    {
+        "name": "SecureRTBuddyPowerStateCallback",
+        "parent": "OSObject",
+        "is_abstract": false
+    },
+    {
+        "name": "SecureRTBuddyProxy",
+        "parent": "RTBuddyRouteProvider",
+        "is_abstract": false
+    },
+    {
+        "name": "SecureRTBuddyProxyRouteAdaptor",
+        "parent": "RTBuddyRoute",
+        "is_abstract": false
+    },
+    {
+        "name": "SecureRTBuddyIOReporting",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "SharedDARTMapperProxy",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "TrustedClockingKEXT",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "TrustedClockingUserClient",
+        "parent": "IOUserClient",
+        "is_abstract": false
+    },
+    {
+        "name": "VCPDRMService",
+        "parent": "IOService",
+        "is_abstract": false
+    },
+    {
+        "name": "VCPDRMUserClient",
+        "parent": "IOUserClient",
         "is_abstract": false
     },
     {
@@ -13805,83 +16430,13 @@
         "is_abstract": false
     },
     {
-        "name": "AGXParameterBufferBlock",
-        "parent": "OSObject",
-        "is_abstract": true
-    },
-    {
-        "name": "AGXArmFirmware",
-        "parent": "AGXFirmware",
-        "is_abstract": true
-    },
-    {
-        "name": "AGX3DChannelSKU",
-        "parent": "AGX3DChannel",
-        "is_abstract": true
-    },
-    {
-        "name": "AGXChannel",
-        "parent": "IOGPUChannel",
-        "is_abstract": true
-    },
-    {
-        "name": "AGXCLChannelSKU",
-        "parent": "AGXCLChannel",
-        "is_abstract": true
-    },
-    {
-        "name": "AGXHardwareBufferBase",
+        "name": "AGXUSCPrivMemPool",
         "parent": "IOGPUObject",
         "is_abstract": true
     },
     {
-        "name": "AGXAccelerator",
-        "parent": "IOGPU",
-        "is_abstract": true
-    },
-    {
-        "name": "AGXSecureSharedGartTableBacking",
-        "parent": "AGXSharedGartTableBacking",
-        "is_abstract": true
-    },
-    {
-        "name": "AGXCommandDescriptor",
-        "parent": "IOGPUCommandDescriptor",
-        "is_abstract": true
-    },
-    {
-        "name": "AGXLegacyGart",
-        "parent": "AGXGart",
-        "is_abstract": true
-    },
-    {
-        "name": "AGXSecureMonitor",
+        "name": "AGXParameterBufferBlock",
         "parent": "OSObject",
-        "is_abstract": true
-    },
-    {
-        "name": "AGXMemoryMap",
-        "parent": "IOGPUMemoryMap",
-        "is_abstract": true
-    },
-    {
-        "name": "AGXFamilyAccelerator",
-        "parent": "AGXAccelerator",
-        "is_abstract": true
-    },
-    {
-        "name": "AGXTAChannelGen2",
-        "parent": "AGXTAChannelSKU",
-        "is_abstract": true
-    },
-    {
-        "name": "AGXGart",
-        "parent": "IOGPUTask",
-        "is_abstract": true
-    },
-    {
-        "name": "AGX3DChannelGen2",
-        "parent": "AGX3DChannelSKU",
         "is_abstract": true
     },
     {
@@ -13890,8 +16445,23 @@
         "is_abstract": true
     },
     {
-        "name": "OSMetaClass",
-        "parent": null,
+        "name": "AGXHardwareBufferBase",
+        "parent": "IOGPUObject",
+        "is_abstract": true
+    },
+    {
+        "name": "AGXFamilyAccelerator",
+        "parent": "AGXAccelerator",
+        "is_abstract": true
+    },
+    {
+        "name": "AGXSecureSharedGartTableBacking",
+        "parent": "AGXSharedGartTableBacking",
+        "is_abstract": true
+    },
+    {
+        "name": "AppleEmbeddedPCIE",
+        "parent": "IOPCIHostBridge",
         "is_abstract": true
     },
     {
@@ -13900,23 +16470,18 @@
         "is_abstract": true
     },
     {
-        "name": "AGXSharedGartTableBacking",
+        "name": "AGX3DChannelSKU",
+        "parent": "AGX3DChannel",
+        "is_abstract": true
+    },
+    {
+        "name": "AGXSecureMonitor",
         "parent": "OSObject",
         "is_abstract": true
     },
     {
-        "name": "AGXCLChannelGen2",
-        "parent": "AGXCLChannelSKU",
-        "is_abstract": true
-    },
-    {
-        "name": "AGXLegacySharedGartTableBacking",
-        "parent": "AGXSharedGartTableBacking",
-        "is_abstract": true
-    },
-    {
-        "name": "AGX3DChannel",
-        "parent": "AGXChannel",
+        "name": "AppleEmbeddedPCIEPort",
+        "parent": "IOInterruptController",
         "is_abstract": true
     },
     {
@@ -13925,13 +16490,108 @@
         "is_abstract": true
     },
     {
-        "name": "AGXTAChannelSKU",
-        "parent": "AGXTAChannel",
+        "name": "AGXKSMKickQueue",
+        "parent": "OSObject",
         "is_abstract": true
     },
     {
         "name": "AGXSecureGart",
         "parent": "AGXGart",
+        "is_abstract": true
+    },
+    {
+        "name": "AGXTAChannelSKU",
+        "parent": "AGXTAChannel",
+        "is_abstract": true
+    },
+    {
+        "name": "AGXMemoryMap",
+        "parent": "IOGPUMemoryMap",
+        "is_abstract": true
+    },
+    {
+        "name": "AGX3DChannelGen2",
+        "parent": "AGX3DChannelSKU",
+        "is_abstract": true
+    },
+    {
+        "name": "IAGXUSCPrivMemGrowEngine",
+        "parent": "IOGPUObject",
+        "is_abstract": true
+    },
+    {
+        "name": "AGX3DChannel",
+        "parent": "AGXChannel",
+        "is_abstract": true
+    },
+    {
+        "name": "AGXCLChannelSKU",
+        "parent": "AGXCLChannel",
+        "is_abstract": true
+    },
+    {
+        "name": "AGXCLChannelGen2",
+        "parent": "AGXCLChannelSKU",
+        "is_abstract": true
+    },
+    {
+        "name": "AGXArmFirmware",
+        "parent": "AGXFirmware",
+        "is_abstract": true
+    },
+    {
+        "name": "AGXCLChannelSKSM",
+        "parent": "AGXCLChannel",
+        "is_abstract": true
+    },
+    {
+        "name": "AGXAcceleratorG16",
+        "parent": "AGXFamilyAccelerator",
+        "is_abstract": true
+    },
+    {
+        "name": "AGXTAChannelSKSM",
+        "parent": "AGXTAChannel",
+        "is_abstract": true
+    },
+    {
+        "name": "AGXSharedGartTableBacking",
+        "parent": "OSObject",
+        "is_abstract": true
+    },
+    {
+        "name": "AGXTAChannelGen2",
+        "parent": "AGXTAChannelSKU",
+        "is_abstract": true
+    },
+    {
+        "name": "AGXAcceleratorG17P",
+        "parent": "AGXAcceleratorG16",
+        "is_abstract": true
+    },
+    {
+        "name": "AppleEmbeddedPCIEPortControlFunction",
+        "parent": "AppleARMFunction",
+        "is_abstract": true
+    },
+    {
+        "name": "AGXChannel",
+        "parent": "IOGPUChannel",
+        "is_abstract": true
+    },
+    {
+        "name": "AGXCommandDescriptor",
+        "parent": "IOGPUCommandDescriptor",
+        "is_abstract": true
+    },
+    {
+        "name": "AGX3DChannelSKSM",
+        "parent": "AGX3DChannel",
+        "is_abstract": true
+    },
+    {
+        "name": "AGXGart",
+        "parent": "IOGPUTask",
         "is_abstract": true
     }
 ]

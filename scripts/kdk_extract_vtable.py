@@ -5,7 +5,7 @@ from pathlib import Path
 
 from idahelper import cpp, memory, tif
 
-PURE_VIRTUAL_FUNC_NAME = "___cxa_pure_virtual"
+PURE_VIRTUAL_FUNC_NAME = "cxa_pure_virtual"
 UNKNOWN_TYPE = "???"
 
 
@@ -120,7 +120,7 @@ def extract_vtable(type_name: str, vtable_ea: int) -> list[Method] | None:
                     parameters=parameters,
                     vtable_index=entry.index,
                     is_implemented_by_current_class=class_name == type_name,
-                    is_pure_virtual=entry.func_name == PURE_VIRTUAL_FUNC_NAME,
+                    is_pure_virtual=PURE_VIRTUAL_FUNC_NAME in entry.func_name,
                 )
             )
     except MemoryError:
